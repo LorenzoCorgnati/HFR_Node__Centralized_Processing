@@ -23,13 +23,13 @@ All generated radial and total netCDF files are quality controlled according the
 
 The whole workflow is intended to run automatically to continuously convert and combine near real time HFR data produced by data providers.
 
-The applications inputRUV2DB.m and inputCradAScii2DB.m load radial files information onto the database in table radial_input_tb.
+The applications CP_inputRUV2DB.m and CP_inputCradAScii2DB.m load radial files information onto the database in table radial_input_tb.
 
-The applications inputTUV2DB.m and inputCurAsc2DB.m load total files information onto the database in table total_input_tb.
+The applications CP_inputTUV2DB.m and CP_inputCurAsc2DB.m load total files information onto the database in table total_input_tb.
 
-The application HFR_Combiner.m converts Codar native .ruv files and WERA native .crad_ascii files for radial currents into the European standard data and metadata model for near real time HFR current data and combines them for generating total current files according to the European standard data and metadata model for near real time HFR current data.
+The application CP_HFR_Combiner.m converts Codar native .ruv files and WERA native .crad_ascii files for radial currents into the European standard data and metadata model for near real time HFR current data and combines them for generating total current files according to the European standard data and metadata model for near real time HFR current data.
 
-The application Total_Conversion.m converts Codar native .tuv files and WERA native .cur_asc files for total currents into the European standard data and metadata model for near real time HFR current data.
+The application CP_Total_Conversion.m converts Codar native .tuv files and WERA native .cur_asc files for total currents into the European standard data and metadata model for near real time HFR current data.
 
 
 The required toolboxes are:
