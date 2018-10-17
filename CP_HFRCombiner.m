@@ -72,7 +72,7 @@ while(kk>0)
     if(HFRC_err==0)
         % Set and exectute the query
         try
-            network_selectquery = 'SELECT * FROM network_tb';
+            network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
             network_curs = exec(conn,network_selectquery);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
