@@ -1,0 +1,41 @@
+%% startCombinationDate.m
+% This function builds the datetime of the starting day of the combination 
+% period in the MySQL format YYYY-MM-DD from the present timestamp.
+
+% INPUT:
+%         tsNow: present timestamp in numeric format
+
+% OUTPUT:
+%         sCD_err: error flag (0 = correct, 1 = error)
+%         startDatetime: string for datetime in the MySQL format YYYY-MM-DD
+
+
+% Author: Lorenzo Corgnati
+% Date: July 18, 2018
+
+% E-mail: lorenzo.corgnati@sp.ismar.cnr.it
+%%
+
+function startDatetime = startCombinationDate(tsNow)
+
+disp(['[' datestr(now) '] - - ' 'startCombinationDate.m started.']);
+
+sCD_err = 0;
+
+warning('off', 'all');
+
+% Evaluate the starting date as 7 days ago
+try
+    tsStart = tsNow - 7;    
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    sCD_err = 1;
+    return
+end
+
+% Build the string for datetime in the MySQL format YYYY-MM-DD
+formatOut='yyyy-mm-dd';
+startDatetime = datestr(tsStart,formatOut);
+
+return
+
