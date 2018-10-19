@@ -583,7 +583,7 @@ if (R2C_err == 0)
     % Bearing and heading are only reported to 10ths and can be
     % reported as short unsigned integers when scaled. However, Bearing is a
     % coordinate variable and cannot be scaled by CF metadata convention.
-    head = round(head.*10);
+    % head = round(head.*10);
     
     %%
     
@@ -593,10 +593,10 @@ if (R2C_err == 0)
         ersc(isnan(ersc)) = netcdf.getConstant('NC_FILL_SHORT');
         ertc(isnan(ertc)) = netcdf.getConstant('NC_FILL_SHORT');
         sprc(isnan(sprc)) = netcdf.getConstant('NC_FILL_SHORT');
-        head(isnan(head)) = netcdf.getConstant('NC_FILL_SHORT');
         
         % Type float fill values
         velo(isnan(velo)) = netcdf.getConstant('NC_FILL_FLOAT');
+        head(isnan(head)) = netcdf.getConstant('NC_FILL_FLOAT');
         radialVelocityMedianFiltered(isnan(radialVelocityMedianFiltered)) = netcdf.getConstant('NC_FILL_FLOAT');
         velu(isnan(velu)) = netcdf.getConstant('NC_FILL_FLOAT');
         velv(isnan(velv)) = netcdf.getConstant('NC_FILL_FLOAT');
@@ -871,15 +871,15 @@ if (R2C_err == 0)
         % positive clockwise from due north. The "instrument" (examples are radar
         % and lidar) is the device used to make an observation. "direction_of_X"
         % means direction of a vector, a bearing.
-        varid_direction = netcdf.defVar(ncid, 'DRVA', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
+        varid_direction = netcdf.defVar(ncid, 'DRVA', 'float', [dimid_range dimid_bearing dimid_depth dimid_t]);
         netcdf.defVarDeflate(ncid, varid_direction, true, true, 6);
-        netcdf.putAtt(ncid, varid_direction, 'valid_range', int16( [0 360]));
+        netcdf.putAtt(ncid, varid_direction, 'valid_range', single( [0 360]));
         netcdf.putAtt(ncid, varid_direction, 'standard_name', 'direction_of_radial_vector_away_from_instrument');
         netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction Of Radial Vector Away From Instrument');
-        netcdf.putAtt(ncid, varid_direction, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+        netcdf.putAtt(ncid, varid_direction, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
         netcdf.putAtt(ncid, varid_direction, 'add_offset', single(0));
         netcdf.putAtt(ncid, varid_direction, 'units', 'degrees_true');
-        netcdf.putAtt(ncid, varid_direction, 'scale_factor', single(0.1));
+        netcdf.putAtt(ncid, varid_direction, 'scale_factor', single(1));
         netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_name', 'Current direction (Eulerian) in the water body by directional range-gated radar');
         netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_urn', 'SDN:P01::LCDAWVRD');
         netcdf.putAtt(ncid, varid_direction, 'sdn_uom_name', 'Degrees True');
