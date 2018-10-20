@@ -4,6 +4,7 @@ Matlab scripts for the operational workflow of the European HFR Node. Tools for 
 These applications are written in Matlab language and they are based on HFR_Progs_2_1_2 and M_Map toolboxes, and the architecture of the workflow is based on a MySQL database containing information about data and metadata. The applications are designed for High Frequency Radar (HFR) data management according to the European HFR node processing workflow, thus generating radial and total velocity files in netCDF format according to the European standard data and metadata model for near real time HFR current data.
 
 The database is composed by the following tables:
+- account_tb: it contains the general information about HFR providers and the HFR networks they manage.
 - network_tb: it contains the general information about the HFR network producing the radial and total files. These information will be used for the metadata content of the netCDF files.
 - station_tb: it contains the general information about the radar sites belonging to each HFR network producing the radial and total files. These information will be used for the metadata content of the netCDF files.
 - radial_input_tb: it contains information about the radial files to be converted and combined into total files.
@@ -21,7 +22,7 @@ General information for the tables network_tb and station_tb are loaded onto the
 
 All generated radial and total netCDF files are quality controlled according the the QC tests defined as standard for the European HFR node and for the data distribution on CMEMS-INSTAC and SeaDataNet platforms.
 
-The whole workflow is intended to run automatically to continuously convert and combine near real time HFR data produced by data providers.
+The whole workflow is intended to run automatically to continuously convert and combine near real time HFR data produced by data providers. The wrapper CP_EU_HFR_Node_Processor.m sets the provider username and lauches the input and processing applications within an infinite loop.
 
 The applications CP_inputRUV2DB.m and CP_inputCradAScii2DB.m load radial files information onto the database in table radial_input_tb.
 
