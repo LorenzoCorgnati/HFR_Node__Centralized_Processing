@@ -1,36 +1,20 @@
-%% inputCradAscii2DB.m
+%% CP_inputCradAscii2DB.m
 % This application lists the input crad_ascii (WERA radials) files pushed by the HFR data providers
 % and insert into the HFR database the information needed for the
 % combination of radial files into totals and for the generation of the
 % radial and total data files into the European standard data model.
 
 % Author: Lorenzo Corgnati
-% Date: October 3, 2018
+% Date: October 16, 2018
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
 warning('off', 'all');
 
-clear all
-close all
-clc
-
-% Setup JBDC driver for MySQL
-javaaddpath('/Users/reverendo/Toolboxes/mysql-connector-java-5.1.17.jar');
-
 iCradDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'inputCradAscii2DB started.']);
-
-%%
-
-%% Set database parameters
-
-sqlConfig.user = 'HFR_lorenzo';
-sqlConfig.password = 'xWeLXHFQfvpBmDYO';
-sqlConfig.host = '150.145.136.8';
-sqlConfig.database = 'HFR_node_db';
+disp(['[' datestr(now) '] - - ' 'CP_inputCradAscii2DB started.']);
 
 %%
 

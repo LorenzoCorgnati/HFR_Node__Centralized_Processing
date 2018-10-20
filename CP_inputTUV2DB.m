@@ -1,36 +1,20 @@
-%% inputTUV2DB.m
+%% CP_inputTUV2DB.m
 % This application lists the input tuv files pushed by the HFR data providers
 % and insert into the HFR database the information needed for the conversion of
 % the total data files into the European standard data
 % model.
 
 % Author: Lorenzo Corgnati
-% Date: July 3, 2018
+% Date: October 16, 2018
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
 warning('off', 'all');
 
-clear all
-close all
-clc
-
-% Setup JBDC driver for MySQL
-javaaddpath('/Users/reverendo/Toolboxes/mysql-connector-java-5.1.17.jar');
-
 iTDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'inputTotal2DB started.']);
-
-%%
-
-%% Set database parameters
-
-sqlConfig.user = 'HFR_lorenzo';
-sqlConfig.password = 'xWeLXHFQfvpBmDYO';
-sqlConfig.host = '150.145.136.8';
-sqlConfig.database = 'HFR_node_db';
+disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB started.']);
 
 %%
 

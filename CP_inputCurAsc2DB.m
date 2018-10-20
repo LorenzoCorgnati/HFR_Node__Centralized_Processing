@@ -1,4 +1,4 @@
-%% inputCurAsc2DB.m
+%% CP_inputCurAsc2DB.m
 % This application lists the input cur_asc (WERA totals) files pushed by the HFR data providers
 % and insert into the HFR database the information needed for the conversion of
 % the total data files into the European standard data
@@ -12,25 +12,9 @@
 
 warning('off', 'all');
 
-clear all
-close all
-clc
-
-% Setup JBDC driver for MySQL
-javaaddpath('/Users/reverendo/Toolboxes/mysql-connector-java-5.1.17.jar');
-
 iCurDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'inputCurAsc2DB started.']);
-
-%%
-
-%% Set database parameters
-
-sqlConfig.user = 'HFR_lorenzo';
-sqlConfig.password = 'xWeLXHFQfvpBmDYO';
-sqlConfig.host = '150.145.136.8';
-sqlConfig.database = 'HFR_node_db';
+disp(['[' datestr(now) '] - - ' 'CP_inputCurAsc2DB started.']);
 
 %%
 
