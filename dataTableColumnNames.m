@@ -24,29 +24,27 @@ dTCN_err = 0;
 
 warning('off', 'all');
 
-if(dTCN_err == 0)
-    try
-        % Retrieve information from header
-        for header_idx=1:length(header)
-            splitLine = regexp(header{header_idx}, ' ', 'split');
-            
-            % Retrieve site codes and coordinates
-            if(strcmp(splitLine{1}, '%TableType:'))
-                if(strcmp(splitLine{2}, 'LLUV'))
-                    while(~strcmp(splitLine{1}, '%TableColumnTypes:'))
-                        header_idx = header_idx + 1;
-                        splitLine = regexp(header{header_idx}, ' ', 'split');                        
-                    end
-                    break                    
+try
+    % Retrieve information from header
+    for header_idx=1:length(header)
+        splitLine = regexp(header{header_idx}, ' ', 'split');
+        
+        % Retrieve site codes and coordinates
+        if(strcmp(splitLine{1}, '%TableType:'))
+            if(strcmp(splitLine{2}, 'LLUV'))
+                while(~strcmp(splitLine{1}, '%TableColumnTypes:'))
+                    header_idx = header_idx + 1;
+                    splitLine = regexp(header{header_idx}, ' ', 'split');
                 end
+                break
             end
         end
-        TableColumnTypes = strrep(header{header_idx}(length('%TableColumnTypes:')+2:length(header{header_idx})), '"', '');
-        tableFields = strsplit(TableColumnTypes);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        dTCN_err = 1;
     end
+    TableColumnTypes = strrep(header{header_idx}(length('%TableColumnTypes:')+2:length(header{header_idx})), '"', '');
+    tableFields = strsplit(TableColumnTypes);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    dTCN_err = 1;
 end
 
 return

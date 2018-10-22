@@ -38,9 +38,14 @@ catch err
     return
 end
 
-% Build the string for datetime in the MySQL format YYYY-MM-DD
-formatOut='yyyy-mm-dd';
-datetime = datestr(tsNum,formatOut);
+try
+    % Build the string for datetime in the MySQL format YYYY-MM-DD
+    formatOut='yyyy-mm-dd';
+    datetime = datestr(tsNum,formatOut);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    t2d_err = 1;
+end
 
 return
 

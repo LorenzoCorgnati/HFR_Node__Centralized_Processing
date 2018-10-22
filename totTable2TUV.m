@@ -32,7 +32,12 @@ warning('off', 'all');
 
 %% Create the TUV structure
 
-tuv = TUVstruct([size(table,1),1], 1);
+try
+    tuv = TUVstruct([size(table,1),1], 1);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    t2T_err = 1;
+end
 
 %%
 

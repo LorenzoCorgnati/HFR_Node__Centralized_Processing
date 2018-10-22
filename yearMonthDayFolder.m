@@ -42,10 +42,15 @@ catch err
     return
 end
 
-% Build the folder strings
-yearFolder = num2str(year);
-monthFolder = [yearFolder filesep num2str(year) '_' num2str(month,'%02d')];
-dayFolder = [monthFolder filesep num2str(year) '_' num2str(month,'%02d') '_' num2str(day,'%02d')];
+try
+    % Build the folder strings
+    yearFolder = num2str(year);
+    monthFolder = [yearFolder filesep num2str(year) '_' num2str(month,'%02d')];
+    dayFolder = [monthFolder filesep num2str(year) '_' num2str(month,'%02d') '_' num2str(day,'%02d')];
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    yMDF_err = 1;
+end
 
 return
 

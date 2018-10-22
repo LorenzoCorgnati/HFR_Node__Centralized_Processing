@@ -49,7 +49,7 @@ while(kk>0)
 %     CP_inputCradAscii2DB;
     CP_HFRCombiner;
     
-    % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
+    % TOTALS CONVERSION
     CP_inputTUV2DB;
     CP_inputCurAsc2DB;
     CP_TotalConversion;

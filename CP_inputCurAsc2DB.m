@@ -95,50 +95,55 @@ end
 
 %% Scan the networks, list the related total files and insert information into the database
 
-% Find the index of the network_id field
-network_idIndexC = strfind(network_columnNames, 'network_id');
-network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
-
-% Find the index of the input file path field
-inputPathIndexC = strfind(network_columnNames, 'total_input_folder_path');
-inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
+try
+    % Find the index of the network_id field
+    network_idIndexC = strfind(network_columnNames, 'network_id');
+    network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
+    
+    % Find the index of the input file path field
+    inputPathIndexC = strfind(network_columnNames, 'total_input_folder_path');
+    inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    iCurDB_err = 1;
+end
 
 % Scan the networks
-for network_idx=1:numNetworks
-    % List the input cur_asc files
-    try
-        ascFiles = rdir([network_data{network_idx,inputPathIndex} '/*/*/*/*.cur_asc']);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCurDB_err = 1;
-    end
-    % Insert information about the cur_asc file into the database (if not yet present)
-    for asc_idx=1:length(ascFiles)
-        % Retrieve the filename
-        noFullPathName = ascFiles(asc_idx).name(length(ascFiles(asc_idx).folder)+2:length(ascFiles(asc_idx).name));
-        % Check if the current cur_asc file is already present on the database
+try
+    for network_idx=1:numNetworks
+        % List the input cur_asc files
         try
-            dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
-            dbTotals_curs = exec(conn,dbTotals_selectquery);
+            ascFiles = rdir([network_data{network_idx,inputPathIndex} '/*/*/*/*.cur_asc']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iCurDB_err = 1;
         end
-        if(iCurDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table successfully executed.']);
-        end
-        % Fetch data
-        try
-            dbTotals_curs = fetch(dbTotals_curs);
-        catch err
-            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-            iCurDB_err = 1;
-        end
-        if(iCurDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data from total_input_tb table successfully fetched.']);
-        end
-        
-        if(iCurDB_err==0)
+        % Insert information about the cur_asc file into the database (if not yet present)
+        for asc_idx=1:length(ascFiles)
+            % Retrieve the filename
+            noFullPathName = ascFiles(asc_idx).name(length(ascFiles(asc_idx).folder)+2:length(ascFiles(asc_idx).name));
+            % Check if the current cur_asc file is already present on the database
+            try
+                dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
+                dbTotals_curs = exec(conn,dbTotals_selectquery);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                iCurDB_err = 1;
+            end
+            if(iCurDB_err==0)
+                disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table successfully executed.']);
+            end
+            % Fetch data
+            try
+                dbTotals_curs = fetch(dbTotals_curs);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                iCurDB_err = 1;
+            end
+            if(iCurDB_err==0)
+                disp(['[' datestr(now) '] - - ' 'Data from total_input_tb table successfully fetched.']);
+            end
+            
             if(rows(dbTotals_curs) == 0)
                 % Retrieve information about the cur_asc file
                 try
@@ -184,22 +189,21 @@ for network_idx=1:numNetworks
                 end
                 
                 % Write cur_asc info in total_input_tb table
-                if(iCurDB_err==0)
-                    try
-                        % Define a cell array containing the column names to be added
-                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
-                        
-                        % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,network_data{network_idx,network_idIndex},TimeStamp,DateTime,ascFilesize,'cur_asc',0};
-                        
-                        % Append the product data into the total_input_tb table on the database.
-                        tablename = 'total_input_tb';
-                        datainsert(conn,tablename,addColnames,addData);
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iCurDB_err = 1;
-                    end
+                try
+                    % Define a cell array containing the column names to be added
+                    addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
+                    
+                    % Define a cell array that contains the data for insertion
+                    addData = {noFullPathName,network_data{network_idx,network_idIndex},TimeStamp,DateTime,ascFilesize,'cur_asc',0};
+                    
+                    % Append the product data into the total_input_tb table on the database.
+                    tablename = 'total_input_tb';
+                    datainsert(conn,tablename,addColnames,addData);
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    iCurDB_err = 1;
                 end
+                
                 if(iCurDB_err==0)
                     disp(['[' datestr(now) '] - - ' 'Total input file information successfully inserted into total_input_tb table.']);
                 end
@@ -217,6 +221,9 @@ for network_idx=1:numNetworks
             end
         end
     end
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    iCurDB_err = 1;
 end
 
 %%

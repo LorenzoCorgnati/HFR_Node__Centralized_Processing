@@ -95,113 +95,123 @@ end
 
 %% Scan the networks, find the stations, list the related radial files and insert information into the database
 
-% Find the index of the network_id field
-network_idIndexC = strfind(network_columnNames, 'network_id');
-network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
+try
+    % Find the index of the network_id field
+    network_idIndexC = strfind(network_columnNames, 'network_id');
+    network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    iCradDB_err = 1;
+end
 
 % Scan the networks
-for network_idx=1:numNetworks
-    try
-        station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
-        station_curs = exec(conn,station_selectquery);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCradDB_err = 1;
-    end
-    if(iCradDB_err==0)
-        disp(['[' datestr(now) '] - - ' 'Query to station_tb table successfully executed.']);
-    end
-    
-    % Fetch data
-    try
-        station_curs = fetch(station_curs);
-        station_data = station_curs.Data;
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCradDB_err = 1;
-    end
-    if(iCradDB_err==0)
-        disp(['[' datestr(now) '] - - ' 'Data from station_tb table successfully fetched.']);
-    end
-    
-    % Retrieve column names
-    try
-        station_columnNames = columnnames(station_curs,true);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCradDB_err = 1;
-    end
-    if(iCradDB_err==0)
-        disp(['[' datestr(now) '] - - ' 'Column names from station_tb table successfully retrieved.']);
-    end
-    
-    % Retrieve the number of stations belonging to the current network
-    try
-        numStations = rows(station_curs);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCradDB_err = 1;
-    end
-    if(iCradDB_err==0)
-        disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the current network from station_tb table successfully retrieved.']);
-    end
-    
-    % Close cursor to station_tb table
-    try
-        close(station_curs);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        iCradDB_err = 1;
-    end
-    if(iCradDB_err==0)
-        disp(['[' datestr(now) '] - - ' 'Cursor to station_tb table successfully closed.']);
-    end
-    
-    % Find the index of the input file path field
-    inputPathIndexC = strfind(station_columnNames, 'radial_input_folder_path');
-    inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
-    
-    % Find the index of the station_id field
-    station_idIndexC = strfind(station_columnNames, 'station_id');
-    station_idIndex = find(not(cellfun('isempty', station_idIndexC)));
-    
-    % Scan the stations
-    for station_idx=1:numStations
-        % List the input crad_ascii files for the current station
+try
+    for network_idx=1:numNetworks
         try
-            cradFiles = rdir([station_data{station_idx,inputPathIndex} '/*/*/*/*.crad_ascii']);
+            station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
+            station_curs = exec(conn,station_selectquery);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            iCradDB_err = 1;
+        end
+        if(iCradDB_err==0)
+            disp(['[' datestr(now) '] - - ' 'Query to station_tb table successfully executed.']);
+        end
+        
+        % Fetch data
+        try
+            station_curs = fetch(station_curs);
+            station_data = station_curs.Data;
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            iCradDB_err = 1;
+        end
+        if(iCradDB_err==0)
+            disp(['[' datestr(now) '] - - ' 'Data from station_tb table successfully fetched.']);
+        end
+        
+        % Retrieve column names
+        try
+            station_columnNames = columnnames(station_curs,true);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            iCradDB_err = 1;
+        end
+        if(iCradDB_err==0)
+            disp(['[' datestr(now) '] - - ' 'Column names from station_tb table successfully retrieved.']);
+        end
+        
+        % Retrieve the number of stations belonging to the current network
+        try
+            numStations = rows(station_curs);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            iCradDB_err = 1;
+        end
+        if(iCradDB_err==0)
+            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the current network from station_tb table successfully retrieved.']);
+        end
+        
+        % Close cursor to station_tb table
+        try
+            close(station_curs);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            iCradDB_err = 1;
+        end
+        if(iCradDB_err==0)
+            disp(['[' datestr(now) '] - - ' 'Cursor to station_tb table successfully closed.']);
+        end
+        
+        try
+            % Find the index of the input file path field
+            inputPathIndexC = strfind(station_columnNames, 'radial_input_folder_path');
+            inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
+            
+            % Find the index of the station_id field
+            station_idIndexC = strfind(station_columnNames, 'station_id');
+            station_idIndex = find(not(cellfun('isempty', station_idIndexC)));
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iCradDB_err = 1;
         end
         
-        % Insert information about the crad_ascii file into the database (if not yet present)
-        for crad_idx=1:length(cradFiles)
-            % Retrieve the filename
-            noFullPathName = cradFiles(crad_idx).name(length(cradFiles(crad_idx).folder)+2:length(cradFiles(crad_idx).name));
-            % Check if the current crad_ascii file is already present on the database
+        % Scan the stations
+        for station_idx=1:numStations
+            % List the input crad_ascii files for the current station
             try
-                dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
-                dbRadials_curs = exec(conn,dbRadials_selectquery);
+                cradFiles = rdir([station_data{station_idx,inputPathIndex} '/*/*/*/*.crad_ascii']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 iCradDB_err = 1;
-            end
-            if(iCradDB_err==0)
-                disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table successfully executed.']);
-            end
-            % Fetch data
-            try
-                dbRadials_curs = fetch(dbRadials_curs);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iCradDB_err = 1;
-            end
-            if(iCradDB_err==0)
-                disp(['[' datestr(now) '] - - ' 'Data from radial_input_tb table successfully fetched.']);
             end
             
-            if(iCradDB_err==0)
+            % Insert information about the crad_ascii file into the database (if not yet present)
+            for crad_idx=1:length(cradFiles)
+                try
+                    % Retrieve the filename
+                    noFullPathName = cradFiles(crad_idx).name(length(cradFiles(crad_idx).folder)+2:length(cradFiles(crad_idx).name));
+                    % Check if the current crad_ascii file is already present on the database
+                    dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
+                    dbRadials_curs = exec(conn,dbRadials_selectquery);
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    iCradDB_err = 1;
+                end
+                if(iCradDB_err==0)
+                    disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table successfully executed.']);
+                end
+                % Fetch data
+                try
+                    dbRadials_curs = fetch(dbRadials_curs);
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    iCradDB_err = 1;
+                end
+                if(iCradDB_err==0)
+                    disp(['[' datestr(now) '] - - ' 'Data from radial_input_tb table successfully fetched.']);
+                end
+                
                 if(rows(dbRadials_curs) == 0)
                     % Retrieve information about the crad_ascii file
                     try
@@ -232,7 +242,12 @@ for network_idx=1:numNetworks
                     end
                     
                     % Evaluate datetime from, Time Stamp
-                    [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
+                    try
+                        [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iCradDB_err = 1;
+                    end
                     
                     % Retrieve information about the crad_ascii file
                     try
@@ -244,21 +259,19 @@ for network_idx=1:numNetworks
                     end
                     
                     % Write crad_ascii info in radial_input_tb table
-                    if(iCradDB_err==0)
-                        try
-                            % Define a cell array containing the column names to be added
-                            addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
-                            
-                            % Define a cell array that contains the data for insertion
-                            addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,cradFilesize,'crad_ascii',0};
-                            
-                            % Append the product data into the radial_input_tb table on the database.
-                            tablename = 'radial_input_tb';
-                            datainsert(conn,tablename,addColnames,addData);
-                        catch err
-                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                            iCradDB_err = 1;
-                        end
+                    try
+                        % Define a cell array containing the column names to be added
+                        addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
+                        
+                        % Define a cell array that contains the data for insertion
+                        addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,cradFilesize,'crad_ascii',0};
+                        
+                        % Append the product data into the radial_input_tb table on the database.
+                        tablename = 'radial_input_tb';
+                        datainsert(conn,tablename,addColnames,addData);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iCradDB_err = 1;
                     end
                     if(iCradDB_err==0)
                         disp(['[' datestr(now) '] - - ' 'Radial input file information successfully inserted into radial_input_tb table.']);
@@ -267,7 +280,9 @@ for network_idx=1:numNetworks
             end
         end
     end
-    
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    iCradDB_err = 1;
 end
 
 %%

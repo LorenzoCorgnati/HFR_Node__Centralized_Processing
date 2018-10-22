@@ -94,96 +94,111 @@ end
 
 %% Scan the networks and convert the related total files
 
-% Find the index of the network_id field
-network_idIndexC = strfind(network_columnNames, 'network_id');
-network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
-
-% Find the index of the input file path field
-inputPathIndexC = strfind(network_columnNames, 'total_input_folder_path');
-inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
+try
+    % Find the index of the network_id field
+    network_idIndexC = strfind(network_columnNames, 'network_id');
+    network_idIndex = find(not(cellfun('isempty', network_idIndexC)));
+    
+    % Find the index of the input file path field
+    inputPathIndexC = strfind(network_columnNames, 'total_input_folder_path');
+    inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
+end
 
 % Scan the networks
-for network_idx=1:numNetworks
-    try
-        toBeConvertedTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0'];
-        toBeConvertedTotals_curs = exec(conn,toBeConvertedTotals_selectquery);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        TC_err = 1;
-    end
-    if(TC_err==0)
-        disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table successfully executed.']);
-    end
-    
-    % Fetch data
-    try
-        toBeConvertedTotals_curs = fetch(toBeConvertedTotals_curs);
-        toBeConvertedTotals_data = toBeConvertedTotals_curs.Data;
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        TC_err = 1;
-    end
-    if(TC_err==0)
-        disp(['[' datestr(now) '] - - ' 'Data from total_input_tb table successfully fetched.']);
-    end
-    
-    % Retrieve column names
-    try
-        toBeConvertedTotals_columnNames = columnnames(toBeConvertedTotals_curs,true);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        TC_err = 1;
-    end
-    if(TC_err==0)
-        disp(['[' datestr(now) '] - - ' 'Column names from total_input_tb table successfully retrieved.']);
-    end
-    
-    % Retrieve the number of totals to be converted for the current network
-    try
-        numToBeConvertedTotals = rows(toBeConvertedTotals_curs);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        TC_err = 1;
-    end
-    if(TC_err==0)
-        disp(['[' datestr(now) '] - - ' 'Number of totals to be converted per the current network from total_input_tb table successfully retrieved.']);
-    end
-    
-    % Close cursor to total_input_tb table
-    try
-        close(toBeConvertedTotals_curs);
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        TC_err = 1;
-    end
-    if(TC_err==0)
-        disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
-    end
-    
-    % Find the index of the filename field
-    filenameIndexC = strfind(toBeConvertedTotals_columnNames, 'filename');
-    filenameIndex = find(not(cellfun('isempty', filenameIndexC)));
-    
-    % Find the index of the extension field
-    extensionIndexC = strfind(toBeConvertedTotals_columnNames, 'extension');
-    extensionIndex = find(not(cellfun('isempty', extensionIndexC)));
-    
-    % Find the index of the timestamp field
-    timestampIndexC = strfind(toBeConvertedTotals_columnNames, 'timestamp');
-    timestampIndex = find(not(cellfun('isempty', timestampIndexC)));
-    
-    % Scan the tuv files to be converted
-    for toBeConverted_idx=1:numToBeConvertedTotals
-        [yMDF_err,yearFolder,monthFolder,dayFolder] = yearMonthDayFolder(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
-        if (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'tuv')) % Codar data
-            [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
-        elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'cur_asc')) % WERA data
-            [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
+try
+    for network_idx=1:numNetworks
+        try
+            toBeConvertedTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0'];
+            toBeConvertedTotals_curs = exec(conn,toBeConvertedTotals_selectquery);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table successfully executed.']);
         end
         
-        if (TC_err == 0)
-            %             disp(['[' datestr(now) '] - - ' 'File ' [network_data{network_idx,inputPathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}] ' successfully converted.']);
-            disp(['[' datestr(now) '] - - ' 'File ' toBeConvertedTotals_data{toBeConverted_idx,filenameIndex} ' successfully converted.']);
+        % Fetch data
+        try
+            toBeConvertedTotals_curs = fetch(toBeConvertedTotals_curs);
+            toBeConvertedTotals_data = toBeConvertedTotals_curs.Data;
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Data from total_input_tb table successfully fetched.']);
+        end
+        
+        % Retrieve column names
+        try
+            toBeConvertedTotals_columnNames = columnnames(toBeConvertedTotals_curs,true);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Column names from total_input_tb table successfully retrieved.']);
+        end
+        
+        % Retrieve the number of totals to be converted for the current network
+        try
+            numToBeConvertedTotals = rows(toBeConvertedTotals_curs);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Number of totals to be converted per the current network from total_input_tb table successfully retrieved.']);
+        end
+        
+        % Close cursor to total_input_tb table
+        try
+            close(toBeConvertedTotals_curs);
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
+        end
+        
+        try
+            % Find the index of the filename field
+            filenameIndexC = strfind(toBeConvertedTotals_columnNames, 'filename');
+            filenameIndex = find(not(cellfun('isempty', filenameIndexC)));
+            
+            % Find the index of the extension field
+            extensionIndexC = strfind(toBeConvertedTotals_columnNames, 'extension');
+            extensionIndex = find(not(cellfun('isempty', extensionIndexC)));
+            
+            % Find the index of the timestamp field
+            timestampIndexC = strfind(toBeConvertedTotals_columnNames, 'timestamp');
+            timestampIndex = find(not(cellfun('isempty', timestampIndexC)));
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            TC_err = 1;
+        end
+        
+        % Scan the tuv files to be converted
+        for toBeConverted_idx=1:numToBeConvertedTotals
+            try
+                [yMDF_err,yearFolder,monthFolder,dayFolder] = yearMonthDayFolder(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
+                if (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'tuv')) % Codar data
+                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
+                elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'cur_asc')) % WERA data
+                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
+                end
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            if (TC_err == 0)
+                disp(['[' datestr(now) '] - - ' 'File ' toBeConvertedTotals_data{toBeConverted_idx,filenameIndex} ' successfully converted.']);
+            end
             
             % Update NRT_processed_flag in total_input_tb table
             try
@@ -228,13 +243,11 @@ for network_idx=1:numNetworks
             if(TC_err==0)
                 disp(['[' datestr(now) '] - - ' 'Total converted file information successfully inserted into total_HFRnetCDF_tb table.']);
             end
-        else
-            disp(['[' datestr(now) '] - - ERROR in converting file ' [network_data{network_idx,inputPathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}] '.']);
-            return
         end
-        
     end
-    
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
 end
 
 %%

@@ -23,24 +23,22 @@ LSC_err = 0;
 
 warning('off', 'all');
 
-if(LSC_err == 0)
-    try        
-        % Retrieve information from header
-        for header_idx=1:length(header)
-            splitLine = regexp(header{header_idx}, ' ', 'split');
-            
-            % Retrieve site codes and coordinates
-            if(strcmp(splitLine{1}, '%LLUVSpec:'))
-                LLUVSpecStr = strrep(header{header_idx}(length('%LLUVSpec:')+2:length(header{header_idx})), '"', '');
-                LLUVSpecCellArray = strsplit(LLUVSpecStr);
-                LLUVSpec = LLUVSpecCellArray{1};
-                break
-            end
+try
+    % Retrieve information from header
+    for header_idx=1:length(header)
+        splitLine = regexp(header{header_idx}, ' ', 'split');
+        
+        % Retrieve site codes and coordinates
+        if(strcmp(splitLine{1}, '%LLUVSpec:'))
+            LLUVSpecStr = strrep(header{header_idx}(length('%LLUVSpec:')+2:length(header{header_idx})), '"', '');
+            LLUVSpecCellArray = strsplit(LLUVSpecStr);
+            LLUVSpec = LLUVSpecCellArray{1};
+            break
         end
-    catch err
-        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        LSC_err = 1;
     end
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    LSC_err = 1;
 end
 
 return
