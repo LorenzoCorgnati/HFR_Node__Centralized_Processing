@@ -44,6 +44,19 @@ try
                 siteLat(numSites) = str2double(splitLine{lat_idx});
                 siteLon(numSites) = str2double(splitLine{lon_idx});
                 siteCodes(numSites,:) = upper(splitLine{site_idx}(1:3));
+            elseif ((any(strcmp(splitLine,'North'))) && (any(strcmp(splitLine,'West'))))
+                numSites = numSites + 1;
+                latLogical = strcmp(splitLine,'North');
+                lat_idx = find(latLogical, 1, 'first') - 1;
+                lonLogical = strcmp(splitLine,'West');
+                lon_idx = find(lonLogical, 1, 'first') - 1;
+                siteLogical = strcmp(splitLine,'UTC');
+                site_idx = find(siteLogical, 1, 'first') + 1;
+                % Fill the output variables
+                siteLat(numSites) = str2double(splitLine{lat_idx});
+                siteLon(numSites) = -str2double(splitLine{lon_idx});
+                siteCodes(numSites,:) = upper(splitLine{site_idx}(1:3));
+                
             end
         end
     end

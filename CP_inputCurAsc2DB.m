@@ -113,7 +113,7 @@ try
     for network_idx=1:numNetworks
         % List the input cur_asc files
         try
-            ascFiles = rdir([network_data{network_idx,inputPathIndex} '/*/*/*/*.cur_asc']);
+            ascFiles = rdir([network_data{network_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.cur_asc']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iCurDB_err = 1;
@@ -121,7 +121,8 @@ try
         % Insert information about the cur_asc file into the database (if not yet present)
         for asc_idx=1:length(ascFiles)
             % Retrieve the filename
-            noFullPathName = ascFiles(asc_idx).name(length(ascFiles(asc_idx).folder)+2:length(ascFiles(asc_idx).name));
+            [pathstr,name,ext]=fileparts(ascFiles(asc_idx).name);
+            noFullPathName=[name ext];
             % Check if the current cur_asc file is already present on the database
             try
                 dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];

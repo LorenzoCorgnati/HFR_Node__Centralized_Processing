@@ -84,7 +84,12 @@ refmax = 1;
 
 %% Set the input files
 
-rfile = HFRP_RUV.FileName{1,1};
+try
+    rfile = HFRP_RUV.FileName{1,1};
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
+end
 
 %%
 
@@ -132,35 +137,46 @@ end
 %%
 
 %% Set naming authority
-institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
-institution_websiteStr = networkData{institution_websiteIndex};
-tmpStr = strrep(institution_websiteStr,'http://','');
-tmpStr = strrep(tmpStr,'www.','');
-tmpStr = strrep(tmpStr,'/','');
-splitStr = strsplit(tmpStr,'.');
-naming_authorityStr = [];
-for split_idx=length(splitStr):-1:1
-    naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
-    if(split_idx~=1)
-        naming_authorityStr = [naming_authorityStr '.'];
+
+try
+    institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
+    institution_websiteStr = networkData{institution_websiteIndex};
+    tmpStr = strrep(institution_websiteStr,'http://','');
+    tmpStr = strrep(tmpStr,'www.','');
+    tmpStr = strrep(tmpStr,'/','');
+    splitStr = strsplit(tmpStr,'.');
+    naming_authorityStr = [];
+    for split_idx=length(splitStr):-1:1
+        naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
+        if(split_idx~=1)
+            naming_authorityStr = [naming_authorityStr '.'];
+        end
     end
+    naming_authorityStr= naming_authorityStr(~isspace(naming_authorityStr));
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
 end
-naming_authorityStr= naming_authorityStr(~isspace(naming_authorityStr));
 
 %%
 
 %% Define EDIOS and EDMO codes, site code, platform code, id and metadata resources
 
-EDIOS_Series_ID = networkData{network_idIndex};
-EDIOS_Platform_ID = siteCode;
-EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
-EDMO_code = networkData{EDMO_codeIndex};
-site_code = EDIOS_Series_ID;
-platform_code = [EDIOS_Series_ID '_' EDIOS_Platform_ID];
-id = [EDIOS_Series_ID '_' EDIOS_Platform_ID '_' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
-metadata_pageIndex = find(not(cellfun('isempty', strfind(networkFields, 'metadata_page'))));
-TDS_catalog = networkData{metadata_pageIndex};
-xlink = ['<sdn_reference xlink:href="' TDS_catalog '" xlink:role="" xlink:type="URL"/>'];
+try
+    EDIOS_Series_ID = networkData{network_idIndex};
+    EDIOS_Platform_ID = siteCode;
+    EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
+    EDMO_code = networkData{EDMO_codeIndex};
+    site_code = EDIOS_Series_ID;
+    platform_code = [EDIOS_Series_ID '_' EDIOS_Platform_ID];
+    id = [EDIOS_Series_ID '_' EDIOS_Platform_ID '_' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
+    metadata_pageIndex = find(not(cellfun('isempty', strfind(networkFields, 'metadata_page'))));
+    TDS_catalog = networkData{metadata_pageIndex};
+    xlink = ['<sdn_reference xlink:href="' TDS_catalog '" xlink:role="" xlink:type="URL"/>'];
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
+end
 
 %%
 
@@ -206,6 +222,9 @@ try
         if (strcmp(splitLine{1}, '%RangeResolutionKMeters:'))
             RangeResolutionKMeters = str2double(splitLine{2});
         end
+        if (strcmp(splitLine{1}, '%RangeResolutionMeters:'))
+            RangeResolutionMeters = str2double(splitLine{2});
+        end
         if(strcmp(splitLine{1}, '%AngularResolution:'))
             AngularResolution = str2double(splitLine{2});
         end
@@ -223,6 +242,9 @@ try
         end
         if(strcmp(splitLine{1}, '%RangeResolutionKMeters:'))
             RangeResolutionKMeters_str = strrep(radHeader{head_idx}(length('%RangeResolutionKMeters:')+2:length(radHeader{head_idx})), '"', '');
+        end
+        if(strcmp(splitLine{1}, '%RangeResolutionMeters:'))
+            RangeResolutionMeters_str = strrep(radHeader{head_idx}(length('%RangeResolutionMeters:')+2:length(radHeader{head_idx})), '"', '');
         end
         if(strcmp(splitLine{1}, '%AntennaBearing:'))
             AntennaBearing = strrep(radHeader{head_idx}(length('%AntennaBearing:')+2:length(radHeader{head_idx})), '"', '');
@@ -378,9 +400,17 @@ try
     % all radial files with the same range dimension. It's crucial for the
     % THREDDS time aggregation.
     number_of_range_cellsIndex = find(not(cellfun('isempty', strfind(stationFields, 'number_of_range_cells'))));
-    range_dim = 0:RangeResolutionKMeters:stationData{number_of_range_cellsIndex};
+    if(exist('RangeResolutionKMeters','var') ~= 0)
+        range_dim = 0:RangeResolutionKMeters:stationData{number_of_range_cellsIndex};
+    elseif(exist('RangeResolutionMeters','var') ~= 0)
+        range_dim = 0:RangeResolutionMeters*0.001:stationData{number_of_range_cellsIndex};
+    end
     
-    bearing_dim = 0:AngularResolution:360;
+    if(exist('AngularResolution','var') ~= 0)
+        bearing_dim = 0:AngularResolution:360;
+    else
+        bearing_dim = 0:5:360;
+    end
     
     [bearing, range] = meshgrid(bearing_dim, range_dim);
     
@@ -602,26 +632,39 @@ end
 %%
 
 %% Set the time, position and depth quality flags
-% Time quality flag
-sdnTime_QCflag = 1;
-% Position quality flag
-sdnPosition_QCflag = netcdf.getConstant('NC_FILL_SHORT').*int16(ones(size(velu,1),size(velu,2),1));
-sdnPosition_QCflag(velu~=netcdf.getConstant('NC_FILL_FLOAT')) = 1;
 
-% Depth quality flag
-sdnDepth_QCflag = 1;
+try
+    % Time quality flag
+    sdnTime_QCflag = 1;
+    % Position quality flag
+    sdnPosition_QCflag = netcdf.getConstant('NC_FILL_SHORT').*int16(ones(size(velu,1),size(velu,2),1));
+    sdnPosition_QCflag(velu~=netcdf.getConstant('NC_FILL_FLOAT')) = 1;
+    
+    % Depth quality flag
+    sdnDepth_QCflag = 1;
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
+end
 
 %%
 
 %% Populate site latitude, site longitude and site code variables
-siteLat = Origin(1);
-siteLon = Origin(2);
-numSites = 1;
-siteLat((length(siteLat)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
-siteLon((length(siteLon)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
-siteCodeArr(1,:) = siteCode;
-for sC_idx=2:maxsite
-    siteCodeArr(sC_idx,:) = '    ';
+
+try
+    siteLat = Origin(1);
+    siteLon = Origin(2);
+    numSites = 1;
+    siteLat((length(siteLat)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
+    siteLon((length(siteLon)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
+%     siteCodeArr(1,:) = siteCode;
+    siteCodeArr = siteCode;
+    for sC_idx=size(siteCode,1)+1:maxsite
+        siteCodeArr(sC_idx,:) = blanks(size(siteCode,2));
+    end
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
 end
 
 %%
@@ -1445,6 +1488,11 @@ try
         RangeResolutionKMeters_str = '';
     end
     netcdf.putAtt(ncid, varid_global, 'RangeResolutionKMeters', RangeResolutionKMeters_str);
+    
+    if (exist('RangeResolutionMeters_str', 'var') == 0)
+        RangeResolutionMeters_str = '';
+    end
+    netcdf.putAtt(ncid, varid_global, 'RangeResolutionMeters', RangeResolutionMeters_str);
     
     if (exist('AntennaBearing', 'var') == 0)
         AntennaBearing = '';

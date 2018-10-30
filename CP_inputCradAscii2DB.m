@@ -180,7 +180,7 @@ try
         for station_idx=1:numStations
             % List the input crad_ascii files for the current station
             try
-                cradFiles = rdir([station_data{station_idx,inputPathIndex} '/*/*/*/*.crad_ascii']);
+                cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.crad_ascii']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 iCradDB_err = 1;
@@ -190,7 +190,8 @@ try
             for crad_idx=1:length(cradFiles)
                 try
                     % Retrieve the filename
-                    noFullPathName = cradFiles(crad_idx).name(length(cradFiles(crad_idx).folder)+2:length(cradFiles(crad_idx).name));
+                    [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);
+                    noFullPathName=[name ext];
                     % Check if the current crad_ascii file is already present on the database
                     dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
                     dbRadials_curs = exec(conn,dbRadials_selectquery);

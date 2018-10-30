@@ -180,7 +180,7 @@ try
         for station_idx=1:numStations
             % List the input ruv files for the current station
             try
-                ruvFiles = rdir([station_data{station_idx,inputPathIndex} '/*/*/*/*.ruv']);
+                ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.ruv']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 iRDB_err = 1;
@@ -190,7 +190,8 @@ try
             for ruv_idx=1:length(ruvFiles)
                 try
                     % Retrieve the filename
-                    noFullPathName = ruvFiles(ruv_idx).name(length(ruvFiles(ruv_idx).folder)+2:length(ruvFiles(ruv_idx).name));
+                    [pathstr,name,ext]=fileparts(ruvFiles(ruv_idx).name);
+                    noFullPathName=[name ext];
                     % Check if the current ruv file is already present on the database
                     dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
                     dbRadials_curs = exec(conn,dbRadials_selectquery);

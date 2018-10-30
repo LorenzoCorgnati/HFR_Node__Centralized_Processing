@@ -113,7 +113,7 @@ try
     for network_idx=1:numNetworks
         % List the input tuv files
         try
-            tuvFiles = rdir([network_data{network_idx,inputPathIndex} '/*/*/*/*.tuv']);
+            tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.tuv']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iTDB_err = 1;
@@ -122,7 +122,8 @@ try
         for tuv_idx=1:length(tuvFiles)
             try
                 % Retrieve the filename
-                noFullPathName = tuvFiles(tuv_idx).name(length(tuvFiles(tuv_idx).folder)+2:length(tuvFiles(tuv_idx).name));
+                [pathstr,name,ext]=fileparts(tuvFiles(tuv_idx).name);
+                noFullPathName=[name ext];
                 % Check if the current tuv file is already present on the database
                 dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
                 dbTotals_curs = exec(conn,dbTotals_selectquery);
