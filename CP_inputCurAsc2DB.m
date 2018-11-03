@@ -183,7 +183,7 @@ try
                 % Retrieve information about the cur_asc file
                 try
                     ascFileInfo = dir(ascFiles(asc_idx).name);
-                    ascFilesize = ascFileInfo.bytes*0.001;
+                    ascFilesize = ascFileInfo.bytes/1024;
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iCurDB_err = 1;

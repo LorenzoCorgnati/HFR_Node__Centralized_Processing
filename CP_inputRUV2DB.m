@@ -245,7 +245,7 @@ try
                     % Retrieve information about the ruv file
                     try
                         ruvFileInfo = dir(ruvFiles(ruv_idx).name);
-                        ruvFilesize = ruvFileInfo.bytes*0.001;
+                        ruvFilesize = ruvFileInfo.bytes/1024;
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iRDB_err = 1;

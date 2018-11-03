@@ -1696,7 +1696,7 @@ end
 %% Retrieve information about the nc file
 try
     ncfileInfo = dir(ncfile);
-    ncFilesize = ncfileInfo.bytes*0.001;
+    ncFilesize = ncfileInfo.bytes/1024;
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     R2C_err = 1;

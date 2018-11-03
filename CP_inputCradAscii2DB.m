@@ -253,7 +253,7 @@ try
                     % Retrieve information about the crad_ascii file
                     try
                         cradFileInfo = dir(cradFiles(crad_idx).name);
-                        cradFilesize = cradFileInfo.bytes*0.001;
+                        cradFilesize = cradFileInfo.bytes/1024;
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iCradDB_err = 1;

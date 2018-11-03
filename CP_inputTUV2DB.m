@@ -177,7 +177,7 @@ try
                 % Retrieve information about the tuv file
                 try
                     tuvFileInfo = dir(tuvFiles(tuv_idx).name);
-                    tuvFilesize = tuvFileInfo.bytes*0.001;
+                    tuvFilesize = tuvFileInfo.bytes/1024;
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iTDB_err = 1;
