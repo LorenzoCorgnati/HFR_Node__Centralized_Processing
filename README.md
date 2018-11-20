@@ -18,7 +18,7 @@ The applications are intended to:
 - convert Codar native .tuv files and WERA native .cur_asc files for total currents into the European standard data and metadata model for near real time HFR current data;
 - convert Codar native .ruv files and WERA native .crad_ascii files for radial currents into the European standard data and metadata model for near real time HFR current data and combine them for generating total current files according to the European standard data and metadata model for near real time HFR current data.
 
-General information for the tables network_tb and station_tb are loaded onto the database via a webform to be filled by the data providers.
+General information for the tables network_tb and station_tb are loaded onto the database via a webform to be filled by the data providers. The webform is available at http://150.145.136.36/index.php
 
 All generated radial and total netCDF files are quality controlled according the the QC tests defined as standard for the European HFR node and for the data distribution on CMEMS-INSTAC and SeaDataNet platforms.
 
@@ -39,11 +39,12 @@ The required toolboxes are:
 - GSHHS (http://www.ngdc.noaa.gov/mgg/shorelines/data/gshhs/); 
 - Nctoolbox-1.1.3 (https://github.com/nctoolbox/nctoolbox); 
 - mysql-connector-java-5.1.17 driver (https://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.17); 
-- Rdir (http://www.mathworks.com/matlabcentral/fileexchange/19550-recursive-directory-listing).
+- Rdir (http://www.mathworks.com/matlabcentral/fileexchange/19550-recursive-directory-listing);
+- uniqueStrCell (https://www.mathworks.com/matlabcentral/fileexchange/50476-unique-for-cell-array-of-string).
 
 
 Author: Lorenzo Corgnati
 
-Date: October 17, 2018
+Date: November 20, 2018
 
 E-mail: lorenzo.corgnati@sp.ismar.cnr.it
