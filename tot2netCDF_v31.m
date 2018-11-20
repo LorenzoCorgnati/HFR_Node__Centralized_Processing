@@ -74,6 +74,79 @@ end
 
 %%
 
+%% Retrieve EDMO codes and institution names
+
+try
+    % Find the EDMO_code field from network data
+    NT_EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
+    NT_EDMO_code = networkData{NT_EDMO_codeIndex};
+    
+    % Find the EDMO_code field from station data
+    ST_EDMO_codeIndex = find(not(cellfun('isempty', strfind(stationFields, 'EDMO_code'))));
+    ST_EDMO_code = cell2mat(stationData(:,ST_EDMO_codeIndex));
+    ST_EDMO_code = ST_EDMO_code(ST_EDMO_code~=0);
+    
+    % Build the cumulative EDMO code list
+    [EDMO_code,ia,ic] = unique([NT_EDMO_code; ST_EDMO_code]);
+    EDMO_code = EDMO_code';
+    EDMO_codeStr = sprintf('%.0d, ' , EDMO_code);
+    EDMO_codeStr = EDMO_codeStr(1:end-2);% strip final comma
+    
+    % Find the institution_name field from network data
+    NT_institution_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_name'))));
+    NT_institution_name = networkData{NT_institution_nameIndex};
+    
+    % Find the institution_name field from station data
+    ST_DoIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_name'))));
+    ST_institution_name = stationData(:,ST_DoIndex);
+    ST_institution_name(cellfun('isempty',ST_institution_name)) = [];
+    
+    % Build the cumulative institution name list
+    institutionList = [NT_institution_name; ST_institution_name];
+    institution_names = institutionList(ia);
+    institution_nameStr = strjoin(institution_names,'; ');      
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    T2C_err = 1;
+end
+
+%%
+
+%% Retrieve DoA, calibration types, calibration links and calibrations dates
+try
+    % Find the last_calibration_date field from station data
+    ST_last_calibration_dateIndex = find(not(cellfun('isempty', strfind(stationFields, 'last_calibration_date'))));
+    ST_last_calibration_date = datenum(stationData(:,ST_last_calibration_dateIndex));
+    ST_last_calibration_date = ST_last_calibration_date(ST_last_calibration_date~=0);
+    lastPatternStr = [datestr(max(ST_last_calibration_date), 'yyyy-mm-dd') 'T' datestr(max(ST_last_calibration_date), 'HH:MM:SS') 'Z'];
+        
+    % Find the DoA from station data
+    ST_DoAIndex = find(not(cellfun('isempty', strfind(stationFields, 'DoA_estimation_method'))));
+    ST_DoA = stationData(:,ST_DoAIndex);
+    ST_DoA(cellfun('isempty',ST_DoA)) = [];
+    ST_DoA = uniqueStrCell(ST_DoA);
+    DoAStr = strjoin(ST_DoA,', ');
+    
+    % Find the calibration_type from station data
+    ST_calibration_typeIndex = find(not(cellfun('isempty', strfind(stationFields, 'calibration_type'))));
+    ST_calibration_type = stationData(:,ST_calibration_typeIndex);
+    ST_calibration_type(cellfun('isempty',ST_calibration_type)) = [];
+    ST_calibration_type = uniqueStrCell(ST_calibration_type);
+    calibration_typeStr = strjoin(ST_calibration_type,', ');  
+    
+    % Find the calibration_link from station data
+    ST_calibration_linkIndex = find(not(cellfun('isempty', strfind(stationFields, 'calibration_link'))));
+    ST_calibration_link = stationData(:,ST_calibration_linkIndex);
+    ST_calibration_link(cellfun('isempty',ST_calibration_link)) = [];
+    ST_calibration_link = uniqueStrCell(ST_calibration_link);
+    calibration_linkStr = strjoin(ST_calibration_link,', ');     
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    T2C_err = 1;
+end
+
+%%
+
 %% Prepare data
 % Set netcdf format
 ncfmt = 'netcdf4_classic';
@@ -148,7 +221,7 @@ end
 try
     timeref = datenum(1950,1,1);
     time_units = ['days since ' datestr(timeref, 'yyyy-mm-dd') 'T' datestr(timeref, 'HH:MM:SS') 'Z'];
-    [year,mon,day,hr,minutes,sec] = datevec(timeref);
+%     [year,mon,day,hr,minutes,sec] = datevec(timeref);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     T2C_err = 1;
@@ -176,31 +249,37 @@ catch err
     T2C = 1;
 end
 
-% Set ADCC compliant data creation, coverage times and spatial resolution.
+% Set ADCC compliant data creation, coverage, resolution, duration times and spatial resolution.
 try
     % File creation datetime
     dateCreated = [datestr(now, 'yyyy-mm-dd') 'T' datestr(now, 'HH:MM:SS') 'Z'];
     % Data coverage period
-    coverageStart = addtodate(mat_tot.TimeStamp, -30, 'minute');
+    temporal_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'temporal_resolution'))));
+    temporal_resolution = networkData{temporal_resolutionIndex};
+    coverageStart = addtodate(mat_tot.TimeStamp, -temporal_resolution/2, 'minute');
     timeCoverageStart = [datestr(coverageStart, 'yyyy-mm-dd') 'T' datestr(coverageStart, 'HH:MM:SS') 'Z'];
-    coverageEnd = addtodate(mat_tot.TimeStamp, 30, 'minute');
+    coverageEnd = addtodate(mat_tot.TimeStamp, temporal_resolution/2, 'minute');
     timeCoverageEnd = [datestr(coverageEnd, 'yyyy-mm-dd') 'T' datestr(coverageEnd, 'HH:MM:SS') 'Z'];
+    % Temporal resolution and duration
+    resolutionMinutes = minutes(temporal_resolution);
+    [resH,resM,resS] = hms(resolutionMinutes);
+    timeCoverageResolution = 'PT';
+    if(resH~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resH) 'H'];
+    end
+    if(resM~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resM) 'M'];
+    end
+    if(resS~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resS) 'S'];
+    end
+    timeCoverageDuration = timeCoverageResolution;
     % Geospatial resolution
     latRes = mean(diff(latGrid));
     lonRes = mean(diff(lonGrid));
 catch err
     display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     T2C = 1;
-end
-
-% Set last calibration date string
-try
-    last_calibration_dateIndex = find(not(cellfun('isempty', strfind(networkFields, 'last_calibration_date'))));
-    lastPatternVec = datevec(networkData{last_calibration_dateIndex});
-    lastPatternStr = [datestr(lastPatternVec, 'yyyy-mm-dd') 'T' datestr(lastPatternVec, 'HH:MM:SS') 'Z'];
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    T2C_err = 1;
 end
 
 % Set nc output file name
@@ -263,10 +342,8 @@ catch err
 end
 
 try
-    % Define EDIOS and EDMO codes, site code, platform code, id and metadata resources
+    % Define EDIOS codes, site code, platform code, id and metadata resources
     EDIOS_Series_ID = networkData{network_idIndex};
-    EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
-    EDMO_code = networkData{EDMO_codeIndex};
     site_code = EDIOS_Series_ID;
     platform_code = [EDIOS_Series_ID '_Total'];
     dataID = [EDIOS_Series_ID '_Total_' datestr(mat_tot.TimeStamp, 'yyyy-mm-dd') 'T' datestr(mat_tot.TimeStamp, 'HH:MM:SS') 'Z'];
@@ -287,6 +364,7 @@ try
     depth_dim = 1;
     maxSite_dim = 50;
     refMax_dim = 1;
+    maxInst_dim = length(EDMO_code);
     string15_dim = 15;
     string50_dim = 50;
     string250_dim = 250;
@@ -397,7 +475,7 @@ try
         'Format',ncfmt);
     
     nccreate(ncfile,'SDN_EDMO_CODE',...
-        'Dimensions',{'TIME',time_dim},...
+        'Dimensions',{'MAXINST',maxInst_dim,'TIME',time_dim},...
         'Datatype','int16',...
         'Format',ncfmt);
     
@@ -568,6 +646,7 @@ try
     ncwriteatt(ncfile,'LATITUDE','sdn_parameter_urn',char('SDN:P01::ALATZZ01'));
     ncwriteatt(ncfile,'LATITUDE','sdn_uom_name',char('Degrees north'));
     ncwriteatt(ncfile,'LATITUDE','sdn_uom_urn',char('SDN:P06::DEGN'));
+    ncwriteatt(ncfile,'LATITUDE','grid_mapping',char('crs'));
     ncwriteatt(ncfile,'LATITUDE','ancillary_variables',char('POSITION_SEADATANET_QC'));
     
     ncwriteatt(ncfile,'LONGITUDE','long_name',char('Longitude'));
@@ -578,6 +657,7 @@ try
     ncwriteatt(ncfile,'LONGITUDE','sdn_parameter_urn',char('SDN:P01::ALONZZ01'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_uom_name',char('Degrees east'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_uom_urn',char('SDN:P06::DEGE'));
+    ncwriteatt(ncfile,'LONGITUDE','grid_mapping',char('crs'));
     ncwriteatt(ncfile,'LONGITUDE','ancillary_variables',char('POSITION_SEADATANET_QC'));
     
     ncwriteatt(ncfile,'crs','grid_mapping_name',char('latitude_longitude'));
@@ -598,7 +678,7 @@ try
     
     ncwriteatt(ncfile,'SDN_XLINK','long_name',char('External resource linkages'));
     
-    ncwriteatt(ncfile,'DEPH','long_name',char('Depth of measurement'));
+    ncwriteatt(ncfile,'DEPH','long_name',char('Depth of Measurement'));
     ncwriteatt(ncfile,'DEPH','standard_name',char('depth'));
     ncwriteatt(ncfile,'DEPH','units',char('m'));
     ncwriteatt(ncfile,'DEPH','axis',char('Z'));
@@ -691,7 +771,7 @@ try
     ncwriteatt(ncfile,'CCOV','sdn_uom_urn',char('SDN:P06::SQM2'));
     ncwriteatt(ncfile,'CCOV','ancillary_variables',char('QCflag'));
     
-    ncwriteatt(ncfile,'GDOP','long_name',char('Geometrical Dilution of precision'));
+    ncwriteatt(ncfile,'GDOP','long_name',char('Geometrical Dilution Of Precision'));
     %         ncwriteatt(ncfile,'GDOP','standard_name',char('gdop'));
     ncwriteatt(ncfile,'GDOP','units',char('1'));
     ncwriteatt(ncfile,'GDOP','valid_range',[double(-20.0),double(20.0)]);
@@ -711,7 +791,7 @@ try
     ncwriteatt(ncfile,'GDOP','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'GDOP','ancillary_variables',char('QCflag, GDOP_QC'));
     
-    ncwriteatt(ncfile,'TIME_SEADATANET_QC','long_name',char('Time SeaDataNet quality flag'));
+    ncwriteatt(ncfile,'TIME_SEADATANET_QC','long_name',char('Time SeaDataNet Quality Flag'));
     ncwriteatt(ncfile,'TIME_SEADATANET_QC','units',char('1'));
     ncwriteatt(ncfile,'TIME_SEADATANET_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'TIME_SEADATANET_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -720,7 +800,7 @@ try
     ncwriteatt(ncfile,'TIME_SEADATANET_QC','scale_factor',int16(1));
     ncwriteatt(ncfile,'TIME_SEADATANET_QC','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'POSITION_SEADATANET_QC','long_name',char('Position SeaDataNet quality flag'));
+    ncwriteatt(ncfile,'POSITION_SEADATANET_QC','long_name',char('Position SeaDataNet Quality Flags'));
     ncwriteatt(ncfile,'POSITION_SEADATANET_QC','units',char('1'));
     ncwriteatt(ncfile,'POSITION_SEADATANET_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'POSITION_SEADATANET_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -729,7 +809,7 @@ try
     ncwriteatt(ncfile,'POSITION_SEADATANET_QC','scale_factor',int16(1));
     ncwriteatt(ncfile,'POSITION_SEADATANET_QC','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'DEPTH_SEADATANET_QC','long_name',char('Time SeaDataNet quality flag'));
+    ncwriteatt(ncfile,'DEPTH_SEADATANET_QC','long_name',char('Depth SeaDataNet Quality Flag'));
     ncwriteatt(ncfile,'DEPTH_SEADATANET_QC','units',char('1'));
     ncwriteatt(ncfile,'DEPTH_SEADATANET_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'DEPTH_SEADATANET_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -747,7 +827,7 @@ try
     ncwriteatt(ncfile,'QCflag','scale_factor',int16(1));
     ncwriteatt(ncfile,'QCflag','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'VART_QC','long_name',char('Variance Threshold Quality flags'));
+    ncwriteatt(ncfile,'VART_QC','long_name',char('Variance Threshold Quality Flags'));
     ncwriteatt(ncfile,'VART_QC','units',char('1'));
     ncwriteatt(ncfile,'VART_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'VART_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -758,7 +838,7 @@ try
     ncwriteatt(ncfile,'VART_QC','scale_factor',int16(1));
     ncwriteatt(ncfile,'VART_QC','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'GDOP_QC','long_name',char('GDOP Threshold Quality flags'));
+    ncwriteatt(ncfile,'GDOP_QC','long_name',char('GDOP Threshold Quality Flags'));
     ncwriteatt(ncfile,'GDOP_QC','units',char('1'));
     ncwriteatt(ncfile,'GDOP_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'GDOP_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -768,7 +848,7 @@ try
     ncwriteatt(ncfile,'GDOP_QC','scale_factor',int16(1));
     ncwriteatt(ncfile,'GDOP_QC','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'DDNS_QC','long_name',char('Data density Threshold Quality flags'));
+    ncwriteatt(ncfile,'DDNS_QC','long_name',char('Data density Threshold Quality Flags'));
     ncwriteatt(ncfile,'DDNS_QC','units',char('1'));
     ncwriteatt(ncfile,'DDNS_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'DDNS_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -778,7 +858,7 @@ try
     ncwriteatt(ncfile,'DDNS_QC','scale_factor',int16(1));
     ncwriteatt(ncfile,'DDNS_QC','add_offset',int16(0));
     
-    ncwriteatt(ncfile,'CSPD_QC','long_name',char('Velocity threshold Quality flags'));
+    ncwriteatt(ncfile,'CSPD_QC','long_name',char('Velocity Threshold Quality Flags'));
     ncwriteatt(ncfile,'CSPD_QC','units',char('1'));
     ncwriteatt(ncfile,'CSPD_QC','valid_range',int16([0 9]));
     ncwriteatt(ncfile,'CSPD_QC','flag_values',int16([0 1 2 3 4 7 8 9]));
@@ -858,13 +938,13 @@ try
     ncwriteatt(ncfile,'SLNT','sdn_uom_name',char('Degrees east'));
     ncwriteatt(ncfile,'SLNT','sdn_uom_urn',char('SDN:P06::DEGE'));
     
-    ncwriteatt(ncfile,'SCDR','long_name',char('Receive antenna Codes'));
+    ncwriteatt(ncfile,'SCDR','long_name',char('Receive Antenna Codes'));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'SCDR','sdn_uom_urn',char('SDN:P06::UUUU'));
     
-    ncwriteatt(ncfile,'SCDT','long_name',char('Transmit antenna Codes'));
+    ncwriteatt(ncfile,'SCDT','long_name',char('Transmit Antenna Codes'));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_uom_name',char('Dimensionless'));
@@ -879,7 +959,7 @@ try
     ncwrite(ncfile,'SDN_CRUISE',site_code');
     ncwrite(ncfile,'SDN_STATION',platform_code');
     ncwrite(ncfile,'SDN_LOCAL_CDI_ID',dataID');
-    ncwrite(ncfile,'SDN_EDMO_CODE',EDMO_code);
+    ncwrite(ncfile,'SDN_EDMO_CODE',EDMO_code');
     ncwrite(ncfile,'SDN_REFERENCES',TDS_catalog');
     ncwrite(ncfile,'SDN_XLINK',xlink');
     ncwrite(ncfile,'DEPH',depth);
@@ -913,22 +993,18 @@ try
     ncwriteatt(ncfile,'/','site_code',char(site_code));
     ncwriteatt(ncfile,'/','platform_code',char(platform_code));
     ncwriteatt(ncfile,'/','data_mode',char('R'));
-    DoAIndex = find(not(cellfun('isempty', strfind(networkFields, 'DoA_estimation_method'))));
-    ncwriteatt(ncfile,'/','DoA_estimation_method',char(networkData{DoAIndex}));
-    calibration_typeIndex = find(not(cellfun('isempty', strfind(networkFields, 'calibration_type'))));
-    ncwriteatt(ncfile,'/','calibration_type',char(networkData{calibration_typeIndex}));
+    ncwriteatt(ncfile,'/','DoA_estimation_method',char(DoAStr));
+    ncwriteatt(ncfile,'/','calibration_type',char(calibration_typeStr));
     ncwriteatt(ncfile,'/','last_calibration_date',char(lastPatternStr));
-    calibration_linkIndex = find(not(cellfun('isempty', strfind(networkFields, 'calibration_link'))));
-    ncwriteatt(ncfile,'/','calibration_link',char(networkData{calibration_linkIndex}));
+    ncwriteatt(ncfile,'/','calibration_link',char(calibration_linkStr));
     titleIndex = find(not(cellfun('isempty', strfind(networkFields, 'title'))));
     ncwriteatt(ncfile,'/','title',char(networkData{titleIndex}));
     summaryIndex = find(not(cellfun('isempty', strfind(networkFields, 'summary'))));
     ncwriteatt(ncfile,'/','summary',char(networkData{summaryIndex}));
     ncwriteatt(ncfile,'/','source',char('coastal structure'));
     ncwriteatt(ncfile,'/','source_platform_category_code',char('17'));
-    institution_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_name'))));
-    ncwriteatt(ncfile,'/','institution',char(networkData{institution_nameIndex}));
-    ncwriteatt(ncfile,'/','institution_edmo_code',char(num2str(EDMO_code)));
+    ncwriteatt(ncfile,'/','institution',char(institution_nameStr));
+    ncwriteatt(ncfile,'/','institution_edmo_code',char(EDMO_codeStr));
     ncwriteatt(ncfile,'/','data_assembly_center',char('European HFR Node'));
     ncwriteatt(ncfile,'/','id',char(dataID));
     % Geo-spatial-temporal
@@ -996,8 +1072,8 @@ try
     ncwriteatt(ncfile,'/','geospatial_vertical_resolution', char('4'));
     ncwriteatt(ncfile,'/','geospatial_vertical_units', char('m'));
     ncwriteatt(ncfile,'/','geospatial_vertical_positive', char('down'));
-    ncwriteatt(ncfile, '/','time_coverage_duration',char('PT1H'));
-    ncwriteatt(ncfile, '/','time_coverage_resolution',char('PT1H'));
+    ncwriteatt(ncfile, '/','time_coverage_duration',char(timeCoverageDuration));
+    ncwriteatt(ncfile, '/','time_coverage_resolution',char(timeCoverageResolution));
     ncwriteatt(ncfile,'/','reference_system',char('EPSG:4806'));
     grid_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'grid_resolution'))));
     ncwriteatt(ncfile,'/','grid_resolution',char(num2str(networkData{grid_resolutionIndex})));
@@ -1032,6 +1108,8 @@ catch err
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'tot2netCDF_v31.m successfully executed.']);
 
 return
 

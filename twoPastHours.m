@@ -61,4 +61,6 @@ catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
 end
 
+disp(['[' datestr(now) '] - - ' 'twoPastHours.m successfully executed.']);
+
 return

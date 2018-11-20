@@ -113,4 +113,6 @@ end
 
 %%
 
+disp(['[' datestr(now) '] - - ' 'totTable2TUV.m successfully executed.']);
+
 return

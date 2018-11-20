@@ -47,5 +47,7 @@ catch err
     dTCN_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'dataTableColumnNames.m successfully executed.']);
+
 return
 

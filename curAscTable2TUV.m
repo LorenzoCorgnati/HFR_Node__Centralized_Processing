@@ -102,4 +102,6 @@ end
 
 %%
 
+disp(['[' datestr(now) '] - - ' 'curAscTable2TUV.m successfully executed.']);
+
 return

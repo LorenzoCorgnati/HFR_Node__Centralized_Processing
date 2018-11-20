@@ -68,5 +68,7 @@ catch err
     cAHDT_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'curAscHeaderDataTable.m successfully executed.']);
+
 return
 

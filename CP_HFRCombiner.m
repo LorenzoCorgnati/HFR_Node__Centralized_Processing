@@ -18,21 +18,6 @@ disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner started.']);
 
 %%
 
-%% Set the flag for updating the network_tb table of the database
-
-network_tbUpdateFlag = 0;
-
-%% Set datetime of the starting date of the combination period
-
-try
-    startDate = startCombinationDate(now);
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    HFRC_err = 1;
-end
-
-%%
-
 %% Connect to database
 
 try
@@ -58,7 +43,7 @@ catch err
     HFRC_err = 1;
 end
 if(HFRC_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
@@ -70,7 +55,7 @@ catch err
     HFRC_err = 1;
 end
 if(HFRC_err==0)
-    disp(['[' datestr(now) '] - - ' 'Data from network_tb table successfully fetched.']);
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
@@ -92,7 +77,7 @@ catch err
     HFRC_err = 1;
 end
 if(HFRC_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks from network_tb table successfully retrieved.']);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
@@ -156,7 +141,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err == 0)
-            disp(['[' datestr(now) '] - - ' 'Grid for radial combination successfully generated.']);
+            disp(['[' datestr(now) '] - - ' 'Grid for radial combination for ' network_data{network_idx, network_idIndex} ' successfully generated.']);
         end
         
         % Build the mask for the total masking
@@ -171,7 +156,7 @@ try
         try
             fname = makeCoast([network_data{network_idx,geospatial_lon_minIndex},network_data{network_idx,geospatial_lon_maxIndex}],[network_data{network_idx,geospatial_lat_minIndex},network_data{network_idx,geospatial_lat_maxIndex}],'transverse mercator',['Total_Masks' filesep network_data{network_idx,network_idIndex} filesep network_data{network_idx,network_idIndex} '_MaskMap.mat'],5);
             load(['Total_Masks' filesep network_data{network_idx,network_idIndex} filesep network_data{network_idx,network_idIndex} '_MaskMap.mat']);
-            disp(['[' datestr(now) '] - - ' 'Mask area successfully generated.']);
+            disp(['[' datestr(now) '] - - ' 'Mask area for ' network_data{network_idx, network_idIndex} ' successfully generated.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -186,7 +171,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to station_tb table successfully executed.']);
+            disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         end
         
         % Fetch data
@@ -198,7 +183,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data from station_tb table successfully fetched.']);
+            disp(['[' datestr(now) '] - - ' 'Data of the stations of the ' network_data{network_idx,network_idIndex} ' network successfully fetched from station_tb table.']);
         end
         
         % Retrieve column names
@@ -220,7 +205,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the current network from station_tb table successfully retrieved.']);
+            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the ' network_data{network_idx,network_idIndex} ' network successfully retrieved from station_tb table.']);
         end
         
         % Close cursor to station_tb table
@@ -242,6 +227,10 @@ try
             % Find the index of the station_id field in the station_tb table
             STstation_idIndexC = strfind(station_columnNames, 'station_id');
             STstation_idIndex = find(not(cellfun('isempty', STstation_idIndexC)));
+            
+            % Find the index of the last calibration date field
+            last_calibration_dateIndexC = strfind(station_columnNames, 'last_calibration_date');
+            last_calibration_dateIndex = find(not(cellfun('isempty', last_calibration_dateIndexC)));
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -249,14 +238,14 @@ try
         
         % Retrieve the radial files related to the current station to be combined
         try
-            toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0 AND datetime>' '''' startDate ''' ORDER BY timestamp'];
+            toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0 ORDER BY timestamp'];
             toBeCombinedRadials_curs = exec(conn,toBeCombinedRadials_selectquery);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to radial_input_folder_path table successfully executed.']);
+            disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for retrieving the radial files from ' network_data{network_idx,network_idIndex} ' network to be combined successfully executed.']);
         end
         
         % Fetch data
@@ -268,7 +257,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data from radial_input_folder_path table successfully fetched.']);
+            disp(['[' datestr(now) '] - - ' 'Data of the radial files from ' network_data{network_idx,network_idIndex} ' network to be combined successfully fetched from radial_input_tb table.']);
         end
         
         % Retrieve column names
@@ -290,7 +279,7 @@ try
             HFRC_err = 1;
         end
         if(HFRC_err==0)
-            disp(['[' datestr(now) '] - - ' 'Number of radials to be combined belonging to the current network from radial_input_folder_path table successfully retrieved.']);
+            disp(['[' datestr(now) '] - - ' 'Number of the radial files from ' network_data{network_idx,network_idIndex} ' network to be combined successfully retrieved from radial_input_tb table.']);
         end
         
         % Close cursor to radial_input_folder_path table
@@ -368,7 +357,7 @@ try
                         toBeCombinedStationIndex = find(not(cellfun('isempty', toBeCombinedStationIndexC)));
                         try
                             if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
-                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,sitePatternDate(ruv_idx,:)] = ruv2netCDF_v31(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v31(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
                                 % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
                                 disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1 file successfully created and stored.']);
                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
@@ -393,10 +382,10 @@ try
                                 [t2d_err,DateTime] = timestamp2datetime(toBeCombinedRadials_data{toBeCombinedRadialIndices(ruv_idx),timeStampIndex});
                                 
                                 % Define a cell array containing the column names to be added
-                                addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'filesize' 'input_filename' 'check_flag'};
+                                addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'input_filename' 'check_flag'};
                                 
                                 % Define a cell array that contains the data for insertion
-                                addData = {radOutputFilename,network_data{network_idx,network_idIndex},station_data{toBeCombinedStationIndex,STstation_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,radOutputFilesize,toBeCombinedRadials_data{toBeCombinedRadialIndices(ruv_idx),filenameIndex},0};
+                                addData = {radOutputFilename,network_data{network_idx,network_idIndex},station_data{toBeCombinedStationIndex,STstation_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),radOutputFilesize,toBeCombinedRadials_data{toBeCombinedRadialIndices(ruv_idx),filenameIndex},0};
                                 
                                 % Append the product data into the radial_HFRnetCDF_tb table on the database.
                                 tablename = 'radial_HFRnetCDF_tb';
@@ -407,41 +396,35 @@ try
                             HFRC_err = 1;
                         end
                         if(HFRC_err==0)
-                            disp(['[' datestr(now) '] - - ' 'Radial file information successfully inserted into radial_HFRnetCDF_tb table.']);
+                            disp(['[' datestr(now) '] - - ' radOutputFilename ' radial file information successfully inserted into radial_HFRnetCDF_tb table.']);
                         end
-                    end
-                    
-                    % Evaluate last pattern date
-                    try
-                        if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
-                            for rd_idx=1:length(RADIAL)
-                                patternTS(rd_idx) = datenum([str2double(sitePatternDate(rd_idx, 1:5)) str2double(sitePatternDate(rd_idx, 6:8)) str2double(sitePatternDate(rd_idx, 9:11)) str2double(sitePatternDate(rd_idx, 13:15)) str2double(sitePatternDate(rd_idx, 16:18)) str2double(sitePatternDate(rd_idx, 19:20))]);
+                        
+                        % Update the last calibration date on the station_tb table of the database (if needed)
+                        try
+                            if(station_tbUpdateFlag == 1)
+                                % Define a cell array containing the column names to be updated
+                                updateColnames = {'last_calibration_date'};
+                                
+                                % Define a cell array that contains the data for insertion
+                                updateData = station_data(toBeCombinedStationIndex,last_calibration_dateIndex);
+                                
+                                % Update the network_tb table on the database
+                                tablename = 'station_tb';
+                                whereclause = ['WHERE station_id = ' '''' station_data{toBeCombinedStationIndex,STstation_idIndex} ''''];
+                                update(conn,tablename,updateColnames,updateData,whereclause);
+                                station_tbUpdateFlag = 0;
+                                disp(['[' datestr(now) '] - - ' 'station_tb table successfully updated with last calibration date.']);
                             end
-                            lastPatternDate = max(patternTS);
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            HFRC_err = 1;
                         end
-                    catch err
-                        display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        HFRC_err = 1;
-                    end
-                    
-                    % Check if the pattern date is correct on the database and update it if needed
-                    try
-                        if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
-                            last_calibration_dateIndex = find(not(cellfun('isempty', strfind(network_columnNames, 'last_calibration_date'))));
-                            if(datenum(network_data{network_idx,last_calibration_dateIndex})<lastPatternDate)
-                                network_tbUpdateFlag = 1;
-                                network_data{network_idx,last_calibration_dateIndex} = datestr(lastPatternDate, 'yyyy-mm-dd');
-                            end
-                        end
-                    catch err
-                        display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        HFRC_err = 1;
                     end
                     
                     % Combine the Codar radial files into total
                     if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
                         try
-                            disp(['[' datestr(now) '] - - ' 'makeTotals combining ...']);
+                            disp(['[' datestr(now) '] - - ' 'makeTotals combining radials...']);
                             [TUV,R] = makeTotals(RADIAL, 'Grid', Grid, 'TimeStamp', RADIAL(1,1).TimeStamp, 'spatthresh', network_data{network_idx,spatthreshIndex}, 'tempthresh', 1/24);
                             % Totals setting on a regular grid
                             [TUVgrid,DIM,I] = gridTotals( TUV, 'true', 'true');
@@ -508,7 +491,7 @@ try
                         HFRC_err = 1;
                     end
                     if(HFRC_err==0)
-                        disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag.']);
+                        disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
                     end
                     
                     % Insert converted total info in total_HFRnetCDF_tb table
@@ -522,10 +505,10 @@ try
                             [t2d_err,DateTime] = timestamp2datetime(toBeCombinedRadials_data{radial_idx,timeStampIndex});
                             
                             % Define a cell array containing the column names to be added
-                            addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'filesize' 'mat_filename' 'check_flag'};
+                            addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'mat_filename' 'check_flag'};
                             
                             % Define a cell array that contains the data for insertion
-                            addData = {totOutputFilename,network_data{network_idx,network_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,totOutputFilesize,[network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat'],0};
+                            addData = {totOutputFilename,network_data{network_idx,network_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),totOutputFilesize,[network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat'],0};
                             
                             % Append the product data into the total_HFRnetCDF_tb table on the database.
                             tablename = 'total_HFRnetCDF_tb';
@@ -536,29 +519,9 @@ try
                         HFRC_err = 1;
                     end
                     if(HFRC_err==0)
-                        disp(['[' datestr(now) '] - - ' 'Total combined file information successfully inserted into total_HFRnetCDF_tb table.']);
+                        disp(['[' datestr(now) '] - - ' totOutputFilename 'total combined file information successfully inserted into total_HFRnetCDF_tb table.']);
                     end
                 end
-            end
-        catch err
-            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-            HFRC_err = 1;
-        end
-        
-        % Update the last calibration date on the network_tb table of the database (if needed)
-        try
-            if(network_tbUpdateFlag == 1)
-                % Define a cell array containing the column names to be updated
-                updateColnames = {'last_calibration_date'};
-                
-                % Define a cell array that contains the data for insertion
-                updateData = network_data(network_idx,last_calibration_dateIndex);
-                
-                % Update the network_tb table on the database
-                tablename = 'network_tb';
-                whereclause = ['WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
-                update(conn,tablename,updateColnames,updateData,whereclause);
-                disp(['[' datestr(now) '] - - ' 'network_tb table successfully updated with last calibration date.']);
             end
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -588,5 +551,7 @@ if(HFRC_err==0)
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner successfully executed.']);
 
 pause(2700);

@@ -1,13 +1,13 @@
 %% startCombinationDate.m
-% This function builds the datetime of the starting day of the combination
-% period in the MySQL format YYYY-MM-DD from the present timestamp.
+% This function builds the datetime of the starting day of the processing
+% period in the MySQL format yyyy-mm-dd from the present timestamp.
 
 % INPUT:
 %         tsNow: present timestamp in numeric format
 
 % OUTPUT:
 %         sCD_err: error flag (0 = correct, 1 = error)
-%         startDatetime: string for datetime in the MySQL format YYYY-MM-DD
+%         startDatetime: string for datetime in the MySQL format yyyy-mm-dd
 
 
 % Author: Lorenzo Corgnati
@@ -42,5 +42,6 @@ catch err
     sCD_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'startCombinationDate.m succesfully executed.']);
 return
 

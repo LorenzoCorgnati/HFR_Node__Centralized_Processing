@@ -116,4 +116,6 @@ catch err
     gT_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'gridTUV.m successfully executed.']);
+
 return

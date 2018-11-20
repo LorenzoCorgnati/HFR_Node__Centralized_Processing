@@ -43,7 +43,7 @@ catch err
     iRDB_err = 1;
 end
 if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
@@ -55,7 +55,7 @@ catch err
     iRDB_err = 1;
 end
 if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Data from network_tb table successfully fetched.']);
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
@@ -77,7 +77,7 @@ catch err
     iRDB_err = 1;
 end
 if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks from network_tb table successfully retrieved.']);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
@@ -115,7 +115,7 @@ try
             iRDB_err = 1;
         end
         if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to station_tb table successfully executed.']);
+            disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         end
         
         % Fetch data
@@ -127,7 +127,7 @@ try
             iRDB_err = 1;
         end
         if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data from station_tb table successfully fetched.']);
+            disp(['[' datestr(now) '] - - ' 'Data of the stations of the ' network_data{network_idx,network_idIndex} ' network successfully fetched from station_tb table.']);
         end
         
         % Retrieve column names
@@ -149,7 +149,7 @@ try
             iRDB_err = 1;
         end
         if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the current network from station_tb table successfully retrieved.']);
+            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the ' network_data{network_idx,network_idIndex} ' network successfully retrieved from station_tb table.']);
         end
         
         % Close cursor to station_tb table
@@ -179,95 +179,98 @@ try
         % Scan the stations
         for station_idx=1:numStations
             % List the input ruv files for the current station
-            try
-                ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.ruv']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iRDB_err = 1;
-            end
-            
-            % Insert information about the ruv file into the database (if not yet present)
-            for ruv_idx=1:length(ruvFiles)
+            if(~isempty(station_data{station_idx,inputPathIndex}))
                 try
-                    % Retrieve the filename
-                    [pathstr,name,ext]=fileparts(ruvFiles(ruv_idx).name);
-                    noFullPathName=[name ext];
-                    % Check if the current ruv file is already present on the database
-                    dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
-                    dbRadials_curs = exec(conn,dbRadials_selectquery);
+                    ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(startDate)');
+                    disp(['[' datestr(now) '] - - ' 'Radials files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iRDB_err = 1;
-                end
-                if(iRDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table successfully executed.']);
-                end
-                % Fetch data
-                try
-                    dbRadials_curs = fetch(dbRadials_curs);
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iRDB_err = 1;
-                end
-                if(iRDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Data from radial_input_tb table successfully fetched.']);
                 end
                 
-                if(rows(dbRadials_curs) == 0)
-                    % Retrieve information about the ruv file
+                % Insert information about the ruv file into the database (if not yet present)
+                for ruv_idx=1:length(ruvFiles)
                     try
-                        % Load the radial file as structure
-                        radStruct = loadRDLFile(ruvFiles(ruv_idx).name,'false','warning');
-                        % Read the file header
-                        radHeader = radStruct.OtherMetadata.Header;
-                        % Retrieve information from header
-                        for header_idx=1:length(radHeader)
-                            splitLine = regexp(radHeader{header_idx}, ' ', 'split');
-                            % Retrieve TimeStamp
-                            if(strcmp(splitLine{1}, '%TimeStamp:'))
-                                TimeStamp = strrep(radHeader{header_idx}(length('%TimeStamp:')+2:length(radHeader{header_idx})), '"', '');
-                                break;
-                            end
-                        end
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iRDB_err = 1;
-                    end
-                    
-                    try
-                        % Evaluate datetime from, Time Stamp
-                        [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iRDB_err = 1;
-                    end
-                    
-                    % Retrieve information about the ruv file
-                    try
-                        ruvFileInfo = dir(ruvFiles(ruv_idx).name);
-                        ruvFilesize = ruvFileInfo.bytes/1024;
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iRDB_err = 1;
-                    end
-                    
-                    % Write ruv info in radial_input_tb table
-                    try
-                        % Define a cell array containing the column names to be added
-                        addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
-                        
-                        % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,ruvFilesize,'ruv',0};
-                        
-                        % Append the product data into the radial_input_tb table on the database.
-                        tablename = 'radial_input_tb';
-                        datainsert(conn,tablename,addColnames,addData);
+                        % Retrieve the filename
+                        [pathstr,name,ext]=fileparts(ruvFiles(ruv_idx).name);
+                        noFullPathName=[name ext];
+                        % Check if the current ruv file is already present on the database
+                        dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
+                        dbRadials_curs = exec(conn,dbRadials_selectquery);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iRDB_err = 1;
                     end
                     if(iRDB_err==0)
-                        disp(['[' datestr(now) '] - - ' 'Radial input file information successfully inserted into radial_input_tb table.']);
+                        disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for checking if ' noFullPathName ' radial file is already present in the database successfully executed.']);
+                    end
+                    % Fetch data
+                    try
+                        dbRadials_curs = fetch(dbRadials_curs);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iRDB_err = 1;
+                    end
+                    if(iRDB_err==0)
+                        disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' radial file in the database successfully fetched from radial_input_tb table.']);
+                    end
+                    
+                    if(rows(dbRadials_curs) == 0)
+                        % Retrieve information about the ruv file
+                        try
+                            % Load the radial file as structure
+                            radStruct = loadRDLFile(ruvFiles(ruv_idx).name,'false','warning');
+                            % Read the file header
+                            radHeader = radStruct.OtherMetadata.Header;
+                            % Retrieve information from header
+                            for header_idx=1:length(radHeader)
+                                splitLine = regexp(radHeader{header_idx}, ' ', 'split');
+                                % Retrieve TimeStamp
+                                if(strcmp(splitLine{1}, '%TimeStamp:'))
+                                    TimeStamp = strrep(radHeader{header_idx}(length('%TimeStamp:')+2:length(radHeader{header_idx})), '"', '');
+                                    break;
+                                end
+                            end
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iRDB_err = 1;
+                        end
+                        
+                        try
+                            % Evaluate datetime from, Time Stamp
+                            [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iRDB_err = 1;
+                        end
+                        
+                        % Retrieve information about the ruv file
+                        try
+                            ruvFileInfo = dir(ruvFiles(ruv_idx).name);
+                            ruvFilesize = ruvFileInfo.bytes/1024;
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iRDB_err = 1;
+                        end
+                        
+                        % Write ruv info in radial_input_tb table
+                        try
+                            % Define a cell array containing the column names to be added
+                            addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
+                            
+                            % Define a cell array that contains the data for insertion
+                            addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ruvFilesize,'ruv',0};
+                            
+                            % Append the product data into the radial_input_tb table on the database.
+                            tablename = 'radial_input_tb';
+                            datainsert(conn,tablename,addColnames,addData);
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iRDB_err = 1;
+                        end
+                        if(iRDB_err==0)
+                            disp(['[' datestr(now) '] - - ' noFullPathName ' radial file information successfully inserted into radial_input_tb table.']);
+                        end
                     end
                 end
             end
@@ -293,3 +296,5 @@ if(iRDB_err==0)
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'CP_inputRUV2DB successfully executed.']);

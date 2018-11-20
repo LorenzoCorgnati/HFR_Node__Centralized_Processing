@@ -1,5 +1,5 @@
 %% timestamp2datetime.m
-% This function builds the datetime in the MySQL format YYYY-MM-DD from
+% This function builds the datetime in the MySQL datetime format (yyyy-mm-dd HH:MM:SS) from
 % timestamp.
 
 % INPUT:
@@ -7,11 +7,11 @@
 
 % OUTPUT:
 %         t2d_err: error flag (0 = correct, 1 = error)
-%         datetime: string for datetime in the MySQL format YYYY-MM-DD
+%         datetime: string for datetime in the MySQL format yyyy-mm-dd HH:MM:SS
 
 
 % Author: Lorenzo Corgnati
-% Date: July 18, 2018
+% Date: November 15, 2018
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
@@ -40,12 +40,13 @@ end
 
 try
     % Build the string for datetime in the MySQL format YYYY-MM-DD
-    formatOut='yyyy-mm-dd';
+    formatOut='yyyy-mm-dd HH:MM:SS';
     datetime = datestr(tsNum,formatOut);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     t2d_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'timestamp2datetime.m succesfully executed.']);
 return
 

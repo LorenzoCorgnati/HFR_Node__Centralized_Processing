@@ -25,7 +25,7 @@
 %                       needed.
 %         ncFileNoPath: filename of the converted nc file, without the full path
 %         ncFilesize: size of the converted nc file.
-%         PatternDate: string containing the pattern date.
+%         station_tbUpdateFlag: flag for updating the station_tb table of the database.
 
 
 
@@ -35,7 +35,7 @@
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
-function [R2C_err,networkData,stationData,ncFileNoPath,ncFilesize,PatternDate] = ruv2netCDF_v31(HFRP_RUV,networkData,networkFields,stationData,stationFields,timestamp)
+function [R2C_err,networkData,stationData,ncFileNoPath,ncFilesize,station_tbUpdateFlag] = ruv2netCDF_v31(HFRP_RUV,networkData,networkFields,stationData,stationFields,timestamp)
 
 disp(['[' datestr(now) '] - - ' 'ruv2netCDF_v31.m started.']);
 
@@ -44,6 +44,12 @@ R2C_err = 0;
 PatternDate = '0000 00 00  00 00 00';
 
 warning('off', 'all');
+
+%% Set the flag for updating the station_tb table of the database
+
+station_tbUpdateFlag = 0;
+
+%%
 
 %% Retrieve the LLUVSpec version
 
@@ -139,8 +145,8 @@ end
 %% Set naming authority
 
 try
-    institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
-    institution_websiteStr = networkData{institution_websiteIndex};
+    institution_websiteIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_website'))));
+    institution_websiteStr = stationData{institution_websiteIndex};
     tmpStr = strrep(institution_websiteStr,'http://','');
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
@@ -165,8 +171,8 @@ end
 try
     EDIOS_Series_ID = networkData{network_idIndex};
     EDIOS_Platform_ID = siteCode;
-    EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
-    EDMO_code = networkData{EDMO_codeIndex};
+    EDMO_codeIndex = find(not(cellfun('isempty', strfind(stationFields, 'EDMO_code'))));
+    EDMO_code = stationData{EDMO_codeIndex};
     site_code = EDIOS_Series_ID;
     platform_code = [EDIOS_Series_ID '_' EDIOS_Platform_ID];
     id = [EDIOS_Series_ID '_' EDIOS_Platform_ID '_' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
@@ -334,8 +340,26 @@ try
     
     % Evaluate last pattern date
     patternTS = datenum([str2double(PatternDate(1:5)) str2double(PatternDate(6:8)) str2double(PatternDate(9:11)) str2double(PatternDate(13:15)) str2double(PatternDate(16:18)) str2double(PatternDate(19:20))]);
-    lastPatternVec = datevec(patternTS);
-    lastPatternStr = [datestr(lastPatternVec, 'yyyy-mm-dd') 'T' datestr(lastPatternVec, 'HH:MM:SS') 'Z'];
+    if(patternTS~=0)
+        lastPatternVec = datevec(patternTS);
+        lastPatternStr = [datestr(lastPatternVec, 'yyyy-mm-dd') 'T' datestr(lastPatternVec, 'HH:MM:SS') 'Z'];
+    else
+        lastPatternStr = '';
+    end
+    
+    % Check if the last calibration date stored in the database is updated
+    last_calibration_dateIndex = find(not(cellfun('isempty', strfind(stationFields, 'last_calibration_date'))));
+    if(patternTS~=0)
+        if(size(stationData{last_calibration_dateIndex},2)==10)
+            if(datenum(stationData{last_calibration_dateIndex})<patternTS)
+                station_tbUpdateFlag = 1;
+                stationData{last_calibration_dateIndex} = datestr(patternTS, 'yyyy-mm-dd');
+            end
+        else
+            station_tbUpdateFlag = 1;
+            stationData{last_calibration_dateIndex} = datestr(patternTS, 'yyyy-mm-dd');
+        end
+    end
     
     % Time Stamp
     R.time = HFRP_RUV.TimeStamp;
@@ -346,12 +370,27 @@ end
 
 %%
 
-%% Retrieve time coverage period and metadata date stamp
+%% Retrieve time coverage period, resolution, duration and metadata date stamp
 try
-    coverageStart = addtodate(HFRP_RUV.TimeStamp, -30, 'minute');
+    temporal_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'temporal_resolution'))));
+    temporal_resolution = networkData{temporal_resolutionIndex};
+    coverageStart = addtodate(HFRP_RUV.TimeStamp, -temporal_resolution/2, 'minute');
     timeCoverageStart = [datestr(coverageStart, 'yyyy-mm-dd') 'T' datestr(coverageStart, 'HH:MM:SS') 'Z'];
-    coverageEnd = addtodate(HFRP_RUV.TimeStamp, 30, 'minute');
+    coverageEnd = addtodate(HFRP_RUV.TimeStamp, temporal_resolution/2, 'minute');
     timeCoverageEnd = [datestr(coverageEnd, 'yyyy-mm-dd') 'T' datestr(coverageEnd, 'HH:MM:SS') 'Z'];
+    resolutionMinutes = minutes(temporal_resolution);
+    [resH,resM,resS] = hms(resolutionMinutes);
+    timeCoverageResolution = 'PT';
+    if(resH~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resH) 'H'];
+    end
+    if(resM~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resM) 'M'];
+    end
+    if(resS~=0)
+        timeCoverageResolution = [timeCoverageResolution num2str(resS) 'S'];
+    end
+    timeCoverageDuration = timeCoverageResolution;
 catch err
     display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     R2C_err = 1;
@@ -657,7 +696,7 @@ try
     numSites = 1;
     siteLat((length(siteLat)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
     siteLon((length(siteLon)+1):maxsite) = netcdf.getConstant('NC_FILL_FLOAT');
-%     siteCodeArr(1,:) = siteCode;
+    %     siteCodeArr(1,:) = siteCode;
     siteCodeArr = siteCode;
     for sC_idx=size(siteCode,1)+1:maxsite
         siteCodeArr(sC_idx,:) = blanks(size(siteCode,2));
@@ -801,6 +840,7 @@ try
     netcdf.putAtt(ncid, varid_lat, 'sdn_parameter_urn', 'SDN:P01::ALATZZ01');
     netcdf.putAtt(ncid, varid_lat, 'sdn_uom_name', 'Degrees north');
     netcdf.putAtt(ncid, varid_lat, 'sdn_uom_urn', 'SDN:P06::DEGN');
+    netcdf.putAtt(ncid, varid_lat, 'grid_mapping', 'crs');
     netcdf.putAtt(ncid, varid_lat, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % Longitude
@@ -816,6 +856,7 @@ try
     netcdf.putAtt(ncid, varid_lon, 'sdn_parameter_urn', 'SDN:P01::ALONZZ01');
     netcdf.putAtt(ncid, varid_lon, 'sdn_uom_name', 'Degrees east');
     netcdf.putAtt(ncid, varid_lon, 'sdn_uom_urn', 'SDN:P06::DEGE');
+    netcdf.putAtt(ncid, varid_lon, 'grid_mapping', 'crs');
     netcdf.putAtt(ncid, varid_lon, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % crs
@@ -823,8 +864,8 @@ try
     netcdf.defVarDeflate(ncid, varid_crs, true, true, 6);
     netcdf.putAtt( ncid, varid_crs, 'grid_mapping_name', 'latitude_longitude' );
     netcdf.putAtt( ncid, varid_crs, 'epsg_code', 'EPSG:4326' );
-    netcdf.putAtt( ncid, varid_crs, 'semi_major_axis', single(6378137.0) );
-    netcdf.putAtt(ncid, varid_crs, 'inverse_flattening', single(298.257223563));
+    netcdf.putAtt( ncid, varid_crs, 'semi_major_axis', double(6378137.0) );
+    netcdf.putAtt(ncid, varid_crs, 'inverse_flattening', double(298.257223563));
     
     %%
     
@@ -906,7 +947,7 @@ try
     netcdf.defVarDeflate(ncid, varid_direction, true, true, 6);
     netcdf.putAtt(ncid, varid_direction, 'valid_range', single( [0 360]));
     netcdf.putAtt(ncid, varid_direction, 'standard_name', 'direction_of_radial_vector_away_from_instrument');
-    netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction Of Radial Vector Away From Instrument');
+    netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction of Radial Vector Away From Instrument');
     netcdf.putAtt(ncid, varid_direction, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_direction, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_direction, 'units', 'degrees_true');
@@ -1215,7 +1256,7 @@ try
     % Time QC Flag
     varid_tqc = netcdf.defVar(ncid, 'TIME_SEADATANET_QC', 'short', dimid_t);
     netcdf.defVarDeflate(ncid, varid_tqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time SeaDataNet quality flag');
+    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time SeaDataNet Quality Flag');
     netcdf.putAtt(ncid, varid_tqc, 'valid_range', int16( [0 9]));
     netcdf.putAtt(ncid, varid_tqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_tqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
@@ -1228,7 +1269,7 @@ try
     % Position QC Flag
     varid_posqc = netcdf.defVar(ncid, 'POSITION_SEADATANET_QC', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_posqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position SeaDataNet quality flag');
+    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position SeaDataNet Quality Flags');
     netcdf.putAtt(ncid, varid_posqc, 'valid_range', int16( [0 9]));
     netcdf.putAtt(ncid, varid_posqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_posqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
@@ -1242,7 +1283,7 @@ try
     % Depth QC Flag
     varid_dqc = netcdf.defVar(ncid, 'DEPTH_SEADATANET_QC', 'short', dimid_t);
     netcdf.defVarDeflate(ncid, varid_dqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth SeaDataNet quality flag');
+    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth SeaDataNet Quality Flag');
     netcdf.putAtt(ncid, varid_dqc, 'valid_range', int16( [0 9]));
     netcdf.putAtt(ncid, varid_dqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_dqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
@@ -1360,21 +1401,21 @@ try
     netcdf.putAtt(ncid, varid_global, 'site_code', site_code);
     netcdf.putAtt(ncid, varid_global, 'platform_code', platform_code);
     netcdf.putAtt(ncid, varid_global, 'data_mode', 'R');
-    DoAIndex = find(not(cellfun('isempty', strfind(networkFields, 'DoA_estimation_method'))));
-    netcdf.putAtt(ncid, varid_global, 'DoA_estimation_method', networkData{DoAIndex});
-    calibration_typeIndex = find(not(cellfun('isempty', strfind(networkFields, 'calibration_type'))));
-    netcdf.putAtt(ncid, varid_global, 'calibration_type', networkData{calibration_typeIndex});
+    DoAIndex = find(not(cellfun('isempty', strfind(stationFields, 'DoA_estimation_method'))));
+    netcdf.putAtt(ncid, varid_global, 'DoA_estimation_method', stationData{DoAIndex});
+    calibration_typeIndex = find(not(cellfun('isempty', strfind(stationFields, 'calibration_type'))));
+    netcdf.putAtt(ncid, varid_global, 'calibration_type', stationData{calibration_typeIndex});
     netcdf.putAtt(ncid, varid_global, 'last_calibration_date', lastPatternStr);
-    calibration_linkIndex = find(not(cellfun('isempty', strfind(networkFields, 'calibration_link'))));
-    netcdf.putAtt(ncid, varid_global, 'calibration_link', networkData{calibration_linkIndex});
+    calibration_linkIndex = find(not(cellfun('isempty', strfind(stationFields, 'calibration_link'))));
+    netcdf.putAtt(ncid, varid_global, 'calibration_link', stationData{calibration_linkIndex});
     titleIndex = find(not(cellfun('isempty', strfind(networkFields, 'title'))));
     netcdf.putAtt(ncid, varid_global, 'title', networkData{titleIndex});
     summaryIndex = find(not(cellfun('isempty', strfind(networkFields, 'summary'))));
     netcdf.putAtt(ncid, varid_global, 'summary', networkData{summaryIndex});
     netcdf.putAtt(ncid, varid_global, 'source', 'coastal structure');
     netcdf.putAtt(ncid, varid_global, 'source_platform_category_code', '17');
-    institution_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_name'))));
-    netcdf.putAtt(ncid, varid_global, 'institution', networkData{institution_nameIndex});
+    institution_nameIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_name'))));
+    netcdf.putAtt(ncid, varid_global, 'institution', stationData{institution_nameIndex});
     netcdf.putAtt(ncid, varid_global, 'institution_edmo_code', num2str(EDMO_code));
     netcdf.putAtt(ncid, varid_global, 'data_assembly_center', 'European HFR Node');
     netcdf.putAtt(ncid, varid_global, 'id', id);
@@ -1444,8 +1485,8 @@ try
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_resolution', '4');
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_units', 'm');
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_positive', 'down');
-    netcdf.putAtt(ncid, varid_global, 'time_coverage_duration', 'PT1H');
-    netcdf.putAtt(ncid, varid_global, 'time_coverage_resolution', 'PT1H');
+    netcdf.putAtt(ncid, varid_global, 'time_coverage_duration', timeCoverageDuration);
+    netcdf.putAtt(ncid, varid_global, 'time_coverage_resolution', timeCoverageResolution);
     netcdf.putAtt(ncid, varid_global, 'reference_system', 'EPSG:4806');
     netcdf.putAtt(ncid, varid_global, 'cdm_data_type', 'Grid');
     % Conventions used
@@ -1703,5 +1744,7 @@ catch err
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'ruv2netCDF_v31.m successfully executed.']);
 
 return

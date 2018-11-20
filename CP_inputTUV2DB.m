@@ -43,7 +43,7 @@ catch err
     iTDB_err = 1;
 end
 if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
@@ -55,7 +55,7 @@ catch err
     iTDB_err = 1;
 end
 if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Data from network_tb table successfully fetched.']);
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
@@ -77,7 +77,7 @@ catch err
     iTDB_err = 1;
 end
 if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks from network_tb table successfully retrieved.']);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
@@ -111,107 +111,110 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
-        % List the input tuv files
-        try
-            tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.tuv']);
-        catch err
-            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-            iTDB_err = 1;
-        end
-        % Insert information about the tuv file into the database (if not yet present)
-        for tuv_idx=1:length(tuvFiles)
+        if(~isempty(network_data{network_idx,inputPathIndex}))
+            % List the input tuv files
             try
-                % Retrieve the filename
-                [pathstr,name,ext]=fileparts(tuvFiles(tuv_idx).name);
-                noFullPathName=[name ext];
-                % Check if the current tuv file is already present on the database
-                dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
-                dbTotals_curs = exec(conn,dbTotals_selectquery);
+                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(startDate)');
+                disp(['[' datestr(now) '] - - ' 'Total files from ' network_data{network_idx,network_idIndex} ' network successfully listed.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 iTDB_err = 1;
             end
-            if(iTDB_err==0)
-                disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table successfully executed.']);
-            end
-            % Fetch data
-            try
-                dbTotals_curs = fetch(dbTotals_curs);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iTDB_err = 1;
-            end
-            if(iTDB_err==0)
-                disp(['[' datestr(now) '] - - ' 'Data from total_input_tb table successfully fetched.']);
-            end
-            
-            if(rows(dbTotals_curs) == 0)
-                % Retrieve information about the tuv file
+            % Insert information about the tuv file into the database (if not yet present)
+            for tuv_idx=1:length(tuvFiles)
                 try
-                    % Load the total file as structure
-                    totStruct = loadRDLFile(tuvFiles(tuv_idx).name,'false','warning');
-                    % Read the file header
-                    totHeader = totStruct.OtherMetadata.Header;
-                    % Retrieve information from header
-                    for header_idx=1:length(totHeader)
-                        splitLine = regexp(totHeader{header_idx}, ' ', 'split');
-                        % Retrieve TimeStamp
-                        if(strcmp(splitLine{1}, '%TimeStamp:'))
-                            TimeStamp = strrep(totHeader{header_idx}(length('%TimeStamp:')+2:length(totHeader{header_idx})), '"', '');
-                            break;
-                        end
-                    end
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
-                end
-                
-                % Evaluate datetime from, Time Stamp
-                try
-                    [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
-                end
-                
-                % Retrieve information about the tuv file
-                try
-                    tuvFileInfo = dir(tuvFiles(tuv_idx).name);
-                    tuvFilesize = tuvFileInfo.bytes/1024;
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
-                end
-                
-                % Write tuv info in total_input_tb table
-                try
-                    % Define a cell array containing the column names to be added
-                    addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
-                    
-                    % Define a cell array that contains the data for insertion
-                    addData = {noFullPathName,network_data{network_idx,network_idIndex},TimeStamp,DateTime,tuvFilesize,'tuv',0};
-                    
-                    % Append the product data into the total_input_tb table on the database.
-                    tablename = 'total_input_tb';
-                    datainsert(conn,tablename,addColnames,addData);
+                    % Retrieve the filename
+                    [pathstr,name,ext]=fileparts(tuvFiles(tuv_idx).name);
+                    noFullPathName=[name ext];
+                    % Check if the current tuv file is already present on the database
+                    dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
+                    dbTotals_curs = exec(conn,dbTotals_selectquery);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iTDB_err = 1;
                 end
                 if(iTDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Total input file information successfully inserted into total_input_tb table.']);
+                    disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table for checking if ' noFullPathName ' total file is already present in the database successfully executed.']);
                 end
-            end
-            
-            % Close cursor to total_input_tb table
-            try
-                close(dbTotals_curs);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iTDB_err = 1;
-            end
-            if(iTDB_err==0)
-                disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
+                % Fetch data
+                try
+                    dbTotals_curs = fetch(dbTotals_curs);
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    iTDB_err = 1;
+                end
+                if(iTDB_err==0)
+                    disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' total file in the database successfully fetched from total_input_tb table.']);
+                end
+                
+                if(rows(dbTotals_curs) == 0)
+                    % Retrieve information about the tuv file
+                    try
+                        % Load the total file as structure
+                        totStruct = loadRDLFile(tuvFiles(tuv_idx).name,'false','warning');
+                        % Read the file header
+                        totHeader = totStruct.OtherMetadata.Header;
+                        % Retrieve information from header
+                        for header_idx=1:length(totHeader)
+                            splitLine = regexp(totHeader{header_idx}, ' ', 'split');
+                            % Retrieve TimeStamp
+                            if(strcmp(splitLine{1}, '%TimeStamp:'))
+                                TimeStamp = strrep(totHeader{header_idx}(length('%TimeStamp:')+2:length(totHeader{header_idx})), '"', '');
+                                break;
+                            end
+                        end
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iTDB_err = 1;
+                    end
+                    
+                    % Evaluate datetime from, Time Stamp
+                    try
+                        [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iTDB_err = 1;
+                    end
+                    
+                    % Retrieve information about the tuv file
+                    try
+                        tuvFileInfo = dir(tuvFiles(tuv_idx).name);
+                        tuvFilesize = tuvFileInfo.bytes/1024;
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iTDB_err = 1;
+                    end
+                    
+                    % Write tuv info in total_input_tb table
+                    try
+                        % Define a cell array containing the column names to be added
+                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
+                        
+                        % Define a cell array that contains the data for insertion
+                        addData = {noFullPathName,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),tuvFilesize,'tuv',0};
+                        
+                        % Append the product data into the total_input_tb table on the database.
+                        tablename = 'total_input_tb';
+                        datainsert(conn,tablename,addColnames,addData);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iTDB_err = 1;
+                    end
+                    if(iTDB_err==0)
+                        disp(['[' datestr(now) '] - - ' noFullPathName ' total file information successfully inserted into total_input_tb table.']);
+                    end
+                end
+                
+                % Close cursor to total_input_tb table
+                try
+                    close(dbTotals_curs);
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    iTDB_err = 1;
+                end
+                if(iTDB_err==0)
+                    disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
+                end
             end
         end
     end
@@ -235,3 +238,5 @@ if(iTDB_err==0)
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB successfully executed.']);

@@ -64,6 +64,7 @@ try
     % Check if the files of the previous two hours exist
     if ((exist(Total_QC_params.TempDerThr.hour2) == 2) && (exist(Total_QC_params.TempDerThr.hour1) == 2))
         tD_go = true;
+        [filepath1h,name1h,ext1h] = fileparts(Total_QC_params.TempDerThr.hour1);
     else
         tD_go = false;
     end
@@ -119,7 +120,7 @@ try
         
         % Modify the VART_QC variable of the nc file of the previous hour
         ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h');
-        disp(['[' datestr(now) '] - - ' 'Previous hour nc file successfully updated with the Temporal Derivative QC variable.']);
+        disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous hour nc file successfully updated with the Temporal Derivative QC variable.']);
     end
     % Set the QC flag for the current hour to 0 (no QC performed)
     tempDer(~isnan(mat_tot.U_grid)) = 0;
@@ -174,7 +175,7 @@ try
         end
         % Modify the overall QC variable of the nc file of the previous hour
         ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h'));
-        disp(['[' datestr(now) '] - - ' 'Previous hour nc file successfully updated with the overall QC variable.']);
+        disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous hour nc file successfully updated with the overall QC variable.']);
     end
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -182,5 +183,7 @@ catch err
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'tuvTotalQCtests_v10.m successfully executed.']);
 
 return

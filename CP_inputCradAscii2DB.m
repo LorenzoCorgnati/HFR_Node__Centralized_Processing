@@ -43,7 +43,7 @@ catch err
     iCradDB_err = 1;
 end
 if(iCradDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
@@ -55,7 +55,7 @@ catch err
     iCradDB_err = 1;
 end
 if(iCradDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Data from network_tb table successfully fetched.']);
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
@@ -77,7 +77,7 @@ catch err
     iCradDB_err = 1;
 end
 if(iCradDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks from network_tb table successfully retrieved.']);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
@@ -115,7 +115,7 @@ try
             iCradDB_err = 1;
         end
         if(iCradDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to station_tb table successfully executed.']);
+            ddisp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         end
         
         % Fetch data
@@ -127,7 +127,7 @@ try
             iCradDB_err = 1;
         end
         if(iCradDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data from station_tb table successfully fetched.']);
+            disp(['[' datestr(now) '] - - ' 'Data of the stations of the ' network_data{network_idx,network_idIndex} ' network successfully fetched from station_tb table.']);
         end
         
         % Retrieve column names
@@ -149,7 +149,7 @@ try
             iCradDB_err = 1;
         end
         if(iCradDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the current network from station_tb table successfully retrieved.']);
+            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the ' network_data{network_idx,network_idIndex} ' network successfully retrieved from station_tb table.']);
         end
         
         % Close cursor to station_tb table
@@ -178,104 +178,107 @@ try
         
         % Scan the stations
         for station_idx=1:numStations
-            % List the input crad_ascii files for the current station
-            try
-                cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '*' filesep '*' filesep '*' filesep '*.crad_ascii']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iCradDB_err = 1;
-            end
-            
-            % Insert information about the crad_ascii file into the database (if not yet present)
-            for crad_idx=1:length(cradFiles)
+            if(~isempty(station_data{station_idx,inputPathIndex}))
+                % List the input crad_ascii files for the current station
                 try
-                    % Retrieve the filename
-                    [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);
-                    noFullPathName=[name ext];
-                    % Check if the current crad_ascii file is already present on the database
-                    dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''''];
-                    dbRadials_curs = exec(conn,dbRadials_selectquery);
+                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(startDate)');
+                    disp(['[' datestr(now) '] - - ' 'Radial files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iCradDB_err = 1;
-                end
-                if(iCradDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table successfully executed.']);
-                end
-                % Fetch data
-                try
-                    dbRadials_curs = fetch(dbRadials_curs);
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iCradDB_err = 1;
-                end
-                if(iCradDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Data from radial_input_tb table successfully fetched.']);
                 end
                 
-                if(rows(dbRadials_curs) == 0)
-                    % Retrieve information about the crad_ascii file
+                % Insert information about the crad_ascii file into the database (if not yet present)
+                for crad_idx=1:length(cradFiles)
                     try
-                        % Load the total file as text
-                        cradFile = textread(cradFiles(crad_idx).name,  '%s', 'whitespace', '\n');
-                        % Read the file header and look for timestamp
-                        for line_idx=1:length(cradFile)
-                            splitLine = regexp(cradFile{line_idx}, '[ \t]+', 'split');
-                            if(length(splitLine)>1)
-                                expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{2})';
-                                expressionTime = '([0-9]{2}:[0-9]{2})';
-                                expressionUTC = 'UTC';
-                                [startIndexDate,endIndexDate] = regexp(cradFile{line_idx},expressionDate);
-                                [startIndexTime,endIndexTime] = regexp(cradFile{line_idx},expressionTime);
-                                [startIndexUTC,endIndexUTC] = regexp(cradFile{line_idx},expressionUTC);
-                                if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (~isempty(startIndexUTC)))
-                                    date = cradFile{line_idx}(startIndexDate:endIndexDate);
-                                    time = cradFile{line_idx}(startIndexTime:endIndexTime);
-                                    TimeStampVec = datevec([date ' ' time]);
-                                    TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
-                                    break;
-                                end
-                            end
-                        end
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iCradDB_err = 1;
-                    end
-                    
-                    % Evaluate datetime from, Time Stamp
-                    try
-                        [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iCradDB_err = 1;
-                    end
-                    
-                    % Retrieve information about the crad_ascii file
-                    try
-                        cradFileInfo = dir(cradFiles(crad_idx).name);
-                        cradFilesize = cradFileInfo.bytes/1024;
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iCradDB_err = 1;
-                    end
-                    
-                    % Write crad_ascii info in radial_input_tb table
-                    try
-                        % Define a cell array containing the column names to be added
-                        addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'filesize' 'extension' 'NRT_processed_flag'};
-                        
-                        % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,cradFilesize,'crad_ascii',0};
-                        
-                        % Append the product data into the radial_input_tb table on the database.
-                        tablename = 'radial_input_tb';
-                        datainsert(conn,tablename,addColnames,addData);
+                        % Retrieve the filename
+                        [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);
+                        noFullPathName=[name ext];
+                        % Check if the current crad_ascii file is already present on the database
+                        dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
+                        dbRadials_curs = exec(conn,dbRadials_selectquery);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iCradDB_err = 1;
                     end
                     if(iCradDB_err==0)
-                        disp(['[' datestr(now) '] - - ' 'Radial input file information successfully inserted into radial_input_tb table.']);
+                        disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for checking if ' noFullPathName ' radial file is already present in the database successfully executed.']);
+                    end
+                    % Fetch data
+                    try
+                        dbRadials_curs = fetch(dbRadials_curs);
+                    catch err
+                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                        iCradDB_err = 1;
+                    end
+                    if(iCradDB_err==0)
+                        disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' radial file in the database successfully fetched from radial_input_tb table.']);
+                    end
+                    
+                    if(rows(dbRadials_curs) == 0)
+                        % Retrieve information about the crad_ascii file
+                        try
+                            % Load the total file as text
+                            cradFile = textread(cradFiles(crad_idx).name,  '%s', 'whitespace', '\n');
+                            % Read the file header and look for timestamp
+                            for line_idx=1:length(cradFile)
+                                splitLine = regexp(cradFile{line_idx}, '[ \t]+', 'split');
+                                if(length(splitLine)>1)
+                                    expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{2})';
+                                    expressionTime = '([0-9]{2}:[0-9]{2})';
+                                    expressionUTC = 'UTC';
+                                    [startIndexDate,endIndexDate] = regexp(cradFile{line_idx},expressionDate);
+                                    [startIndexTime,endIndexTime] = regexp(cradFile{line_idx},expressionTime);
+                                    [startIndexUTC,endIndexUTC] = regexp(cradFile{line_idx},expressionUTC);
+                                    if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (~isempty(startIndexUTC)))
+                                        date = cradFile{line_idx}(startIndexDate:endIndexDate);
+                                        time = cradFile{line_idx}(startIndexTime:endIndexTime);
+                                        TimeStampVec = datevec([date ' ' time]);
+                                        TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
+                                        break;
+                                    end
+                                end
+                            end
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iCradDB_err = 1;
+                        end
+                        
+                        % Evaluate datetime from, Time Stamp
+                        try
+                            [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iCradDB_err = 1;
+                        end
+                        
+                        % Retrieve information about the crad_ascii file
+                        try
+                            cradFileInfo = dir(cradFiles(crad_idx).name);
+                            cradFilesize = cradFileInfo.bytes/1024;
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iCradDB_err = 1;
+                        end
+                        
+                        % Write crad_ascii info in radial_input_tb table
+                        try
+                            % Define a cell array containing the column names to be added
+                            addColnames = {'filename' 'network_id' 'station_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
+                            
+                            % Define a cell array that contains the data for insertion
+                            addData = {noFullPathName,network_data{network_idx,network_idIndex},station_data{station_idx,station_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),cradFilesize,'crad_ascii',0};
+                            
+                            % Append the product data into the radial_input_tb table on the database.
+                            tablename = 'radial_input_tb';
+                            datainsert(conn,tablename,addColnames,addData);
+                        catch err
+                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                            iCradDB_err = 1;
+                        end
+                        if(iCradDB_err==0)
+                            disp(['[' datestr(now) '] - - ' noFullPathName ' radial file information successfully inserted into radial_input_tb table.']);
+                        end
                     end
                 end
             end
@@ -301,3 +304,5 @@ if(iCradDB_err==0)
 end
 
 %%
+
+disp(['[' datestr(now) '] - - ' 'CP_inputCradAscii2DB successfully executed.']);

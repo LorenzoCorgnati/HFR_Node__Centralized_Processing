@@ -41,9 +41,22 @@ sqlConfig.database = 'HFR_node_db';
 
 %%
 
+%% Set datetime of the starting date of the processing period
+
+try
+    startDate = startCombinationDate(now);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    HFRC_err = 1;
+end
+
+%%
+
+%% Processing
 % Set the infinite loop for continuous operation
 kk = 5;
 while(kk>0)
+    disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop started.']);
     % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
     CP_inputRUV2DB;
 %     CP_inputCradAscii2DB;
@@ -56,3 +69,5 @@ while(kk>0)
     
     disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop ended.']);
 end
+
+%%

@@ -98,5 +98,7 @@ catch err
     sCC_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'tuvSiteCodeCoord.m successfully executed.']);
+
 return
 

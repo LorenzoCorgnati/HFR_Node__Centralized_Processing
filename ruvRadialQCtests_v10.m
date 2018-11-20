@@ -89,6 +89,7 @@ try
     % Check if the files of the previous two hours exist
     if ((exist(Radial_QC_params.TempDerThr.hour2) == 2) && (exist(Radial_QC_params.TempDerThr.hour1) == 2))
         tD_go = true;
+        [filepath1h,name1h,ext1h] = fileparts(Radial_QC_params.TempDerThr.hour1);
     else
         tD_go = false;
     end
@@ -124,7 +125,7 @@ if (RQC_err == 0)
                 for rVc=1:size(radVel,2)
                     if (radVel1h(rVr, rVc) ~= netcdf.getConstant('NC_FILL_FLOAT'))
                         if ((isnan(radVel(rVr,rVc))) || (radVel2h(rVr,rVc) == netcdf.getConstant('NC_FILL_FLOAT')))
-                            tempDer1h(rVr,rVc) = 1;
+                            tempDer1h(rVr,rVc) = 0;
                         elseif ((abs(radVel(rVr,rVc) - radVel1h(rVr,rVc)) < tempDer_Thr) && (abs(radVel2h(rVr,rVc) - radVel1h(rVr,rVc)) < tempDer_Thr))
                             tempDer1h(rVr,rVc) = 1;
                         else
@@ -136,7 +137,7 @@ if (RQC_err == 0)
             
             % Modify the VART_QC variable of the nc file of the previous hour
             ncwrite(Radial_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h);
-            disp(['[' datestr(now) '] - - ' 'Previous hour nc file successfully updated with the Temporal Derivative QC variable.']);
+            disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous hour nc file successfully updated with the Temporal Derivative QC variable.']);
         end
         % Set the QC flag for the current hour to 0 (no QC performed)
         tempDer(~isnan(radVel)) = 0;
@@ -299,7 +300,7 @@ try
         end
         % Modify the overall QC variable of the nc file of the previous hour
         ncwrite(Radial_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
-        disp(['[' datestr(now) '] - - ' 'Previous hour nc file successfully updated with the overall QC variable.']);
+        disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous hour nc file successfully updated with the overall QC variable.']);
     end
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -307,5 +308,7 @@ catch err
 end
 
 %%
+
+display(['[' datestr(now) '] - - ' 'ruvRadialQCtests_v10.m successfully executed.']);
 
 return

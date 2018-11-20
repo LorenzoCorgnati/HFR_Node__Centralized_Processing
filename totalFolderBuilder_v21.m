@@ -61,5 +61,7 @@ end
 % Build the full filename for the nc total file
 fullPath = [mainPath filesep 'v2.1' filesep dayFolder];
 
+disp(['[' datestr(now) '] - - ' 'totalFolderBuilder_v21.m successfully executed.']);
+
 return
 

@@ -52,5 +52,7 @@ catch err
     yMDF_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'yearMonthDayFolder.m successfully executed.']);
+
 return
 

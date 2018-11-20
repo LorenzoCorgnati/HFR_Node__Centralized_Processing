@@ -65,5 +65,7 @@ catch err
     sCC_err = 1;
 end
 
+disp(['[' datestr(now) '] - - ' 'curAscSiteCodeCoord.m successfully executed.']);
+
 return
 
