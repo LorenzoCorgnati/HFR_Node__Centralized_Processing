@@ -331,6 +331,7 @@ try
                         for indices_idx=1:length(toBeCombinedRadialIndices)
                             toBeCombinedStationIndexC = strfind(station_data(:,STstation_idIndex), toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),RIstation_idIndex});
                             toBeCombinedStationIndex = find(not(cellfun('isempty', toBeCombinedStationIndexC)));
+                            station_data{toBeCombinedStationIndex,inputPathIndex} = strtrim(station_data{toBeCombinedStationIndex,inputPathIndex});
                             radFiles(indices_idx) = {[station_data{toBeCombinedStationIndex,inputPathIndex} filesep dayFolder filesep toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),filenameIndex}]};
                         end
                     catch err
@@ -439,6 +440,7 @@ try
                         try
                             ts = datevec(TUVmask.TimeStamp);
                             time_str = sprintf('%.4d_%.2d_%.2d_%.2d%.2d',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
+                            network_data{network_idx,matPathIndex} = strtrim(network_data{network_idx,matPathIndex});
                             [tFB_err, matFilePath] = totalFolderBuilder_v21(network_data{network_idx,matPathIndex}, toBeCombinedRadials_data{radial_idx,timeStampIndex});
                             save([matFilePath filesep network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat'], 'TUVmask');
                             disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat' ' file successfully saved.']);

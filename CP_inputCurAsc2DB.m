@@ -112,6 +112,8 @@ end
 try
     for network_idx=1:numNetworks
         if(~isempty(network_data{network_idx,inputPathIndex}))
+            % Trim heading and trailing whitespaces from folder path
+            network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
             % List the input cur_asc files
             try
                 ascFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.cur_asc'],'datenum>floor(startDate)');
@@ -150,25 +152,28 @@ try
                 if(rows(dbTotals_curs) == 0)
                     % Retrieve information about the cur_asc file
                     try
-                        % Load the total file as text
-                        ascFile = textread(ascFiles(asc_idx).name,  '%s', 'whitespace', '\n');
-                        % Read the file header and look for timestamp
-                        for line_idx=1:length(ascFile)
-                            splitLine = regexp(ascFile{line_idx}, '[ \t]+', 'split');
-                            if(length(splitLine)>1)
-                                expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{4})';
-                                expressionTime = '([0-9]{2}:[0-9]{2})';
-                                [startIndexDate,endIndexDate] = regexp(splitLine{1},expressionDate);
-                                [startIndexTime,endIndexTime] = regexp(splitLine{2},expressionTime);
-                                if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (sum(splitLine{3}=='UTC')==3))
-                                    date = splitLine{1}(startIndexDate:endIndexDate);
-                                    time = splitLine{2}(startIndexTime:endIndexTime);
-                                    TimeStampVec = datevec([date ' ' time]);
-                                    TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
-                                    break;
-                                end
-                            end
-                        end
+%                         % Load the total file as text
+%                         ascFile = textread(ascFiles(asc_idx).name,  '%s', 'whitespace', '\n');
+%                         % Read the file header and look for timestamp
+%                         for line_idx=1:length(ascFile)
+%                             splitLine = regexp(ascFile{line_idx}, '[ \t]+', 'split');
+%                             if(length(splitLine)>1)
+%                                 expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{4})';
+%                                 expressionTime = '([0-9]{2}:[0-9]{2})';
+%                                 [startIndexDate,endIndexDate] = regexp(splitLine{1},expressionDate);
+%                                 [startIndexTime,endIndexTime] = regexp(splitLine{2},expressionTime);
+%                                 if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (sum(splitLine{3}=='UTC')==3))
+%                                     date = splitLine{1}(startIndexDate:endIndexDate);
+%                                     time = splitLine{2}(startIndexTime:endIndexTime);
+%                                     TimeStampVec = datevec([date ' ' time]);
+%                                     TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
+%                                     break;
+%                                 end
+%                             end
+%                         end
+                        [date,time] = textread(ascFiles(asc_idx).name, '%11c %*0c %5c',1, 'headerlines',1);
+                        TimeStampVec = datevec([date ' ' time]);
+                        TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iCurDB_err = 1;

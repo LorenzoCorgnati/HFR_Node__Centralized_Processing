@@ -117,6 +117,7 @@ try
     
     outputPathIndex = find(not(cellfun('isempty', strfind(stationFields, 'radial_HFRnetCDF_folder_path'))));
     network_idIndex = find(not(cellfun('isempty', strfind(networkFields, 'network_id'))));
+    stationData{outputPathIndex} = strtrim(stationData{outputPathIndex});
     [rFB_err, ncFilePath] = radialFolderBuilder_v21(stationData{outputPathIndex},siteCode,timestamp);
     if(rFB_err == 0)
         ncfile = [ncFilePath filesep networkData{network_idIndex} '_RDL_' fileType '_' siteCode '_' fileTime '.nc'];

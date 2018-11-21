@@ -180,6 +180,8 @@ try
         for station_idx=1:numStations
             % List the input ruv files for the current station
             if(~isempty(station_data{station_idx,inputPathIndex}))
+                % Trim heading and trailing whitespaces from folder path
+                station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 try
                     ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(startDate)');
                     disp(['[' datestr(now) '] - - ' 'Radials files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);

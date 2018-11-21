@@ -179,6 +179,8 @@ try
         % Scan the stations
         for station_idx=1:numStations
             if(~isempty(station_data{station_idx,inputPathIndex}))
+                % Trim heading and trailing whitespaces from folder path
+                station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 % List the input crad_ascii files for the current station
                 try
                     cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(startDate)');
@@ -218,27 +220,31 @@ try
                     if(rows(dbRadials_curs) == 0)
                         % Retrieve information about the crad_ascii file
                         try
-                            % Load the total file as text
-                            cradFile = textread(cradFiles(crad_idx).name,  '%s', 'whitespace', '\n');
-                            % Read the file header and look for timestamp
-                            for line_idx=1:length(cradFile)
-                                splitLine = regexp(cradFile{line_idx}, '[ \t]+', 'split');
-                                if(length(splitLine)>1)
-                                    expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{2})';
-                                    expressionTime = '([0-9]{2}:[0-9]{2})';
-                                    expressionUTC = 'UTC';
-                                    [startIndexDate,endIndexDate] = regexp(cradFile{line_idx},expressionDate);
-                                    [startIndexTime,endIndexTime] = regexp(cradFile{line_idx},expressionTime);
-                                    [startIndexUTC,endIndexUTC] = regexp(cradFile{line_idx},expressionUTC);
-                                    if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (~isempty(startIndexUTC)))
-                                        date = cradFile{line_idx}(startIndexDate:endIndexDate);
-                                        time = cradFile{line_idx}(startIndexTime:endIndexTime);
-                                        TimeStampVec = datevec([date ' ' time]);
-                                        TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
-                                        break;
-                                    end
-                                end
-                            end
+%                             % Load the total file as text
+%                             cradFile = textread(cradFiles(crad_idx).name,  '%s', 'whitespace', '\n');
+%                             % Read the file header and look for timestamp
+%                             for line_idx=1:length(cradFile)
+%                                 splitLine = regexp(cradFile{line_idx}, '[ \t]+', 'split');
+%                                 if(length(splitLine)>1)
+%                                     expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{2})';
+%                                     expressionTime = '([0-9]{2}:[0-9]{2})';
+%                                     expressionUTC = 'UTC';
+%                                     [startIndexDate,endIndexDate] = regexp(cradFile{line_idx},expressionDate);
+%                                     [startIndexTime,endIndexTime] = regexp(cradFile{line_idx},expressionTime);
+%                                     [startIndexUTC,endIndexUTC] = regexp(cradFile{line_idx},expressionUTC);
+%                                     if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (~isempty(startIndexUTC)))
+%                                         date = cradFile{line_idx}(startIndexDate:endIndexDate);
+%                                         time = cradFile{line_idx}(startIndexTime:endIndexTime);
+%                                         TimeStampVec = datevec([date ' ' time]);
+%                                         TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
+%                                         break;
+%                                     end
+%                                 end
+%                             end
+                            % Read the timestamp from the header
+                            [date,time] = textread(cradFiles(crad_idx).name, '%*15c %9c %*0c %5c',1);
+                            TimeStampVec = datevec([date ' ' time]);
+                            TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             iCradDB_err = 1;

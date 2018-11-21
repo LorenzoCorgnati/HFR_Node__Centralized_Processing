@@ -309,6 +309,7 @@ try
     time_str = sprintf('%.4d_%.2d_%.2d_%.2d%.2d',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
     outputPathIndex = find(not(cellfun('isempty', strfind(networkFields, 'total_HFRnetCDF_folder_path'))));
     network_idIndex = find(not(cellfun('isempty', strfind(networkFields, 'network_id'))));
+    networkData{outputPathIndex} = strtrim(networkData{outputPathIndex});
     [tFB_err, ncFilePath] = totalFolderBuilder_v21(networkData{outputPathIndex}, timestamp);
     if(tFB_err == 0)
         ncfile = [ncFilePath filesep networkData{network_idIndex} '_TOTL_' time_str '.nc'];

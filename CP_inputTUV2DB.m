@@ -112,6 +112,8 @@ end
 try
     for network_idx=1:numNetworks
         if(~isempty(network_data{network_idx,inputPathIndex}))
+            % Trim heading and trailing whitespaces from folder path
+            network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
             % List the input tuv files
             try
                 tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(startDate)');
