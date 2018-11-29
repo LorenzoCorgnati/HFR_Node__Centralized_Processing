@@ -316,7 +316,11 @@ end
 try
     institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
     institution_websiteStr = networkData{institution_websiteIndex};
-    tmpStr = strrep(institution_websiteStr,'http://','');
+    if(~isempty(strfind(institution_websiteStr,'http://')))
+        tmpStr = strrep(institution_websiteStr,'http://','');
+    elseif(~isempty(strfind(institution_websiteStr,'https://')))
+        tmpStr = strrep(institution_websiteStr,'https://','');
+    end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
     splitStr = strsplit(tmpStr,'.');

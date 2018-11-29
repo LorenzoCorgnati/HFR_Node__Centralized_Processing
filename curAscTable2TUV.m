@@ -71,7 +71,7 @@ try
     vIndex = vIndex(find(vIndex~=vAccIndex));
     
     % Scan the data table and fill the TUV structure
-    for tab_idx=1:length(table)
+    for tab_idx=1:size(table,1)
         % Map the X and Y indices to lat/lon coordinates
         tuv.LonLat(tab_idx,1) = lonG(table(tab_idx,XindIndex));
         tuv.LonLat(tab_idx,2) = latG(table(tab_idx,YindIndex));

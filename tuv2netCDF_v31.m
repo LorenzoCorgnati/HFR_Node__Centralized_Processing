@@ -299,7 +299,11 @@ end
 try
     institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
     institution_websiteStr = networkData{institution_websiteIndex};
-    tmpStr = strrep(institution_websiteStr,'http://','');
+    if(~isempty(strfind(institution_websiteStr,'http://')))
+        tmpStr = strrep(institution_websiteStr,'http://','');
+    elseif(~isempty(strfind(institution_websiteStr,'https://')))
+        tmpStr = strrep(institution_websiteStr,'https://','');
+    end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
     splitStr = strsplit(tmpStr,'.');
@@ -346,7 +350,7 @@ try
     lat_dim = size(TUVgrid.gridLat,1);
     lon_dim = size(TUVgrid.gridLon,2);
     depth_dim = 1;
-    maxSite_dim = 50;
+    maxSite_dim = size(siteCodes,1);
     maxInst_dim = length(EDMO_code);
     refMax_dim = 1;
     string15_dim = 15;

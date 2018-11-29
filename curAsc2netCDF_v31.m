@@ -38,30 +38,52 @@ cA2C_err = 0;
 
 warning('off', 'all');
 
-%% Load the total file
-
-try
-    % Load the total file as text
-    ascFile = textread(totFilename,  '%s', 'whitespace', '\n');
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    cA2C_err = 1;
-end
-
-%%
+% %% Load the total file
+% 
+% try
+%     % Load the total file as text
+%     ascFile = textread(totFilename,  '%s', 'whitespace', '\n');
+% catch err
+%     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+%     cA2C_err = 1;
+% end
+% 
+% %%
 
 %% Retrieve the file header, the data table, the column names of the data table and site codes and coordinates
 
 try
-    % Read the file header and the data table
-    [cA2C_err, ascHeader, tableFields, ascTable] = curAscHeaderDataTable(ascFile);
+    % Read the number of contributing radial stations
+    nStation=textread(totFilename,'%u',1);
+    
+%     % Read the file header and the data table
+%     [cA2C_err, ascHeader, tableFields, ascTable] = curAscHeaderDataTable(ascFile);
+    % Read the data table
+    [IX,IY,U,V,KL,Acc_U,Acc_V] = textread(totFilename,'%u %u %f %f %d %f %f','headerlines', nStation+9);
+    ascTable=[IX,IY,U,V,KL,Acc_U,Acc_V];
+    tableFields={'IX'    'IY'    'U[m/s]'    'V[m/s]'    'KL'    'Acc_U[m/s]'    'Acc_V[m/s]'}; % TO BE CANCELLED AFTER JAN'S CONFIRMATION
     
     % Retrieve site codes and coordinates
-    [cA2C_err,sitesCodes,sitesLat,sitesLon] = curAscSiteCodeCoord(ascHeader);
+%     [cA2C_err,sitesCodes,sitesLat,sitesLon] = curAscSiteCodeCoord(ascHeader);
+    for st_idx=1:nStation
+        [sitesCodes(st_idx,:),sitesLat(st_idx),NS,sitesLon(st_idx),EW] = textread(totFilename, '%*11c %*0c %*5c %*0c %*3c %*0c %s %*0c %f %*0c %s %*0c %f %*0c %s',1, 'headerlines',st_idx);
+        if(strcmp(NS,'South'))
+            sitesLat(st_idx) = -sitesLat(st_idx);
+        end
+        if(strcmp(EW,'West'))
+            sitesLon(st_idx) = -sitesLon(st_idx);
+        end
+        assert(sitesLat(st_idx)>=-90.0 & sitesLat(st_idx)<=90.0,[sitesCodes{st_idx,:} ' site latitude out of range']);
+        assert(sitesLon(st_idx)>=-180.0 & sitesLon(st_idx)<=180.0,[sitesCodes{st_idx,:} ' site longitude out of range']);
+    end
+    sitesCodes=char(sitesCodes);
+    sitesCodes = upper(sitesCodes(:,1:4));
     
     % Retrieve top-left point of the first gridcell, cell size and number of lon and lat gridcells
-    [cA2C_err,topLeftLat,topLeftLon, cellSize, lonCells,latCells] = curAscGridSpec(ascHeader);
-    
+%     [cA2C_err,topLeftLat,topLeftLon, cellSize, lonCells,latCells] = curAscGridSpec(ascHeader);
+    [topLeftLat,topLeftLon, cellSize, lonCells,latCells]=textread(totFilename,'%f %f %f %u %u',1,'headerlines', nStation+4);
+    assert(topLeftLat>=-90.0 & topLeftLat<=90.0,'Grid top-left latitude out of range');
+    assert(topLeftLon>=-180.0 & topLeftLon<=180.0,'Grid top-left latitude out of range');
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     cA2C_err = 1;
@@ -73,7 +95,7 @@ end
 %% Create the regular grid
 
 try
-    % Retrieve the lower right coordinates
+    % Retrieve the lower left and upper right coordinates
     [LLlon, LLlat] = km2lonlat(topLeftLon,topLeftLat,0,-(cellSize*latCells+1));
     [URlon, URlat] = km2lonlat(topLeftLon,topLeftLat,(cellSize*lonCells+1),0);
     
@@ -337,7 +359,11 @@ end
 try
     institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
     institution_websiteStr = networkData{institution_websiteIndex};
-    tmpStr = strrep(institution_websiteStr,'http://','');
+    if(~isempty(strfind(institution_websiteStr,'http://')))
+        tmpStr = strrep(institution_websiteStr,'http://','');
+    elseif(~isempty(strfind(institution_websiteStr,'https://')))
+        tmpStr = strrep(institution_websiteStr,'https://','');
+    end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
     splitStr = strsplit(tmpStr,'.');
@@ -384,7 +410,7 @@ try
     lat_dim = size(latGrid,1);
     lon_dim = size(lonGrid,1);
     depth_dim = 1;
-    maxSite_dim = 50;
+    maxSite_dim = size(sitesCodes,1);
     maxInst_dim = length(EDMO_code);
     refMax_dim = 1;
     string15_dim = 15;

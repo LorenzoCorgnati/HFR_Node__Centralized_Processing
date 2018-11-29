@@ -83,7 +83,7 @@ end
 
 %% Define the maximum number of allowed sites and of xlink references
 
-maxsite = 50;
+maxsite = 1;
 refmax = 1;
 
 %%
@@ -148,7 +148,11 @@ end
 try
     institution_websiteIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_website'))));
     institution_websiteStr = stationData{institution_websiteIndex};
-    tmpStr = strrep(institution_websiteStr,'http://','');
+    if(~isempty(strfind(institution_websiteStr,'http://')))
+        tmpStr = strrep(institution_websiteStr,'http://','');
+    elseif(~isempty(strfind(institution_websiteStr,'https://')))
+        tmpStr = strrep(institution_websiteStr,'https://','');
+    end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
     splitStr = strsplit(tmpStr,'.');
