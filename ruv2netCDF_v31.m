@@ -773,7 +773,7 @@ try
     % overflow int in 2038. New epoch will be needed then to keep int
     % representation. Unix time epoch is: 1970-01-01 00:00:00Z = 0 seconds, 86,400 sec/day
     varid_t = netcdf.defVar(ncid, 'TIME', 'float', dimid_t);
-    netcdf.putAtt(ncid, varid_t, 'long_name', 'Time of Measurement UTC');
+    netcdf.putAtt(ncid, varid_t, 'long_name', 'Time of measurement UTC');
     netcdf.putAtt(ncid, varid_t, 'standard_name', 'time');
     netcdf.putAtt(ncid, varid_t, 'units', ['days since ' time_units]);
     netcdf.putAtt(ncid, varid_t, 'calendar', 'Julian');
@@ -786,8 +786,8 @@ try
     
     % Bearing (arbitrary 'y' dimension)
     varid_bearing = netcdf.defVar(ncid, 'BEAR', 'float', dimid_bearing);
-    netcdf.putAtt(ncid, varid_bearing, 'axis', 'Y');
-    netcdf.putAtt(ncid, varid_bearing, 'long_name', 'Bearing Away From Instrument');
+    netcdf.putAtt(ncid, varid_bearing, 'axis', 'X');
+    netcdf.putAtt(ncid, varid_bearing, 'long_name', 'Bearing away from instrument');
     netcdf.putAtt(ncid, varid_bearing, 'units', 'degrees_true');
     netcdf.putAtt(ncid, varid_bearing, 'sdn_parameter_name', 'Bearing');
     netcdf.putAtt(ncid, varid_bearing, 'sdn_parameter_urn', 'SDN:P01::BEARRFTR');
@@ -797,8 +797,8 @@ try
     
     % Range (arbitrary 'x' dimension)
     varid_range = netcdf.defVar(ncid, 'RNGE', 'float', dimid_range);
-    netcdf.putAtt(ncid, varid_range, 'axis', 'X');
-    netcdf.putAtt(ncid, varid_range, 'long_name', 'Range Away From Instrument');
+    netcdf.putAtt(ncid, varid_range, 'axis', 'Y');
+    netcdf.putAtt(ncid, varid_range, 'long_name', 'Range away from instrument');
     netcdf.putAtt(ncid, varid_range, 'units', 'km');
     netcdf.putAtt(ncid, varid_range, 'sdn_parameter_name', 'Range (from fixed reference point) by unspecified GPS system');
     netcdf.putAtt(ncid, varid_range, 'sdn_parameter_urn', 'SDN:P01::RIFNAX01');
@@ -808,7 +808,7 @@ try
     
     % Depth (arbitrary 'z' dimension)
     varid_depth = netcdf.defVar(ncid, 'DEPH', 'float', dimid_depth);
-    netcdf.putAtt(ncid, varid_depth, 'long_name', 'Depth of Measurement');
+    netcdf.putAtt(ncid, varid_depth, 'long_name', 'Depth of measurement');
     netcdf.putAtt(ncid, varid_depth, 'standard_name', 'depth');
     netcdf.putAtt(ncid, varid_depth, 'units', 'm');
     netcdf.putAtt(ncid, varid_depth, 'axis', 'Z');
@@ -931,7 +931,7 @@ try
     netcdf.putAtt(ncid, varid_speed, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_speed, 'standard_name', 'radial_sea_water_velocity_away_from_instrument');
     netcdf.putAtt(ncid, varid_speed, 'long_name', 'Radial Sea Water Velocity Away From Instrument');
-    netcdf.putAtt(ncid, varid_speed, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_speed, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_speed, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_speed, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_speed, 'sdn_parameter_name', 'Current speed (Eulerian) in the water body by directional range-gated radar');
@@ -953,7 +953,7 @@ try
     netcdf.putAtt(ncid, varid_direction, 'valid_range', single( [0 360]));
     netcdf.putAtt(ncid, varid_direction, 'standard_name', 'direction_of_radial_vector_away_from_instrument');
     netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction of Radial Vector Away From Instrument');
-    netcdf.putAtt(ncid, varid_direction, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_direction, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_direction, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_direction, 'units', 'degrees_true');
     netcdf.putAtt(ncid, varid_direction, 'scale_factor', single(1));
@@ -970,7 +970,7 @@ try
     netcdf.putAtt(ncid, varid_u, 'valid_range', single( [-10 10]));
     netcdf.putAtt(ncid, varid_u, 'standard_name', 'surface_eastward_sea_water_velocity');
     netcdf.putAtt(ncid, varid_u, 'long_name', 'Surface Eastward Sea Water Velocity');
-    netcdf.putAtt(ncid, varid_u, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_u, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_u, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_u, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_u, 'units', 'm s-1');
@@ -987,7 +987,7 @@ try
     netcdf.putAtt(ncid, varid_v, 'valid_range', single( [-10 10]));
     netcdf.putAtt(ncid, varid_v, 'standard_name', 'surface_northward_sea_water_velocity');
     netcdf.putAtt(ncid, varid_v, 'long_name', 'Surface Northward Sea Water Velocity');
-    netcdf.putAtt(ncid, varid_v, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_v, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_v, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_v, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_v, 'units', 'm s-1');
@@ -1005,7 +1005,7 @@ try
     netcdf.putAtt(ncid, varid_espc, 'long_name', 'Radial Standard Deviation of Current Velocity over the Scatter Patch');
     netcdf.putAtt(ncid, varid_espc, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_espc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
-    netcdf.putAtt(ncid, varid_espc, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_espc, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_espc, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_espc, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_espc, 'sdn_parameter_name', '');
@@ -1021,7 +1021,7 @@ try
     netcdf.putAtt(ncid, varid_etmp, 'long_name', 'Radial Standard Deviation of Current Velocity over Coverage Period');
     netcdf.putAtt(ncid, varid_etmp, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_etmp, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
-    netcdf.putAtt(ncid, varid_etmp, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_etmp, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_etmp, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_etmp, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_etmp, 'sdn_parameter_name', '');
@@ -1035,7 +1035,7 @@ try
     netcdf.defVarDeflate(ncid, varid_maxv, true, true, 6);
     netcdf.putAtt(ncid, varid_maxv, 'long_name', 'Radial Sea Water Velocity Away From Instrument Maximum');
     netcdf.putAtt(ncid, varid_maxv, 'valid_range', single( [-10 10] ));
-    netcdf.putAtt(ncid, varid_maxv, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_maxv, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_maxv, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_maxv, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_maxv, 'units', 'm s-1' );
@@ -1051,7 +1051,7 @@ try
     netcdf.defVarDeflate(ncid, varid_minv, true, true, 6);
     netcdf.putAtt( ncid, varid_minv, 'long_name','Radial Sea Water Velocity Away From Instrument Minimum');
     netcdf.putAtt(ncid, varid_minv, 'valid_range', single( [-10 10] ));
-    netcdf.putAtt(ncid, varid_minv, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_minv, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_minv, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_minv, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_minv, 'units', 'm s-1');
@@ -1067,7 +1067,7 @@ try
     netcdf.defVarDeflate(ncid, varid_ersc, true, true, 6);
     netcdf.putAtt(ncid, varid_ersc, 'long_name', 'Radial Sea Water Velocity Spatial Quality Count' );
     netcdf.putAtt(ncid, varid_ersc, 'valid_range', int16( [0 127] ));
-    netcdf.putAtt(ncid, varid_ersc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_ersc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_ersc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_ersc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_ersc, 'units', '1');
@@ -1083,7 +1083,7 @@ try
     netcdf.defVarDeflate(ncid, varid_ertc, true, true, 6);
     netcdf.putAtt(ncid, varid_ertc, 'long_name', 'Radial Sea Water Velocity Temporal Quality Count');
     netcdf.putAtt(ncid, varid_ertc, 'valid_range', int16( [0 127] ));
-    netcdf.putAtt(ncid, varid_ertc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_ertc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_ertc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_ertc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_ertc, 'units', '1');
@@ -1099,7 +1099,7 @@ try
     netcdf.defVarDeflate(ncid, varid_xdst, true, true, 6);
     netcdf.putAtt(ncid, varid_xdst, 'long_name', 'Eastward Distance From Instrument');
     netcdf.putAtt(ncid, varid_xdst, 'valid_range', single( [0 1e3] ));
-    netcdf.putAtt(ncid, varid_xdst, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_xdst, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_xdst, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_xdst, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_xdst, 'units', 'km');
@@ -1115,7 +1115,7 @@ try
     netcdf.defVarDeflate(ncid, varid_ydst, true, true, 6);
     netcdf.putAtt(ncid, varid_ydst, 'long_name', 'Northward Distance From Instrument');
     netcdf.putAtt(ncid, varid_ydst, 'valid_range', single( [0 1e3] ));
-    netcdf.putAtt(ncid, varid_ydst, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_ydst, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_ydst, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_ydst, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_ydst, 'units', 'km');
@@ -1129,9 +1129,9 @@ try
     % Spectra Range Cell
     varid_sprc = netcdf.defVar(ncid, 'SPRC', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sprc, true, true, 6);
-    netcdf.putAtt(ncid, varid_sprc, 'long_name', 'Radial Sea Water Velocity Cross Spectral Range Cell');
+    netcdf.putAtt(ncid, varid_sprc, 'long_name', 'Radial Sea Water Velocity Cross Spectra Range Cell');
     netcdf.putAtt(ncid, varid_sprc, 'valid_range', int16( [-0 127] ));
-    netcdf.putAtt(ncid, varid_sprc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_sprc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_sprc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_sprc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_sprc, 'units', '1');
@@ -1147,7 +1147,7 @@ try
     netcdf.defVarDeflate(ncid, varid_narx, true, true, 6);
     netcdf.putAtt(ncid, varid_narx, 'long_name', 'Number of Receive Antennas');
     netcdf.putAtt(ncid, varid_narx, 'valid_range', int16([0 maxsite] ));
-    netcdf.putAtt(ncid, varid_narx, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_narx, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_narx, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_narx, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_narx, 'units', char('1'));
@@ -1162,7 +1162,7 @@ try
     netcdf.defVarDeflate(ncid, varid_natx, true, true, 6);
     netcdf.putAtt(ncid, varid_natx, 'long_name', 'Number of Transmit Antennas');
     netcdf.putAtt(ncid, varid_natx, 'valid_range', int16([0 maxsite] ));
-    netcdf.putAtt(ncid, varid_natx, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_natx, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_natx, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_natx, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_natx, 'units', char('1'));
@@ -1178,7 +1178,7 @@ try
     netcdf.putAtt(ncid, varid_sltr, 'long_name', 'Receive Antenna Latitudes');
     netcdf.putAtt( ncid, varid_sltr, 'standard_name', 'latitude' );
     netcdf.putAtt(ncid, varid_sltr, 'valid_range', single( [-180 180] ));
-    netcdf.putAtt(ncid, varid_sltr, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_sltr, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_sltr, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_sltr, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_sltr, 'units', 'degrees_north');
@@ -1194,7 +1194,7 @@ try
     netcdf.putAtt(ncid, varid_slnr, 'long_name', 'Receive Antenna Longitudes');
     netcdf.putAtt( ncid, varid_slnr, 'standard_name', 'longitude' );
     netcdf.putAtt(ncid, varid_slnr, 'valid_range', single( [-90 90] ));
-    netcdf.putAtt(ncid, varid_slnr, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_slnr, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_slnr, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_slnr, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_slnr, 'units', 'degrees_east');
@@ -1210,7 +1210,7 @@ try
     netcdf.putAtt(ncid, varid_sltt, 'long_name', 'Transmit Antenna Latitudes');
     netcdf.putAtt( ncid, varid_sltt, 'standard_name', 'latitude' );
     netcdf.putAtt(ncid, varid_sltt, 'valid_range', single( [-180 180] ));
-    netcdf.putAtt(ncid, varid_sltt, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_sltt, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_sltt, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_sltt, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_sltt, 'units', 'degrees_north');
@@ -1226,7 +1226,7 @@ try
     netcdf.putAtt(ncid, varid_slnt, 'long_name', 'Transmit Antenna Longitudes');
     netcdf.putAtt( ncid, varid_slnt, 'standard_name', 'longitude' );
     netcdf.putAtt(ncid, varid_slnt, 'valid_range', single( [-90 90] ));
-    netcdf.putAtt(ncid, varid_slnt, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_slnt, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_slnt, 'scale_factor', single(1));
     netcdf.putAtt(ncid, varid_slnt, 'add_offset', single(0));
     netcdf.putAtt(ncid, varid_slnt, 'units', 'degrees_east');
@@ -1240,6 +1240,9 @@ try
     varid_scdr = netcdf.defVar(ncid, 'SCDR', 'char', [dimid_string4 dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdr, true, true, 6);
     netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive Antenna Codes');
+    netcdf.putAtt(ncid, varid_scdr, 'units', '1');
+    netcdf.putAtt(ncid, varid_scdr, 'valid_range', '');
+    netcdf.putAtt(ncid, varid_scdr, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_scdr, 'sdn_uom_name', 'Dimensionless');
@@ -1249,6 +1252,9 @@ try
     varid_scdt = netcdf.defVar(ncid, 'SCDT', 'char', [dimid_string4 dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdt, true, true, 6);
     netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit Antenna Codes');
+    netcdf.putAtt(ncid, varid_scdt, 'units', '1');
+    netcdf.putAtt(ncid, varid_scdt, 'valid_range', '');
+    netcdf.putAtt(ncid, varid_scdt, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_scdt, 'sdn_uom_name', 'Dimensionless');
@@ -1266,7 +1272,7 @@ try
     netcdf.putAtt(ncid, varid_tqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_tqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_tqc, 'comment', 'OceanSITES quality flagging for temporal coordinate.');
-    netcdf.putAtt(ncid, varid_tqc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_tqc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_tqc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_tqc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_tqc, 'units', '1');
@@ -1279,7 +1285,7 @@ try
     netcdf.putAtt(ncid, varid_posqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_posqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_posqc, 'comment', 'OceanSITES quality flagging for position coordinates');
-    netcdf.putAtt(ncid, varid_posqc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_posqc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_posqc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_posqc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_posqc, 'units', '1');
@@ -1293,7 +1299,7 @@ try
     netcdf.putAtt(ncid, varid_dqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_dqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_dqc, 'comment', 'OceanSITES quality flagging for depth coordinate.');
-    netcdf.putAtt(ncid, varid_dqc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_dqc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_dqc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_dqc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_dqc, 'units', '1');
@@ -1306,7 +1312,7 @@ try
     netcdf.putAtt(ncid, varid_ovqc, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_ovqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_ovqc, 'comment', 'OceanSITES quality flagging for all QC tests.');
-    netcdf.putAtt(ncid, varid_ovqc, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_ovqc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_ovqc, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_ovqc, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_ovqc, 'units', '1');
@@ -1320,7 +1326,7 @@ try
     netcdf.putAtt(ncid, varid_owtr, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_owtr, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_owtr, 'comment', 'OceanSITES quality flagging for Over-water QC test.');
-    netcdf.putAtt(ncid, varid_owtr, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_owtr, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_owtr, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_owtr, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_owtr, 'units', '1');
@@ -1334,7 +1340,7 @@ try
     netcdf.putAtt(ncid, varid_mdfl, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_mdfl, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_mdfl, 'comment', ['OceanSITES quality flagging for Median Filter QC test. Threshold set to ' num2str(Radial_QC_params.MedFilt(1)) ' km, ' num2str(Radial_QC_params.MedFilt(2)) ' deg, ' num2str(Radial_QC_params.MedFilt(3)) ' m/s, ']);
-    netcdf.putAtt(ncid, varid_mdfl, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_mdfl, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_mdfl, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_mdfl, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_mdfl, 'units', '1');
@@ -1348,7 +1354,7 @@ try
     netcdf.putAtt(ncid, varid_vart, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_vart, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_vart, 'comment', ['OceanSITES quality flagging for Variance Threshold QC test. Test not applicable to Direction Finding systems. The Temporal Derivative test is applied. Threshold set to ' num2str(Radial_QC_params.TempDerThr.threshold) ' m/s.']);
-    netcdf.putAtt(ncid, varid_vart, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_vart, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_vart, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_vart, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_vart, 'units', '1');
@@ -1362,7 +1368,7 @@ try
     netcdf.putAtt(ncid, varid_cspd, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_cspd, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_cspd, 'comment', ['OceanSITES quality flagging for Velocity Threshold QC test. Threshold set to ' num2str(Radial_QC_params.VelThr) ' m/s.']);
-    netcdf.putAtt(ncid, varid_cspd, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_cspd, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_cspd, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_cspd, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_cspd, 'units', '1');
@@ -1376,7 +1382,7 @@ try
     netcdf.putAtt(ncid, varid_avrb, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_avrb, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_avrb, 'comment', ['OceanSITES quality flagging for Average Radial Bearing QC test. Thresholds set to [' num2str(Radial_QC_params.AvgRadBear(1)) '-' num2str(Radial_QC_params.AvgRadBear(2)) '] deg.']);
-    netcdf.putAtt(ncid, varid_avrb, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_avrb, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_avrb, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_avrb, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_avrb, 'units', '1');
@@ -1389,7 +1395,7 @@ try
     netcdf.putAtt(ncid, varid_rdct, 'flag_values', int16( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_rdct, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_rdct, 'comment', ['OceanSITES quality flagging for Radial Count QC test. Thresholds set to ' num2str(Radial_QC_params.RadCnt) ' vectors.']);
-    netcdf.putAtt(ncid, varid_rdct, 'FillValue', netcdf.getConstant('NC_FILL_SHORT'));
+    netcdf.putAtt(ncid, varid_rdct, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_rdct, 'scale_factor', int16(1));
     netcdf.putAtt(ncid, varid_rdct, 'add_offset', int16(0));
     netcdf.putAtt(ncid, varid_rdct, 'units', '1');

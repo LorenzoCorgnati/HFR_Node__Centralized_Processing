@@ -636,7 +636,7 @@ try
         'Format',ncfmt);
     
     %% Creates attributes for the variables
-    ncwriteatt(ncfile,'TIME','long_name',char('Time of Measurement UTC'));
+    ncwriteatt(ncfile,'TIME','long_name',char('Time of measurement UTC'));
     ncwriteatt(ncfile,'TIME','standard_name',char('time'));
     ncwriteatt(ncfile,'TIME','units',char(time_units));
     ncwriteatt(ncfile,'TIME','calendar',char('Julian'));
@@ -687,7 +687,7 @@ try
     
     ncwriteatt(ncfile,'SDN_XLINK','long_name',char('External resource linkages'));
     
-    ncwriteatt(ncfile,'DEPH','long_name',char('Depth of Measurement'));
+    ncwriteatt(ncfile,'DEPH','long_name',char('Depth of measurement'));
     ncwriteatt(ncfile,'DEPH','standard_name',char('depth'));
     ncwriteatt(ncfile,'DEPH','units',char('m'));
     ncwriteatt(ncfile,'DEPH','axis',char('Z'));
@@ -899,7 +899,7 @@ try
     ncwriteatt(ncfile,'NATX','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'NATX','sdn_uom_urn',char('SDN:P06::UUUU'));
     
-    ncwriteatt(ncfile,'SLTR','long_name',char('Receive Antennas Latitudes'));
+    ncwriteatt(ncfile,'SLTR','long_name',char('Receive Antenna Latitudes'));
     ncwriteatt(ncfile,'SLTR','standard_name',char('latitude'));
     ncwriteatt(ncfile,'SLTR','units','degrees_north');
     ncwriteatt(ncfile,'SLTR','valid_range',single([-90 90]));
@@ -911,7 +911,7 @@ try
     ncwriteatt(ncfile,'SLTR','sdn_uom_name',char('Degrees north'));
     ncwriteatt(ncfile,'SLTR','sdn_uom_urn',char('SDN:P06::DEGN'));
     
-    ncwriteatt(ncfile,'SLNR','long_name',char('Receive Antennas Longitudes'));
+    ncwriteatt(ncfile,'SLNR','long_name',char('Receive Antenna Longitudes'));
     ncwriteatt(ncfile,'SLNR','standard_name',char('longitude'));
     ncwriteatt(ncfile,'SLNR','units','degrees_east');
     ncwriteatt(ncfile,'SLNR','valid_range',single([-180 180]));
@@ -923,7 +923,7 @@ try
     ncwriteatt(ncfile,'SLNR','sdn_uom_name',char('Degrees east'));
     ncwriteatt(ncfile,'SLNR','sdn_uom_urn',char('SDN:P06::DEGE'));
     
-    ncwriteatt(ncfile,'SLTT','long_name',char('Transmit Antennas Latitudes'));
+    ncwriteatt(ncfile,'SLTT','long_name',char('Transmit Antenna Latitudes'));
     ncwriteatt(ncfile,'SLTT','standard_name',char('latitude'));
     ncwriteatt(ncfile,'SLTT','units','degrees_north');
     ncwriteatt(ncfile,'SLTT','valid_range',single([-90 90]));
@@ -935,7 +935,7 @@ try
     ncwriteatt(ncfile,'SLTT','sdn_uom_name',char('Degrees north'));
     ncwriteatt(ncfile,'SLTT','sdn_uom_urn',char('SDN:P06::DEGN'));
     
-    ncwriteatt(ncfile,'SLNT','long_name',char('Transmit Antennas Longitudes'));
+    ncwriteatt(ncfile,'SLNT','long_name',char('Transmit Antenna Longitudes'));
     ncwriteatt(ncfile,'SLNT','standard_name',char('longitude'));
     ncwriteatt(ncfile,'SLNT','units','degrees_east');
     ncwriteatt(ncfile,'SLNT','valid_range',single([-180 180]));
@@ -948,12 +948,16 @@ try
     ncwriteatt(ncfile,'SLNT','sdn_uom_urn',char('SDN:P06::DEGE'));
     
     ncwriteatt(ncfile,'SCDR','long_name',char('Receive Antenna Codes'));
+    ncwriteatt(ncfile,'SCDR','units',char('1'));
+    ncwriteatt(ncfile,'SCDR','valid_range',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'SCDR','sdn_uom_urn',char('SDN:P06::UUUU'));
     
     ncwriteatt(ncfile,'SCDT','long_name',char('Transmit Antenna Codes'));
+    ncwriteatt(ncfile,'SCDT','units',char('1'));
+    ncwriteatt(ncfile,'SCDT','valid_range',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_uom_name',char('Dimensionless'));
