@@ -199,10 +199,10 @@ try
                     % Write cur_asc info in total_input_tb table
                     try
                         % Define a cell array containing the column names to be added
-                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
+                        addColnames = {'filename' 'filepath' 'network_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
                         
                         % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ascFilesize,'cur_asc',0};
+                        addData = {noFullPathName,pathstr,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ascFilesize,'cur_asc',0};
                         
                         % Append the product data into the total_input_tb table on the database.
                         tablename = 'total_input_tb';

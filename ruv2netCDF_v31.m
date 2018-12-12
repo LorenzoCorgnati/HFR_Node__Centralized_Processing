@@ -152,6 +152,8 @@ try
         tmpStr = strrep(institution_websiteStr,'http://','');
     elseif(~isempty(strfind(institution_websiteStr,'https://')))
         tmpStr = strrep(institution_websiteStr,'https://','');
+    else
+        tmpStr = institution_websiteStr;
     end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');
@@ -740,8 +742,9 @@ try
     dimid_range = netcdf.defDim(ncid, 'RNGE', numel( range_dim));
     dimid_depth = netcdf.defDim(ncid, 'DEPH', 1);
     dimid_maxsite = netcdf.defDim(ncid, 'MAXSITE', maxsite);
+    dimid_maxinst = netcdf.defDim(ncid, 'MAXINST', length(EDMO_code));
     dimid_refmax = netcdf.defDim(ncid, 'REFMAX', refmax);
-    dimid_string4 = netcdf.defDim(ncid, 'STRING4', 4);
+    dimid_string_siteCodeArr = netcdf.defDim(ncid, ['STRING' num2str(length(siteCodeArr))], length(siteCodeArr));
     dimid_string_site_code = netcdf.defDim(ncid, ['STRING' num2str(length(site_code))], length(site_code));
     dimid_string_platform_code = netcdf.defDim(ncid, ['STRING' num2str(length(platform_code))], length(platform_code));
     dimid_string_sdn_local_cdi_id = netcdf.defDim(ncid, ['STRING' num2str(length(id))], length(id));
@@ -900,7 +903,7 @@ try
     netcdf.putAtt( ncid, varid_sdnlocalcdiid, 'cf_role', 'grid_id');
     
     % SDN_EDMO_CODE
-    varid_sdnedmocode = netcdf.defVar( ncid, 'SDN_EDMO_CODE', 'short', dimid_t);
+    varid_sdnedmocode = netcdf.defVar( ncid, 'SDN_EDMO_CODE', 'short', [dimid_maxinst dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sdnedmocode, true, true, 6);
     netcdf.putAtt( ncid, varid_sdnedmocode, 'long_name', 'European Directory of Marine Organisations code for the CDI partner');
     
@@ -1237,7 +1240,7 @@ try
     netcdf.putAtt(ncid, varid_slnt, 'coordinates', 'TIME MAXSITE' );
     
     % Receive antenna codes
-    varid_scdr = netcdf.defVar(ncid, 'SCDR', 'char', [dimid_string4 dimid_maxsite dimid_t]);
+    varid_scdr = netcdf.defVar(ncid, 'SCDR', 'char', [dimid_string_siteCodeArr dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdr, true, true, 6);
     netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive Antenna Codes');
     netcdf.putAtt(ncid, varid_scdr, 'units', '1');
@@ -1249,7 +1252,7 @@ try
     netcdf.putAtt(ncid, varid_scdr, 'sdn_uom_urn', 'SDN:P06::UUUU');
     
     % Transmit antenna codes
-    varid_scdt = netcdf.defVar(ncid, 'SCDT', 'char', [dimid_string4 dimid_maxsite dimid_t]);
+    varid_scdt = netcdf.defVar(ncid, 'SCDT', 'char', [dimid_string_siteCodeArr dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdt, true, true, 6);
     netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit Antenna Codes');
     netcdf.putAtt(ncid, varid_scdt, 'units', '1');

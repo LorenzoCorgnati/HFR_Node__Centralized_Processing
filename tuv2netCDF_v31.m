@@ -303,6 +303,8 @@ try
         tmpStr = strrep(institution_websiteStr,'http://','');
     elseif(~isempty(strfind(institution_websiteStr,'https://')))
         tmpStr = strrep(institution_websiteStr,'https://','');
+    else
+        tmpStr = institution_websiteStr;
     end
     tmpStr = strrep(tmpStr,'www.','');
     tmpStr = strrep(tmpStr,'/','');

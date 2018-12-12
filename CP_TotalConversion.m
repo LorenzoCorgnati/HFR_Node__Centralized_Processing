@@ -229,6 +229,10 @@ try
             filenameIndexC = strfind(toBeConvertedTotals_columnNames, 'filename');
             filenameIndex = find(not(cellfun('isempty', filenameIndexC)));
             
+            % Find the index of the filepath field
+            filepathIndexC = strfind(toBeConvertedTotals_columnNames, 'filepath');
+            filepathIndex = find(not(cellfun('isempty', filepathIndexC)));
+            
             % Find the index of the extension field
             extensionIndexC = strfind(toBeConvertedTotals_columnNames, 'extension');
             extensionIndex = find(not(cellfun('isempty', extensionIndexC)));
@@ -244,12 +248,10 @@ try
         % Scan the tuv files to be converted
         for toBeConverted_idx=1:numToBeConvertedTotals
             try
-                [yMDF_err,yearFolder,monthFolder,dayFolder] = yearMonthDayFolder(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
-                network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
                 if (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'tuv')) % Codar data
-                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
+                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v31([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
                 elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'cur_asc')) % WERA data
-                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v31([network_data{network_idx,inputPathIndex} filesep dayFolder filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
+                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v31([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
                 end
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
