@@ -304,7 +304,7 @@ try
             
             % Find the index of the filepath field
             filepathIndexC = strfind(toBeCombinedRadials_columnNames, 'filepath');
-            filepathIndex = find(not(cellfun('isempty', filenfilepathIndexCameIndexC)));
+            filepathIndex = find(not(cellfun('isempty', filepathIndexC)));
             
             % Find the index of the station_id field in the radial_input_tb table
             RIstation_idIndexC = strfind(toBeCombinedRadials_columnNames, 'station_id');
