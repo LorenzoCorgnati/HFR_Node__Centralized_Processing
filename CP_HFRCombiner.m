@@ -231,6 +231,23 @@ try
             % Find the index of the last calibration date field
             last_calibration_dateIndexC = strfind(station_columnNames, 'last_calibration_date');
             last_calibration_dateIndex = find(not(cellfun('isempty', last_calibration_dateIndexC)));
+            
+            % Find the index of the end of operation date field
+            operational_toIndexC = strfind(station_columnNames, 'operational_to');
+            operational_toIndex = find(not(cellfun('isempty', operational_toIndexC)));
+        catch err
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+            HFRC_err = 1;
+        end
+        
+        % Retrieve the number of operational stations
+        try
+            numActiveStations = numStations;
+            for station_idx=1:numStations
+                if(size(station_data{station_idx,operational_toIndex},2)~=4)
+                    numActiveStations = numActiveStations - 1;
+                end
+            end
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -478,7 +495,7 @@ try
                     
                     % Update NRT_processed_flag in radial_input_tb table
                     try
-                        if(length(toBeCombinedRadialIndices) == numStations)
+                        if(length(toBeCombinedRadialIndices) == numActiveStations)
                             % Define a cell array containing the column names to be updated
                             updateColnames = {'NRT_processed_flag'};
                             

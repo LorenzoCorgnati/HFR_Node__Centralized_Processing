@@ -183,7 +183,7 @@ try
                 % Trim heading and trailing whitespaces from folder path
                 station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 try
-                    ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(startDate)');
+                    ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(now-7)');
                     disp(['[' datestr(now) '] - - ' 'Radials files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
