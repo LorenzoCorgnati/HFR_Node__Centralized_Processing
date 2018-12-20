@@ -549,7 +549,7 @@ try
             HFRC_err = 1;
         end
         
-        clear Grid gridLon gridLat lonG latG lon lat ruvFiles radOutputFilename totOutputFilename;
+        clear Grid gridLon gridLat lonG latG lon lat radFiles radOutputFilename totOutputFilename;
         
     end
 catch err
