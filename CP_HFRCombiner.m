@@ -575,4 +575,4 @@ end
 
 disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner successfully executed.']);
 
-pause(2700);
+pause(1200);

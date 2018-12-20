@@ -329,4 +329,4 @@ end
 
 disp(['[' datestr(now) '] - - ' 'CP_TotalConversion successfully executed.']);
 
-pause(2700);
+pause(1200);
