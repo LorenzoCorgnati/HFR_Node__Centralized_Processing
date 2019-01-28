@@ -181,8 +181,8 @@ try
     EDMO_codeIndex = find(not(cellfun('isempty', strfind(stationFields, 'EDMO_code'))));
     EDMO_code = stationData{EDMO_codeIndex};
     site_code = EDIOS_Series_ID;
-    platform_code = [EDIOS_Series_ID '_' EDIOS_Platform_ID];
-    id = [EDIOS_Series_ID '_' EDIOS_Platform_ID '_' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
+    platform_code = [EDIOS_Series_ID '-' EDIOS_Platform_ID];
+    id = [EDIOS_Series_ID '-' EDIOS_Platform_ID '-' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
     metadata_pageIndex = find(not(cellfun('isempty', strfind(networkFields, 'metadata_page'))));
     TDS_catalog = networkData{metadata_pageIndex};
     xlink = ['<sdn_reference xlink:href="' TDS_catalog '" xlink:role="" xlink:type="URL"/>'];

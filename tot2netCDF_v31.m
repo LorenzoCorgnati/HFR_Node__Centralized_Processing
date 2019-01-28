@@ -352,8 +352,8 @@ try
     % Define EDIOS codes, site code, platform code, id and metadata resources
     EDIOS_Series_ID = networkData{network_idIndex};
     site_code = EDIOS_Series_ID;
-    platform_code = [EDIOS_Series_ID '_Total'];
-    dataID = [EDIOS_Series_ID '_Total_' datestr(mat_tot.TimeStamp, 'yyyy-mm-dd') 'T' datestr(mat_tot.TimeStamp, 'HH:MM:SS') 'Z'];
+    platform_code = [EDIOS_Series_ID '-Total'];
+    dataID = [EDIOS_Series_ID '-Total_' datestr(mat_tot.TimeStamp, 'yyyy-mm-dd') 'T' datestr(mat_tot.TimeStamp, 'HH:MM:SS') 'Z'];
     metadata_pageIndex = find(not(cellfun('isempty', strfind(networkFields, 'metadata_page'))));
     TDS_catalog = networkData{metadata_pageIndex};
     xlink = ['<sdn_reference xlink:href="' TDS_catalog '" xlink:role="" xlink:type="URL"/>'];
