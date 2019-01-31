@@ -16,6 +16,8 @@ iRDB_err = 0;
 
 disp(['[' datestr(now) '] - - ' 'CP_inputRUV2DB started.']);
 
+startDateNum = datenum(startDate);
+
 %%
 
 %% Connect to database
@@ -183,7 +185,7 @@ try
                 % Trim heading and trailing whitespaces from folder path
                 station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 try
-                    ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(now-7)');
+                    ruvFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.ruv'],'datenum>floor(startDateNum)');
                     disp(['[' datestr(now) '] - - ' 'Radials files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

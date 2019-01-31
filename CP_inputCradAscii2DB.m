@@ -16,6 +16,8 @@ iCradDB_err = 0;
 
 disp(['[' datestr(now) '] - - ' 'CP_inputCradAscii2DB started.']);
 
+startDateNum = datenum(startDate);
+
 %%
 
 %% Connect to database
@@ -115,7 +117,7 @@ try
             iCradDB_err = 1;
         end
         if(iCradDB_err==0)
-            ddisp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
+            disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         end
         
         % Fetch data
@@ -183,7 +185,7 @@ try
                 station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 % List the input crad_ascii files for the current station
                 try
-                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(now-7)');
+                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(startDateNum)');
                     disp(['[' datestr(now) '] - - ' 'Radial files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

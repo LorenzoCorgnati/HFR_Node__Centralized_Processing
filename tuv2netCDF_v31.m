@@ -466,7 +466,6 @@ try
         'Format',ncfmt);
     
     nccreate(ncfile,'crs',...
-        'Dimensions',{'TIME',time_dim},...
         'Datatype','int16',...
         'Format',ncfmt);
     
@@ -684,6 +683,7 @@ try
     ncwriteatt(ncfile,'SDN_LOCAL_CDI_ID','cf_role',char('grid_id'));
     
     ncwriteatt(ncfile,'SDN_EDMO_CODE','long_name',char('European Directory of Marine Organisations code for the CDI partner'));
+    ncwriteatt(ncfile,'SDN_EDMO_CODE','units',char('1'));
     
     ncwriteatt(ncfile,'SDN_REFERENCES','long_name',char('Usage metadata reference'));
     
@@ -951,7 +951,7 @@ try
     
     ncwriteatt(ncfile,'SCDR','long_name',char('Receive Antenna Codes'));
     ncwriteatt(ncfile,'SCDR','units',char('1'));
-    ncwriteatt(ncfile,'SCDR','valid_range',char(''));
+%     ncwriteatt(ncfile,'SCDR','valid_range',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_uom_name',char('Dimensionless'));
@@ -959,7 +959,7 @@ try
     
     ncwriteatt(ncfile,'SCDT','long_name',char('Transmit Antenna Codes'));
     ncwriteatt(ncfile,'SCDT','units',char('1'));
-    ncwriteatt(ncfile,'SCDT','valid_range',char(''));
+%     ncwriteatt(ncfile,'SCDT','valid_range',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_uom_name',char('Dimensionless'));

@@ -16,6 +16,8 @@ iTDB_err = 0;
 
 disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB started.']);
 
+startDateNum = datenum(startDate);
+
 %%
 
 %% Connect to database
@@ -116,7 +118,7 @@ try
             network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
             % List the input tuv files
             try
-                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(now-7)');
+                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(startDateNum)');
                 disp(['[' datestr(now) '] - - ' 'Total files from ' network_data{network_idx,network_idIndex} ' network successfully listed.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

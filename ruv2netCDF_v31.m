@@ -182,7 +182,7 @@ try
     EDMO_code = stationData{EDMO_codeIndex};
     site_code = EDIOS_Series_ID;
     platform_code = [EDIOS_Series_ID '-' EDIOS_Platform_ID];
-    id = [EDIOS_Series_ID '-' EDIOS_Platform_ID '-' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
+    id = [EDIOS_Series_ID '-' EDIOS_Platform_ID '_' datestr(HFRP_RUV.TimeStamp, 'yyyy-mm-dd') 'T' datestr(HFRP_RUV.TimeStamp, 'HH:MM:SS') 'Z'];
     metadata_pageIndex = find(not(cellfun('isempty', strfind(networkFields, 'metadata_page'))));
     TDS_catalog = networkData{metadata_pageIndex};
     xlink = ['<sdn_reference xlink:href="' TDS_catalog '" xlink:role="" xlink:type="URL"/>'];
@@ -868,7 +868,8 @@ try
     netcdf.putAtt(ncid, varid_lon, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % crs
-    varid_crs = netcdf.defVar( ncid, 'crs', 'short', dimid_t);
+%     varid_crs = netcdf.defVar( ncid, 'crs', 'short', dimid_t);
+    varid_crs = netcdf.defVar( ncid, 'crs', 'short', []);
     netcdf.defVarDeflate(ncid, varid_crs, true, true, 6);
     netcdf.putAtt( ncid, varid_crs, 'grid_mapping_name', 'latitude_longitude' );
     netcdf.putAtt( ncid, varid_crs, 'epsg_code', 'EPSG:4326' );
@@ -906,6 +907,7 @@ try
     varid_sdnedmocode = netcdf.defVar( ncid, 'SDN_EDMO_CODE', 'short', [dimid_maxinst dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sdnedmocode, true, true, 6);
     netcdf.putAtt( ncid, varid_sdnedmocode, 'long_name', 'European Directory of Marine Organisations code for the CDI partner');
+    netcdf.putAtt( ncid, varid_sdnedmocode, 'units', char('1'));
     
     % SDN_REFERENCES
     varid_sdnreferences = netcdf.defVar( ncid, 'SDN_REFERENCES', 'char', [dimid_string_sdn_references dimid_t]);
@@ -1244,7 +1246,7 @@ try
     netcdf.defVarDeflate(ncid, varid_scdr, true, true, 6);
     netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive Antenna Codes');
     netcdf.putAtt(ncid, varid_scdr, 'units', '1');
-    netcdf.putAtt(ncid, varid_scdr, 'valid_range', '');
+%     netcdf.putAtt(ncid, varid_scdr, 'valid_range', '');
     netcdf.putAtt(ncid, varid_scdr, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_urn', '');
@@ -1256,7 +1258,7 @@ try
     netcdf.defVarDeflate(ncid, varid_scdt, true, true, 6);
     netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit Antenna Codes');
     netcdf.putAtt(ncid, varid_scdt, 'units', '1');
-    netcdf.putAtt(ncid, varid_scdt, 'valid_range', '');
+%     netcdf.putAtt(ncid, varid_scdt, 'valid_range', '');
     netcdf.putAtt(ncid, varid_scdt, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_urn', '');
