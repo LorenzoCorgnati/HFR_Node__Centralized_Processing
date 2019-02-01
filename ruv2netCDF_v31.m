@@ -630,7 +630,7 @@ end
 
 try
     % Build the names of the files of the previous two hours
-    [twoHoursBefore, oneHourBefore] = twoPastHours(R.time);
+    [twoHoursBefore, oneHourBefore] = twoPastHours(R.time,temporal_resolution);
     Radial_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '_RDL_' fileType '_' stationData{station_idIndex} '_' twoHoursBefore.TS '.nc'];
     Radial_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '_RDL_' fileType '_' stationData{station_idIndex} '_' oneHourBefore.TS '.nc'];
     

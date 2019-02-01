@@ -457,7 +457,7 @@ end
 
 try
     % Build the names of the files of the previous two hours
-    [twoHoursBefore, oneHourBefore] = twoPastHours(mat_tot.TimeStamp);
+    [twoHoursBefore, oneHourBefore] = twoPastHours(mat_tot.TimeStamp,temporal_resolution);
     Total_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '_TOTL_' twoHoursBefore.TS '.nc'];
     Total_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '_TOTL_' oneHourBefore.TS '.nc'];
     

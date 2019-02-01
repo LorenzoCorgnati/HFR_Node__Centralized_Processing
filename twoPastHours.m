@@ -6,12 +6,13 @@
 
 % INPUT:
 %         present: time stamp of the current hour
+%         timeStep: temporal resolution of the current dataset
 
 % OUTPUT:
 %         past2: structure containing the time stamp and the time-related part
-%                of the folder path of the file related to 2 hours before the current hour
+%                of the folder path of the file related to 2 time steps before the current hour
 %         past1: structure containing the time stamp and the time-related part
-%                of the folder path of the file related to 1 hour before the current hour
+%                of the folder path of the file related to 1 time step before the current hour
 
 
 % Author: Lorenzo Corgnati
@@ -21,7 +22,7 @@
 %%
 
 
-function [past2, past1] = twoPastHours(present)
+function [past2, past1] = twoPastHours(present,timeStep)
 
 disp(['[' datestr(now) '] - - ' 'twoPastHours.m started.']);
 
@@ -31,8 +32,8 @@ warning('off', 'all');
 
 try
     % Evaluate the timestamps of the two past hours
-    past2_num = present - 2/24;
-    past1_num = present - 1/24;
+    past2_num = present - 2*((timeStep)/(24*60));
+    past1_num = present - timeStep/(24*60);
     
     past2_vec = datevec(past2_num);
     past1_vec = datevec(past1_num);
