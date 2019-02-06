@@ -554,7 +554,7 @@ try
             HFRC_err = 1;
         end
         
-        clear Grid gridLon gridLat lonG latG lon lat radFiles radOutputFilename totOutputFilename;
+        clear Grid gridLon gridLat lonG latG lon lat radFiles RADIAL contrSitesIndices TUV TUVgrid TUVmask radOutputFilename totOutputFilename;
         
     end
 catch err

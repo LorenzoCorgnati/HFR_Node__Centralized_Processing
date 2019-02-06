@@ -21,7 +21,7 @@ clc
 setup_nctoolbox;
 
 % Setup JBDC driver for MySQL
-javaaddpath('/Users/reverendo/Toolboxes/mysql-connector-java-5.1.17.jar');
+javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
 
 % Setup map colormap
 set(0,'DefaultFigureColormap',feval('jet'));
@@ -58,7 +58,7 @@ kk = 5;
 while(kk>0)
     disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop started.']);
     % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
-    CP_inputRUV2DB;
+%     CP_inputRUV2DB;
 %     CP_inputCradAscii2DB;
     CP_HFRCombiner;
     

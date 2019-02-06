@@ -305,6 +305,9 @@ try
                 disp(['[' datestr(now) '] - - ' outputFilename 'total file information successfully inserted into total_HFRnetCDF_tb table.']);
             end
         end
+        
+        clear outputFilename outputFilesize;
+        
     end
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
