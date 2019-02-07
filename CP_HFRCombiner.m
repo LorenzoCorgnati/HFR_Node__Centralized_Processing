@@ -545,7 +545,7 @@ try
                         end
                     end
                     
-                    clear radFiles;
+                    clear radFiles RADIAL contrSitesIndices TUV TUVgrid TUVmask radOutputFilename totOutputFilename;
                     
                 end
             end
@@ -554,7 +554,7 @@ try
             HFRC_err = 1;
         end
         
-        clear Grid gridLon gridLat lonG latG lon lat radFiles RADIAL contrSitesIndices TUV TUVgrid TUVmask radOutputFilename totOutputFilename;
+        clear Grid gridLon gridLat lonG latG lon lat;
         
     end
 catch err

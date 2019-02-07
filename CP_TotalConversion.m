@@ -285,18 +285,20 @@ try
             
             % Insert converted total info in total_HFRnetCDF_tb table
             try
-                % Evaluate datetime from, Time Stamp
-                [t2d_err,DateTime] = timestamp2datetime(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
-                
-                % Define a cell array containing the column names to be added
-                addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'input_filename' 'check_flag'};
-                
-                % Define a cell array that contains the data for insertion
-                addData = {outputFilename,network_data{network_idx,network_idIndex},toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),outputFilesize,toBeConvertedTotals_data{toBeConverted_idx,filenameIndex},0};
-                
-                % Append the product data into the total_HFRnetCDF_tb table on the database.
-                tablename = 'total_HFRnetCDF_tb';
-                datainsert(conn,tablename,addColnames,addData);
+                if(exist('outputFilename','var') ~= 0)
+                    % Evaluate datetime from, Time Stamp
+                    [t2d_err,DateTime] = timestamp2datetime(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
+                    
+                    % Define a cell array containing the column names to be added
+                    addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'input_filename' 'check_flag'};
+                    
+                    % Define a cell array that contains the data for insertion
+                    addData = {outputFilename,network_data{network_idx,network_idIndex},toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),outputFilesize,toBeConvertedTotals_data{toBeConverted_idx,filenameIndex},0};
+                    
+                    % Append the product data into the total_HFRnetCDF_tb table on the database.
+                    tablename = 'total_HFRnetCDF_tb';
+                    datainsert(conn,tablename,addColnames,addData);
+                end
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 TC_err = 1;
@@ -304,10 +306,10 @@ try
             if(TC_err==0)
                 disp(['[' datestr(now) '] - - ' outputFilename 'total file information successfully inserted into total_HFRnetCDF_tb table.']);
             end
+            
+            clear outputFilename outputFilesize;
+            
         end
-        
-        clear outputFilename outputFilesize;
-        
     end
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
