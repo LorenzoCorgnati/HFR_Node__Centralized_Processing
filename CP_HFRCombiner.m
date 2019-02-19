@@ -299,6 +299,9 @@ try
             
             % Find the index of the NRT_processed_flag field
             NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag'))));
+            
+            disp 'INDICI TROVATI';
+            
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -311,6 +314,9 @@ try
                     % Find the indices of the radial files of the current timestamp to be combined
                     toBeCombinedRadialIndicesC = strfind(toBeCombinedRadials_data(:,timeStampIndex), toBeCombinedRadials_data{radial_idx,timeStampIndex});
                     toBeCombinedRadialIndices = find(not(cellfun('isempty', toBeCombinedRadialIndicesC)));
+                    
+                    disp 'RADIALI DEL TIMESTAMP CORRENTE TROVATI';
+                    
                     try
                         % Build the radial file paths
                         for indices_idx=1:length(toBeCombinedRadialIndices)
@@ -318,6 +324,9 @@ try
                             toBeCombinedStationIndex = find(not(cellfun('isempty', toBeCombinedStationIndexC)));
                             station_data{toBeCombinedStationIndex,inputPathIndex} = strtrim(station_data{toBeCombinedStationIndex,inputPathIndex});
                             radFiles(indices_idx) = {[toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),filepathIndex} filesep toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),filenameIndex}]};
+                            
+                            disp 'NOME DEL FILE COSTRUITO';
+                            
                         end
                     catch err
                         display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
