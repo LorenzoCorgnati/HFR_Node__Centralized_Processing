@@ -1199,7 +1199,9 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'curAsc2netCDF_v31.m successfully executed.']);
+if(cA2C_err==0)
+    disp(['[' datestr(now) '] - - ' 'curAsc2netCDF_v31.m successfully executed.']);
+end
 
 return
 

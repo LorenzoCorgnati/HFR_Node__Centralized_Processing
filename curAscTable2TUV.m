@@ -102,6 +102,8 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'curAscTable2TUV.m successfully executed.']);
+if(ca2T_err==0)
+    disp(['[' datestr(now) '] - - ' 'curAscTable2TUV.m successfully executed.']);
+end
 
 return

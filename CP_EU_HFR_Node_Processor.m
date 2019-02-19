@@ -47,7 +47,7 @@ try
     startDate = startCombinationDate(now);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    HFRC_err = 1;
+    EHNP_err = 1;
 end
 
 %%

@@ -1120,7 +1120,9 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'tot2netCDF_v31.m successfully executed.']);
+if(T2C_err==0)
+    disp(['[' datestr(now) '] - - ' 'tot2netCDF_v31.m successfully executed.']);
+end
 
 return
 

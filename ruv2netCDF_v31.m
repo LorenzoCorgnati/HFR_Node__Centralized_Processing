@@ -1761,6 +1761,8 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'ruv2netCDF_v31.m successfully executed.']);
+if(R2C_err==0)
+    disp(['[' datestr(now) '] - - ' 'ruv2netCDF_v31.m successfully executed.']);
+end
 
 return

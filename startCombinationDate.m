@@ -42,6 +42,9 @@ catch err
     sCD_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'startCombinationDate.m succesfully executed.']);
+if(sCD_err==0)
+    disp(['[' datestr(now) '] - - ' 'startCombinationDate.m succesfully executed.']);
+end
+
 return
 

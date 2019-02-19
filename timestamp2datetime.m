@@ -47,6 +47,9 @@ catch err
     t2d_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'timestamp2datetime.m succesfully executed.']);
+if(t2d_err==0)
+    disp(['[' datestr(now) '] - - ' 'timestamp2datetime.m succesfully executed.']);
+end
+
 return
 

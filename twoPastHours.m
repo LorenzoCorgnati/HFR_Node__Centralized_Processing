@@ -60,8 +60,11 @@ try
     past2.fP = [year2 filesep year2 '_' month2 filesep year2 '_' month2 '_' day2];
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    tPH_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'twoPastHours.m successfully executed.']);
+if(tPH_err==0)
+    disp(['[' datestr(now) '] - - ' 'twoPastHours.m successfully executed.']);
+end
 
 return

@@ -24,12 +24,10 @@ startDateNum = datenum(startDate);
 
 try
     conn = database(sqlConfig.database,sqlConfig.user,sqlConfig.password,'Vendor','MySQL','Server',sqlConfig.host);
+    disp(['[' datestr(now) '] - - ' 'Connection to database successfully established.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Connection to database successfully established.']);
 end
 
 %%
@@ -40,57 +38,47 @@ end
 try
     network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
     network_curs = exec(conn,network_selectquery);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
 try
     network_curs = fetch(network_curs);
     network_data = network_curs.Data;
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
 try
     network_columnNames = columnnames(network_curs,true);
+    disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
 end
 
 % Retrieve the number of networks
 try
     numNetworks = rows(network_curs);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
 try
     close(network_curs);
+    disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
-end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
 end
 
 %%
@@ -133,24 +121,21 @@ try
                     % Check if the current tuv file is already present on the database
                     dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
                     dbTotals_curs = exec(conn,dbTotals_selectquery);
+                    disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table for checking if ' noFullPathName ' total file is already present in the database successfully executed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iTDB_err = 1;
                 end
-                if(iTDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table for checking if ' noFullPathName ' total file is already present in the database successfully executed.']);
-                end
+                
                 % Fetch data
                 try
                     dbTotals_curs = fetch(dbTotals_curs);
+                    disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' total file in the database successfully fetched from total_input_tb table.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iTDB_err = 1;
                 end
-                if(iTDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' total file in the database successfully fetched from total_input_tb table.']);
-                end
-                
+                                
                 if(rows(dbTotals_curs) == 0)
                     % Retrieve information about the tuv file
                     try
@@ -200,25 +185,21 @@ try
                         % Append the product data into the total_input_tb table on the database.
                         tablename = 'total_input_tb';
                         datainsert(conn,tablename,addColnames,addData);
+                        disp(['[' datestr(now) '] - - ' noFullPathName ' total file information successfully inserted into total_input_tb table.']);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iTDB_err = 1;
-                    end
-                    if(iTDB_err==0)
-                        disp(['[' datestr(now) '] - - ' noFullPathName ' total file information successfully inserted into total_input_tb table.']);
-                    end
+                    end                    
                 end
                 
                 % Close cursor to total_input_tb table
                 try
                     close(dbTotals_curs);
+                    disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                     iTDB_err = 1;
-                end
-                if(iTDB_err==0)
-                    disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
-                end
+                end                
             end
         end
     end
@@ -233,14 +214,14 @@ end
 
 try
     close(conn);
+    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iTDB_err = 1;
 end
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
-end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB successfully executed.']);
+if(iTDB_err==0)
+    disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB successfully executed.']);
+end

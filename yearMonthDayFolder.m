@@ -52,7 +52,9 @@ catch err
     yMDF_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'yearMonthDayFolder.m successfully executed.']);
+if(yMDF_err==0)
+    disp(['[' datestr(now) '] - - ' 'yearMonthDayFolder.m successfully executed.']);
+end
 
 return
 

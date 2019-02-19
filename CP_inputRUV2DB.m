@@ -24,12 +24,10 @@ startDateNum = datenum(startDate);
 
 try
     conn = database(sqlConfig.database,sqlConfig.user,sqlConfig.password,'Vendor','MySQL','Server',sqlConfig.host);
+    disp(['[' datestr(now) '] - - ' 'Connection to database successfully established.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Connection to database successfully established.']);
 end
 
 %%
@@ -40,57 +38,47 @@ end
 try
     network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
     network_curs = exec(conn,network_selectquery);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 end
 
 % Fetch data
 try
     network_curs = fetch(network_curs);
     network_data = network_curs.Data;
+    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 end
 
 % Retrieve column names
 try
     network_columnNames = columnnames(network_curs,true);
+    disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
 end
 
 % Retrieve the number of networks
 try
     numNetworks = rows(network_curs);
+    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 end
 
 % Close cursor
 try
     close(network_curs);
+    disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
-end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
 end
 
 %%
@@ -112,59 +100,49 @@ try
         try
             station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
             station_curs = exec(conn,station_selectquery);
+            disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iRDB_err = 1;
         end
-        if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
-        end
-        
+                
         % Fetch data
         try
             station_curs = fetch(station_curs);
             station_data = station_curs.Data;
+            disp(['[' datestr(now) '] - - ' 'Data of the stations of the ' network_data{network_idx,network_idIndex} ' network successfully fetched from station_tb table.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iRDB_err = 1;
         end
-        if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Data of the stations of the ' network_data{network_idx,network_idIndex} ' network successfully fetched from station_tb table.']);
-        end
-        
+                
         % Retrieve column names
         try
             station_columnNames = columnnames(station_curs,true);
+            disp(['[' datestr(now) '] - - ' 'Column names from station_tb table successfully retrieved.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iRDB_err = 1;
         end
-        if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Column names from station_tb table successfully retrieved.']);
-        end
-        
+                
         % Retrieve the number of stations belonging to the current network
         try
             numStations = rows(station_curs);
+            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the ' network_data{network_idx,network_idIndex} ' network successfully retrieved from station_tb table.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iRDB_err = 1;
         end
-        if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Number of stations belonging to the ' network_data{network_idx,network_idIndex} ' network successfully retrieved from station_tb table.']);
-        end
-        
+                
         % Close cursor to station_tb table
         try
             close(station_curs);
+            disp(['[' datestr(now) '] - - ' 'Cursor to station_tb table successfully closed.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             iRDB_err = 1;
         end
-        if(iRDB_err==0)
-            disp(['[' datestr(now) '] - - ' 'Cursor to station_tb table successfully closed.']);
-        end
-        
+                
         try
             % Find the index of the input file path field
             inputPathIndexC = strfind(station_columnNames, 'radial_input_folder_path');
@@ -201,24 +179,21 @@ try
                         % Check if the current ruv file is already present on the database
                         dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
                         dbRadials_curs = exec(conn,dbRadials_selectquery);
+                        disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for checking if ' noFullPathName ' radial file is already present in the database successfully executed.']);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iRDB_err = 1;
                     end
-                    if(iRDB_err==0)
-                        disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for checking if ' noFullPathName ' radial file is already present in the database successfully executed.']);
-                    end
+                    
                     % Fetch data
                     try
                         dbRadials_curs = fetch(dbRadials_curs);
+                        disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' radial file in the database successfully fetched from radial_input_tb table.']);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         iRDB_err = 1;
                     end
-                    if(iRDB_err==0)
-                        disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' radial file in the database successfully fetched from radial_input_tb table.']);
-                    end
-                    
+                                        
                     if(rows(dbRadials_curs) == 0)
                         % Retrieve information about the ruv file
                         try
@@ -268,13 +243,11 @@ try
                             % Append the product data into the radial_input_tb table on the database.
                             tablename = 'radial_input_tb';
                             datainsert(conn,tablename,addColnames,addData);
+                            disp(['[' datestr(now) '] - - ' noFullPathName ' radial file information successfully inserted into radial_input_tb table.']);
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             iRDB_err = 1;
-                        end
-                        if(iRDB_err==0)
-                            disp(['[' datestr(now) '] - - ' noFullPathName ' radial file information successfully inserted into radial_input_tb table.']);
-                        end
+                        end                        
                     end
                 end
             end
@@ -291,14 +264,14 @@ end
 
 try
     close(conn);
+    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iRDB_err = 1;
 end
-if(iRDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
-end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'CP_inputRUV2DB successfully executed.']);
+if(iRDB_err==0)
+    disp(['[' datestr(now) '] - - ' 'CP_inputRUV2DB successfully executed.']);
+end

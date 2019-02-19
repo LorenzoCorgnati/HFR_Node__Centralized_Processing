@@ -257,58 +257,62 @@ end
 
 %% Populate the overall quality variable
 
-try
-    for ii=1:size(overall,1)
-        for jj = 1:size(overall,2)
-            if(velThr(ii,jj) ~= netcdf.getConstant('NC_FILL_SHORT'))
-                if((tempDer(ii,jj) == 1) && (velThr(ii,jj) == 1) && (overWater(ii,jj) == 1) && (medFilt(ii,jj) == 1) && (avgRadBear == 1) && (radCount == 1))
-                    overall(ii,jj) = 1;
-                else
-                    overall(ii,jj) = 4;
-                end
-            end
-        end
-    end
-catch err
-    display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    RQC_err = 1;
-end
-
-% Previous hour data file
-try
-    if (tD_go)
-        % Extract the QC variables from the previous hour file
-        overall1h = ncread(Radial_QC_params.TempDerThr.hour1,'QCflag');
-        overWater1h = ncread(Radial_QC_params.TempDerThr.hour1,'OWTR_QC');
-        medFilt1h = ncread(Radial_QC_params.TempDerThr.hour1,'MDFL_QC');
-        velThr1h = ncread(Radial_QC_params.TempDerThr.hour1,'CSPD_QC');
-        avgRadBear1h = ncread(Radial_QC_params.TempDerThr.hour1,'AVRB_QC');
-        radCount1h = ncread(Radial_QC_params.TempDerThr.hour1,'RDCT_QC');
-        % Fill the overall QC variable
-        for ii=1:size(overall1h,1)
-            for jj = 1:size(overall1h,2)
-                if(overall1h(ii,jj)~=netcdf.getConstant('NC_FILL_SHORT'))
-                    if((tempDer1h(ii,jj) == 1) && (velThr1h(ii,jj) == 1) && (overWater1h(ii,jj) == 1) && (medFilt1h(ii,jj) == 1) && (avgRadBear1h == 1) && (radCount1h == 1))
-                        overall1h(ii,jj) = 1;
+if(RQC_err==0)
+    try
+        for ii=1:size(overall,1)
+            for jj = 1:size(overall,2)
+                if(velThr(ii,jj) ~= netcdf.getConstant('NC_FILL_SHORT'))
+                    if((tempDer(ii,jj) == 1) && (velThr(ii,jj) == 1) && (overWater(ii,jj) == 1) && (medFilt(ii,jj) == 1) && (avgRadBear == 1) && (radCount == 1))
+                        overall(ii,jj) = 1;
                     else
-                        overall1h(ii,jj) = 4;
+                        overall(ii,jj) = 4;
                     end
-                else
-                    overall1h(ii,jj) = netcdf.getConstant('NC_FILL_SHORT');
                 end
             end
         end
-        % Modify the overall QC variable of the nc file of the previous hour
-        ncwrite(Radial_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
-        disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
+    catch err
+        display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        RQC_err = 1;
     end
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    RQC_err = 1;
+    
+    % Previous hour data file
+    try
+        if (tD_go)
+            % Extract the QC variables from the previous hour file
+            overall1h = ncread(Radial_QC_params.TempDerThr.hour1,'QCflag');
+            overWater1h = ncread(Radial_QC_params.TempDerThr.hour1,'OWTR_QC');
+            medFilt1h = ncread(Radial_QC_params.TempDerThr.hour1,'MDFL_QC');
+            velThr1h = ncread(Radial_QC_params.TempDerThr.hour1,'CSPD_QC');
+            avgRadBear1h = ncread(Radial_QC_params.TempDerThr.hour1,'AVRB_QC');
+            radCount1h = ncread(Radial_QC_params.TempDerThr.hour1,'RDCT_QC');
+            % Fill the overall QC variable
+            for ii=1:size(overall1h,1)
+                for jj = 1:size(overall1h,2)
+                    if(overall1h(ii,jj)~=netcdf.getConstant('NC_FILL_SHORT'))
+                        if((tempDer1h(ii,jj) == 1) && (velThr1h(ii,jj) == 1) && (overWater1h(ii,jj) == 1) && (medFilt1h(ii,jj) == 1) && (avgRadBear1h == 1) && (radCount1h == 1))
+                            overall1h(ii,jj) = 1;
+                        else
+                            overall1h(ii,jj) = 4;
+                        end
+                    else
+                        overall1h(ii,jj) = netcdf.getConstant('NC_FILL_SHORT');
+                    end
+                end
+            end
+            % Modify the overall QC variable of the nc file of the previous hour
+            ncwrite(Radial_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
+            disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
+        end
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        RQC_err = 1;
+    end
 end
 
 %%
 
-display(['[' datestr(now) '] - - ' 'ruvRadialQCtests_v10.m successfully executed.']);
+if(RQC_err==0)
+    display(['[' datestr(now) '] - - ' 'ruvRadialQCtests_v10.m successfully executed.']);
+end
 
 return

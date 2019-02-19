@@ -224,6 +224,8 @@ end
 
 %%
 
-display(['[' datestr(now) '] - - ' 'TotalQCtests_v10.m successfully executed.']);
+if(TQC_err==0)
+    display(['[' datestr(now) '] - - ' 'TotalQCtests_v10.m successfully executed.']);
+end
 
 return

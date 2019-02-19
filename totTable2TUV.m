@@ -113,6 +113,8 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'totTable2TUV.m successfully executed.']);
+if(t2T_err==0)
+    disp(['[' datestr(now) '] - - ' 'totTable2TUV.m successfully executed.']);
+end
 
 return

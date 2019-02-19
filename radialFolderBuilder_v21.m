@@ -62,7 +62,9 @@ end
 % Build the full filename for the nc total file
 fullPath = [mainPath filesep 'v2.1' filesep siteCode filesep dayFolder];
 
-disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v21.m successfully executed.']);
+if(rFB_err==0)
+    disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v21.m successfully executed.']);
+end
 
 return
 

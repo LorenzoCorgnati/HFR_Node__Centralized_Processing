@@ -41,7 +41,9 @@ catch err
     LSC_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'LLUVSpecChecker.m successfully executed.']);
+if(LSC_err==0)
+    disp(['[' datestr(now) '] - - ' 'LLUVSpecChecker.m successfully executed.']);
+end
 
 return
 

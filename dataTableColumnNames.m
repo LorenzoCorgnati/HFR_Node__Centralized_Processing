@@ -47,7 +47,9 @@ catch err
     dTCN_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'dataTableColumnNames.m successfully executed.']);
+if(dTCN_err==0)
+    disp(['[' datestr(now) '] - - ' 'dataTableColumnNames.m successfully executed.']);
+end
 
 return
 

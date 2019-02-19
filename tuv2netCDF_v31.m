@@ -91,7 +91,7 @@ end
 
 try
     %     [TUVgrid,DIM,I] = gridTotals( TUV, 'true', 'true');
-    [gT_err, TUVgrid] = gridTUV(TUV,networkData,networkFields);
+    [T2C_err, TUVgrid] = gridTUV(TUV,networkData,networkFields);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     T2C_err = 1;
@@ -1125,7 +1125,9 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'tuv2netCDF_v31.m successfully executed.']);
+if(T2C_err==0)
+    disp(['[' datestr(now) '] - - ' 'tuv2netCDF_v31.m successfully executed.']);
+end
 
 return
 

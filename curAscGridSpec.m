@@ -69,7 +69,9 @@ catch err
     sCC_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'curAscGridSpec.m successfully executed.']);
+if(sCC_err==0)
+    disp(['[' datestr(now) '] - - ' 'curAscGridSpec.m successfully executed.']);
+end
 
 return
 

@@ -189,6 +189,8 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'curAscTotalQCtests_v10.m successfully ecexuted.']);
+if(TQC_err==0)
+    disp(['[' datestr(now) '] - - ' 'curAscTotalQCtests_v10.m successfully ecexuted.']);
+end
 
 return

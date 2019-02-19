@@ -184,6 +184,8 @@ end
 
 %%
 
-disp(['[' datestr(now) '] - - ' 'tuvTotalQCtests_v10.m successfully executed.']);
+if(TQC_err==0)
+    disp(['[' datestr(now) '] - - ' 'tuvTotalQCtests_v10.m successfully executed.']);
+end
 
 return

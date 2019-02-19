@@ -68,7 +68,9 @@ catch err
     cAHDT_err = 1;
 end
 
-disp(['[' datestr(now) '] - - ' 'curAscHeaderDataTable.m successfully executed.']);
+if(cAHDT_err==0)
+    disp(['[' datestr(now) '] - - ' 'curAscHeaderDataTable.m successfully executed.']);
+end
 
 return
 

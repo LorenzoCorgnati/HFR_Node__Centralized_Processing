@@ -164,34 +164,43 @@ try
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             TC_err = 1;
         end
-                
+        if(TC_err==0)
+            
+        end
+        
         % Retrieve column names
         try
             toBeConvertedTotals_columnNames = columnnames(toBeConvertedTotals_curs,true);
-            disp(['[' datestr(now) '] - - ' 'Column names from total_input_tb table successfully retrieved.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             TC_err = 1;
         end
-                
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Column names from total_input_tb table successfully retrieved.']);
+        end
+        
         % Retrieve the number of totals to be converted for the current network
         try
             numToBeConvertedTotals = rows(toBeConvertedTotals_curs);
-            disp(['[' datestr(now) '] - - ' 'Number of total files from ' network_data{network_idx,network_idIndex} ' network to be converted successfully retrieved from total_input_tb table.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             TC_err = 1;
         end
-                
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Number of total files from ' network_data{network_idx,network_idIndex} ' network to be converted successfully retrieved from total_input_tb table.']);
+        end
+        
         % Close cursor to total_input_tb table
         try
             close(toBeConvertedTotals_curs);
-            disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             TC_err = 1;
         end
-                
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
+        end
+        
         try
             % Find the index of the filename field
             filenameIndexC = strfind(toBeConvertedTotals_columnNames, 'filename');
@@ -221,12 +230,14 @@ try
                 elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'cur_asc')) % WERA data
                     [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v31([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
                 end
-                disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1 file successfully created and stored.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 TC_err = 1;
             end
-                        
+            if (TC_err == 0)
+                disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1 file successfully created and stored.']);
+            end
+            
             % Update NRT_processed_flag in total_input_tb table
             try
                 % Find the index of the NRT_processed_flag field
@@ -241,12 +252,14 @@ try
                 tablename = 'total_input_tb';
                 whereclause = ['WHERE filename = ' '''' toBeConvertedTotals_data{toBeConverted_idx,filenameIndex} ''''];
                 update(conn,tablename,updateColnames,updateData,whereclause);
-                disp(['[' datestr(now) '] - - ' 'total_input_tb table successfully updated with NRT processed flag for timestamp ' toBeConvertedTotals_data{toBeConverted_idx,timestampIndex} '.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 TC_err = 1;
             end
-                        
+            if(TC_err==0)
+                disp(['[' datestr(now) '] - - ' 'total_input_tb table successfully updated with NRT processed flag for timestamp ' toBeConvertedTotals_data{toBeConverted_idx,timestampIndex} '.']);
+            end
+            
             % Insert converted total info in total_HFRnetCDF_tb table
             try
                 if(exist('outputFilename','var') ~= 0)
@@ -262,12 +275,14 @@ try
                     % Append the product data into the total_HFRnetCDF_tb table on the database.
                     tablename = 'total_HFRnetCDF_tb';
                     datainsert(conn,tablename,addColnames,addData);
-                    disp(['[' datestr(now) '] - - ' outputFilename 'total file information successfully inserted into total_HFRnetCDF_tb table.']);
                 end
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 TC_err = 1;
-            end            
+            end
+            if(TC_err==0)
+                disp(['[' datestr(now) '] - - ' outputFilename 'total file information successfully inserted into total_HFRnetCDF_tb table.']);
+            end
             
             clear outputFilename outputFilesize;
             
@@ -284,16 +299,16 @@ end
 
 try
     close(conn);
-    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     TC_err = 1;
 end
+if(TC_err==0)
+    disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
+end
 
 %%
 
-if(TC_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_TotalConversion successfully executed.']);
-end
+disp(['[' datestr(now) '] - - ' 'CP_TotalConversion successfully executed.']);
 
 pause(1200);
