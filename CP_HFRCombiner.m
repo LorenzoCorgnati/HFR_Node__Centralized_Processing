@@ -469,7 +469,7 @@ try
                                 
                                 % Update the radial_input_tb table on the database
                                 tablename = 'radial_input_tb';
-                                whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''''];
+                                whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
                                 update(conn,tablename,updateColnames,updateData,whereclause);
                                 disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
                             end
