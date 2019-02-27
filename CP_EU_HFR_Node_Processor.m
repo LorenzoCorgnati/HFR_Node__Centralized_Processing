@@ -1,8 +1,8 @@
 %% CP_EU_HFR_Node_Processor.m
-% This wrapper launches the scripts for inserting into the HFR database 
+% This wrapper launches the scripts for inserting into the HFR database
 % the information about radial and totala files (both Codar and WERA)
-% pushed by the data providers and for combining radials into totals and 
-% converting radials and totals to netCDF files according to the European 
+% pushed by the data providers and for combining radials into totals and
+% converting radials and totals to netCDF files according to the European
 % standard data model.
 
 % Author: Lorenzo Corgnati
@@ -41,25 +41,26 @@ sqlConfig.database = 'HFR_node_db';
 
 %%
 
-%% Set datetime of the starting date of the processing period
-
-try
-    startDate = startCombinationDate(now);
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    EHNP_err = 1;
-end
-
-%%
-
 %% Processing
 % Set the infinite loop for continuous operation
 kk = 5;
 while(kk>0)
     disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop started.']);
+    
+    %% Set datetime of the starting date of the processing period
+    
+    try
+        startDate = startCombinationDate(now);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        EHNP_err = 1;
+    end
+    
+    %%
+    
     % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
-%     CP_inputRUV2DB;
-%     CP_inputCradAscii2DB;
+        CP_inputRUV2DB;
+    %     CP_inputCradAscii2DB;
     CP_HFRCombiner;
     
     % TOTALS CONVERSION
