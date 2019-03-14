@@ -97,6 +97,7 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
+        iCradDB_err = 0;
         try
             station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
             station_curs = exec(conn,station_selectquery);
@@ -172,6 +173,7 @@ try
                 
                 % Insert information about the crad_ascii file into the database (if not yet present)
                 for crad_idx=1:length(cradFiles)
+                    iCradDB_err = 0;
                     try
                         % Retrieve the filename
                         [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);

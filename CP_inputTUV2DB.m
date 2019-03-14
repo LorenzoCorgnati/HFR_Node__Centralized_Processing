@@ -101,6 +101,7 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
+        iTDB_err = 0;
         if(~isempty(network_data{network_idx,inputPathIndex}))
             % Trim heading and trailing whitespaces from folder path
             network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
@@ -114,6 +115,7 @@ try
             end
             % Insert information about the tuv file into the database (if not yet present)
             for tuv_idx=1:length(tuvFiles)
+                iTDB_err = 0;
                 try
                     % Retrieve the filename
                     [pathstr,name,ext]=fileparts(tuvFiles(tuv_idx).name);

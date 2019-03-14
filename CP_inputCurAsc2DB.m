@@ -101,6 +101,7 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
+        iCurDB_err = 0;
         if(~isempty(network_data{network_idx,inputPathIndex}))
             % Trim heading and trailing whitespaces from folder path
             network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
@@ -114,6 +115,7 @@ try
             end
             % Insert information about the cur_asc file into the database (if not yet present)
             for asc_idx=1:length(ascFiles)
+                iCurDB_err = 0;
                 % Retrieve the filename
                 [pathstr,name,ext]=fileparts(ascFiles(asc_idx).name);
                 noFullPathName=[name ext];

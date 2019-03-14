@@ -97,6 +97,7 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
+        iRDB_err = 0;
         try
             station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
             station_curs = exec(conn,station_selectquery);
@@ -172,6 +173,7 @@ try
                 
                 % Insert information about the ruv file into the database (if not yet present)
                 for ruv_idx=1:length(ruvFiles)
+                    iRDB_err = 0;
                     try
                         % Retrieve the filename
                         [pathstr,name,ext]=fileparts(ruvFiles(ruv_idx).name);

@@ -98,6 +98,7 @@ end
 % Scan the networks
 try
     for network_idx=1:numNetworks
+        TC_err = 0;
         % Retrieve information on the stations belonging to the current network
         try
             station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
@@ -215,6 +216,7 @@ try
         
         % Scan the tuv files to be converted
         for toBeConverted_idx=1:numToBeConvertedTotals
+            TC_err = 0;
             try
                 if (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, 'tuv')) % Codar data
                     [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v31([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames);
