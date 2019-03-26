@@ -262,7 +262,7 @@ if(RQC_err==0)
         for ii=1:size(overall,1)
             for jj = 1:size(overall,2)
                 if(velThr(ii,jj) ~= netcdf.getConstant('NC_FILL_SHORT'))
-                    if((tempDer(ii,jj) == 1) && (velThr(ii,jj) == 1) && (overWater(ii,jj) == 1) && (medFilt(ii,jj) == 1) && (avgRadBear == 1) && (radCount == 1))
+                    if((velThr(ii,jj) == 1) && (overWater(ii,jj) == 1) && (medFilt(ii,jj) == 1) && (avgRadBear == 1) && (radCount == 1))
                         overall(ii,jj) = 1;
                     else
                         overall(ii,jj) = 4;
@@ -299,8 +299,9 @@ if(RQC_err==0)
                     end
                 end
             end
-            % Modify the overall QC variable of the nc file of the previous hour
+            % Modify the overall QC variable and the date_update attribute of the nc file of the previous hour
             ncwrite(Radial_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
+            ncwriteatt(Radial_QC_params.TempDerThr.hour1,'/','date_update',char([datestr(now, 'yyyy-mm-dd') 'T' datestr(now, 'HH:MM:SS') 'Z']));
             disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
         end
     catch err

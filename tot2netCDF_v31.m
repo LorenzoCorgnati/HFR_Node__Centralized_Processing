@@ -1040,9 +1040,9 @@ try
     ncwriteatt(ncfile,'/','update_interval',char('void'));
     ncwriteatt(ncfile,'/','citation',char(citation_str));
     ncwriteatt(ncfile,'/','distribution_statement',char(distribution_str));
-    ncwriteatt(ncfile,'/','publisher_name',char('Lorenzo Corgnati'));
-    ncwriteatt(ncfile,'/','publisher_url',char('http://www.ismar.cnr.it/'));
-    ncwriteatt(ncfile,'/','publisher_email',char('lorenzo.corgnati@sp.ismar.cnr.it'));
+    ncwriteatt(ncfile,'/','publisher_name',char('European HFR Node'));
+    ncwriteatt(ncfile,'/','publisher_url',char('http://eurogoos.eu/'));
+    ncwriteatt(ncfile,'/','publisher_email',char('euhfrnode@azti.es'));
     licenseIndex = find(not(cellfun('isempty', strfind(networkFields, 'license'))));
     ncwriteatt(ncfile,'/','license',char(networkData{licenseIndex}));
     acknowledgmentIndex = find(not(cellfun('isempty', strfind(networkFields, 'acknowledgment'))));
@@ -1052,10 +1052,13 @@ try
     ncwriteatt(ncfile,'/','history',char([time_coll ' data collected. ' dateCreated ' netCDF file created and sent to European HFR Node']));
     ncwriteatt(ncfile,'/','date_modified',char(dateCreated));
     ncwriteatt(ncfile,'/','date_update',char(dateCreated));
-    ncwriteatt(ncfile,'/','processing_level',char('3B'));
-    ncwriteatt(ncfile,'/','contributor_name',char('Vega Forneris, Cristina Tronconi'));
-    ncwriteatt(ncfile,'/','contributor_role',char('THREDDS expert, metadata expert'));
-    ncwriteatt(ncfile,'/','contributor_email',char('vega.forneris@artov.isac.cnr.it, cristina.tronconi@artov.isac.cnr.it'));
+    ncwriteatt(ncfile,'/','processing_level',char('3B'));    
+    contributor_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_name'))));    
+    ncwriteatt(ncfile,'/','contributor_name',char(networkData{contributor_nameIndex}));
+    contributor_roleIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_role'))));    
+    ncwriteatt(ncfile,'/','contributor_role',char(networkData{contributor_roleIndex}));
+    contributor_emailIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_email'))));    
+    ncwriteatt(ncfile,'/','contributor_email',char(networkData{contributor_emailIndex}));
     
     % RECOMMENDED ATTRIBUTES
     % Discovery and Identification

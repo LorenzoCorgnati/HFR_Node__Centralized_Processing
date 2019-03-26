@@ -1457,9 +1457,9 @@ try
     netcdf.putAtt(ncid, varid_global, 'update_interval', 'void');
     netcdf.putAtt(ncid, varid_global, 'citation', citation_str);
     netcdf.putAtt(ncid, varid_global, 'distribution_statement', distribution_str);
-    netcdf.putAtt(ncid, varid_global, 'publisher_name', 'Lorenzo Corgnati');
-    netcdf.putAtt(ncid, varid_global, 'publisher_url', 'http://www.ismar.cnr.it/');
-    netcdf.putAtt(ncid, varid_global, 'publisher_email', 'lorenzo.corgnati@sp.ismar.cnr.it');
+    netcdf.putAtt(ncid, varid_global, 'publisher_name', 'European HFR Node');
+    netcdf.putAtt(ncid, varid_global, 'publisher_url', 'http://eurogoos.eu/');
+    netcdf.putAtt(ncid, varid_global, 'publisher_email', 'euhfrnode@azti.es');
     licenseIndex = find(not(cellfun('isempty', strfind(networkFields, 'license'))));
     netcdf.putAtt(ncid, varid_global, 'license', networkData{licenseIndex});
     acknowledgmentIndex = find(not(cellfun('isempty', strfind(networkFields, 'acknowledgment'))));
@@ -1469,10 +1469,13 @@ try
     netcdf.putAtt(ncid, varid_global, 'history', hist_create);
     netcdf.putAtt(ncid, varid_global, 'date_modified', dateCreated);
     netcdf.putAtt(ncid, varid_global, 'date_update', dateCreated);
-    netcdf.putAtt(ncid, varid_global, 'processing_level', '2B');
-    netcdf.putAtt(ncid, varid_global, 'contributor_name', 'Vega Forneris, Cristina Tronconi');
-    netcdf.putAtt(ncid, varid_global, 'contributor_role', 'THREDDS expert, metadata expert');
-    netcdf.putAtt(ncid, varid_global, 'contributor_email', 'vega.forneris@artov.isac.cnr.it, cristina.tronconi@artov.isac.cnr.it');
+    netcdf.putAtt(ncid, varid_global, 'processing_level', '2B');    
+    contributor_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_name'))));
+    netcdf.putAtt(ncid, varid_global, 'contributor_name', networkData{contributor_nameIndex});
+    contributor_roleIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_role'))));
+    netcdf.putAtt(ncid, varid_global, 'contributor_role', networkData{contributor_roleIndex});
+    contributor_emailIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_email'))));
+    netcdf.putAtt(ncid, varid_global, 'contributor_email', networkData{contributor_emailIndex});
     
     % RECOMMENDED ATTRIBUTES
     

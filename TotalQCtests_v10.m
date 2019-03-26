@@ -178,7 +178,7 @@ try
     for ii=1:size(overall,1)
         for jj = 1:size(overall,2)
             if(mat_tot.U_grid(ii,jj)~=netcdf.getConstant('NC_FILL_DOUBLE'))
-                if((tempDer(ii,jj) == 1) && (velThr(ii,jj) == 1) && (GDOPThr(ii,jj) == 1) && (dataDens(ii,jj) == 1))
+                if((velThr(ii,jj) == 1) && (GDOPThr(ii,jj) == 1) && (dataDens(ii,jj) == 1))
                     overall(ii,jj) = 1;
                 else
                     overall(ii,jj) = 4;
@@ -213,8 +213,9 @@ try
                 end
             end
         end
-        % Modify the overall QC variable of the nc file of the previous hour
+        % Modify the overall QC variable and the date_update attribute of the nc file of the previous hour
         ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
+        ncwriteatt(Total_QC_params.TempDerThr.hour1,'/','date_update',char([datestr(now, 'yyyy-mm-dd') 'T' datestr(now, 'HH:MM:SS') 'Z']));
         disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
     end
 catch err
