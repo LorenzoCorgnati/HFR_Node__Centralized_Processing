@@ -437,7 +437,7 @@ try
                             
                             % Plot the current map for HFR-TirLig network
                             try
-                                if(strcmp(network_data{network_idx,network_idIndex},'HFR-TirLig'))
+                                if(network_data{network_idx,network_idIndex}=='HFR-TirLig')
                                     % Totals cleaning for GDOP 
                                     gdop_sP = sqrt(6.25);
                                     maxspd_sP = 500;
@@ -445,8 +445,8 @@ try
                                     % Plot
                                     shadePlot_TirLig;
                                     % Save the map file
-                                    saveas(gcf,['/mnt/WebServer_ftp/RadarHF/Total_maps/' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.jpg']);
-                                    disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str ' map successfully saved on the WebServer.']);
+                                    saveas(gcf,[local_maps when '.jpg']);
+            di                      display(['[' datestr(now) '] - - ' when ' map successfully saved locally.']);
                                 end
                             catch err
                                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
