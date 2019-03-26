@@ -445,8 +445,8 @@ try
                                     % Plot
                                     shadePlot_TirLig;
                                     % Save the map file
-                                    saveas(gcf,['/mnt/WebServer_ftp/RadarHF/Total_maps/' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.jpg']);
-                                    disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str ' map successfully saved on the WebServer.']);
+                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_TirLig/Totals_map/' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.jpg']);
+                                    disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str ' map successfully saved.']);
                                 end
                             catch err
                                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
