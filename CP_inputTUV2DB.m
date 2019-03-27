@@ -107,7 +107,7 @@ try
             network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
             % List the input tuv files
             try
-                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(startDateNum)');
+                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(now-8)');
                 disp(['[' datestr(now) '] - - ' 'Total files from ' network_data{network_idx,network_idIndex} ' network successfully listed.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

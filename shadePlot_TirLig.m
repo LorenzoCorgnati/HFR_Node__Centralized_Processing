@@ -19,7 +19,7 @@ end
 % Create the lat/lon grid for pcolor drawing
 [Plg,Plt]=meshgrid(lonGrid_sP,latGrid_sP);
 
-m_pcolor(Plg, Plt, TOT_grid');
+m_pcolor(Plg, Plt, TOT_grid);
 shading flat;
 m_gshhs_f('patch',[.7 .7 .7],'edgecolor','none');
 m_grid('box', 'fancy', 'tickdir', 'in', 'xlabeldir','end','fontsize',10);

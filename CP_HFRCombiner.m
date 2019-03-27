@@ -357,8 +357,9 @@ try
                             %                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                         catch err
                             display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                            HFRC_err = 1;
+                            HFRC_err = 2;
                         end
+                        
                         % Insert radial info in radial_HFRnetCDF_tb table
                         try
                             if((HFRC_err==0) && (exist('radOutputFilename','var') ~= 0))
@@ -408,7 +409,7 @@ try
                     end
                     
                     % Combine the Codar radial files into total
-                    if(size(radFiles,2)>1)
+                    if((size(radFiles,2)>1) && (HFRC_err~=2))
                         if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
                             try
                                 disp(['[' datestr(now) '] - - ' 'makeTotals combining radials...']);
@@ -446,6 +447,7 @@ try
                                     shadePlot_TirLig;
                                     % Save the map file
                                     saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_TirLig/Totals_map/' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.jpg']);
+                                    close
                                     disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str ' map successfully saved.']);
                                 end
                             catch err

@@ -222,6 +222,7 @@ try
 catch err
     display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     R2C_err = 1;
+    return
 end
 
 %%
@@ -346,7 +347,7 @@ try
     end
     
     % Evaluate last pattern date
-    patternTS = datenum([str2double(PatternDate(1:5)) str2double(PatternDate(6:8)) str2double(PatternDate(9:11)) str2double(PatternDate(13:15)) str2double(PatternDate(16:18)) str2double(PatternDate(19:20))]);
+    patternTS = datenum([str2double(PatternDate(1:5)) str2double(PatternDate(6:8)) str2double(PatternDate(9:11))]);
     if(patternTS~=0)
         lastPatternVec = datevec(patternTS);
         lastPatternStr = [datestr(lastPatternVec, 'yyyy-mm-dd') 'T' datestr(lastPatternVec, 'HH:MM:SS') 'Z'];
