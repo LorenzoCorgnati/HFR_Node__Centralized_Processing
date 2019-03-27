@@ -429,8 +429,8 @@ try
                                 time_str = sprintf('%.4d_%.2d_%.2d_%.2d%.2d',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
                                 network_data{network_idx,matPathIndex} = strtrim(network_data{network_idx,matPathIndex});
                                 [tFB_err, matFilePath] = totalFolderBuilder_v21(network_data{network_idx,matPathIndex}, toBeCombinedRadials_data{radial_idx,timeStampIndex});
-                                save([matFilePath filesep network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat'], 'TUVmask');
-                                disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat' ' file successfully saved.']);
+                                save([matFilePath filesep network_data{network_idx,network_idIndex} '-Total_' time_str '.mat'], 'TUVmask');
+                                disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '-Total_' time_str '.mat' ' file successfully saved.']);
                             catch err
                                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                                 HFRC_err = 1;
@@ -446,9 +446,9 @@ try
                                     % Plot
                                     shadePlot_TirLig;
                                     % Save the map file
-                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_TirLig/Totals_map/' network_data{network_idx,network_idIndex} '_TOTL_' time_str '.jpg']);
+                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_TirLig/Totals_map/' network_data{network_idx,network_idIndex} '-Total_' time_str '.jpg']);
                                     close
-                                    disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '_TOTL_' time_str ' map successfully saved.']);
+                                    disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '-Total_' time_str ' map successfully saved.']);
                                 end
                             catch err
                                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -516,7 +516,7 @@ try
                                 addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'mat_filename' 'check_flag'};
                                 
                                 % Define a cell array that contains the data for insertion
-                                addData = {totOutputFilename,network_data{network_idx,network_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),totOutputFilesize,[network_data{network_idx,network_idIndex} '_TOTL_' time_str '.mat'],0};
+                                addData = {totOutputFilename,network_data{network_idx,network_idIndex},toBeCombinedRadials_data{radial_idx,timeStampIndex},DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),totOutputFilesize,[network_data{network_idx,network_idIndex} '-Total_' time_str '.mat'],0};
                                 
                                 % Append the product data into the total_HFRnetCDF_tb table on the database.
                                 tablename = 'total_HFRnetCDF_tb';

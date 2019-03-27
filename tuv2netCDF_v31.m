@@ -274,8 +274,8 @@ try
     networkData{outputPathIndex} = strtrim(networkData{outputPathIndex});
     [tFB_err, ncFilePath] = totalFolderBuilder_v21(networkData{outputPathIndex}, timestamp);
     if(tFB_err == 0)
-        ncfile = [ncFilePath filesep networkData{network_idIndex} '_TOTL_' time_str '.nc'];
-        ncFileNoPath = [networkData{network_idIndex} '_TOTL_' time_str '.nc'];
+        ncfile = [ncFilePath filesep networkData{network_idIndex} '-Total_' time_str '.nc'];
+        ncFileNoPath = [networkData{network_idIndex} '-Total_' time_str '.nc'];
     else
         disp(['[' datestr(now) '] - - ERROR in building the folder structure.']);
         return
@@ -398,8 +398,8 @@ end
 try
     % Build the names of the files of the previous two hours
     [twoHoursBefore, oneHourBefore] = twoPastHours(TUVgrid.TimeStamp,temporal_resolution);
-    Total_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '_TOTL_' twoHoursBefore.TS '.nc'];
-    Total_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '_TOTL_' oneHourBefore.TS '.nc'];
+    Total_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '-Total_' twoHoursBefore.TS '.nc'];
+    Total_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '-Total_' oneHourBefore.TS '.nc'];
     
     [overall_QCflag, varianceThreshold_QCflag, temporalDerivativeThreshold_QCflag, GDOP_QCflag, dataDensity_QCflag, velocityThreshold_QCflag] = tuvTotalQCtests_v10(TUVgrid, Total_QC_params);
 catch err

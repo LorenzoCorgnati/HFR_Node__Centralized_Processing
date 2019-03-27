@@ -120,8 +120,8 @@ try
     stationData{outputPathIndex} = strtrim(stationData{outputPathIndex});
     [rFB_err, ncFilePath] = radialFolderBuilder_v21(stationData{outputPathIndex},siteCode,timestamp);
     if(rFB_err == 0)
-        ncfile = [ncFilePath filesep networkData{network_idIndex} '_RDL_' fileType '_' siteCode '_' fileTime '.nc'];
-        ncFileNoPath = [networkData{network_idIndex} '_RDL_' fileType '_' siteCode '_' fileTime '.nc'];
+        ncfile = [ncFilePath filesep networkData{network_idIndex} '-' siteCode '_' fileTime '.nc'];
+        ncFileNoPath = [networkData{network_idIndex} '-' siteCode '_' fileTime '.nc'];
     else
         disp(['[' datestr(now) '] - - ERROR in building the folder structure.']);
         return
@@ -632,8 +632,8 @@ end
 try
     % Build the names of the files of the previous two hours
     [twoHoursBefore, oneHourBefore] = twoPastHours(R.time,temporal_resolution);
-    Radial_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '_RDL_' fileType '_' stationData{station_idIndex} '_' twoHoursBefore.TS '.nc'];
-    Radial_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '_RDL_' fileType '_' stationData{station_idIndex} '_' oneHourBefore.TS '.nc'];
+    Radial_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '-' stationData{station_idIndex} '_' twoHoursBefore.TS '.nc'];
+    Radial_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '-' stationData{station_idIndex} '_' oneHourBefore.TS '.nc'];
     
     [overall_QCflag, overWater_QCflag, varianceThreshold_QCflag, temporalDerivativeThreshold_QCflag, velocityThreshold_QCflag, medianFilter_QCflag, averageRadialBearing_QC_flag, radialVelocityMedianFiltered, radialCount_QC_flag] = ruvRadialQCtests_v10(bear, lond, latd, owtr, etmp, head, velo, Radial_QC_params);
 catch err
