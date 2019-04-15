@@ -43,4 +43,11 @@ wn=TUVclean.V./sqrt(TUVclean.U.^2+TUVclean.V.^2);
 
 m_quiver(TUVclean.LonLat(:,1),TUVclean.LonLat(:,2),un,wn, 'k');
 
+when = datestr(TUVclean.TimeStamp);
+title(sprintf('%s',when));
+pos2 = [0.3  0.035  0.4  0.015];
+hc = colorbar;
+caxis([0 100]);
+title(hc,'[cm/s]');
+
 clear Plg Plt TOT_grid un wn
