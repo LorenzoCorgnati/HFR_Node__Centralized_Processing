@@ -843,7 +843,7 @@ try
     netcdf.putAtt( ncid, varid_lat, 'units', 'degrees_north' );
     netcdf.putAtt(ncid, varid_lat, 'valid_range', single( [-90 90]));
     %         netcdf.putAtt( ncid, varid_lat, 'coordinates', 'BEAR RNGE' );
-    netcdf.putAtt(ncid, varid_lat, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_lat, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     %     netcdf.putAtt(ncid, varid_lat, 'axis', 'Y');
     netcdf.putAtt(ncid, varid_lat, 'sdn_parameter_name', 'Latitude north');
     netcdf.putAtt(ncid, varid_lat, 'sdn_parameter_urn', 'SDN:P01::ALATZZ01');
@@ -860,7 +860,7 @@ try
     netcdf.putAtt( ncid, varid_lon, 'units', 'degrees_east' );
     netcdf.putAtt(ncid, varid_lon, 'valid_range', single( [-180 180]));
     %         netcdf.putAtt( ncid, varid_lon, 'coordinates', 'BEAR RNGE' );
-    netcdf.putAtt(ncid, varid_lon, 'FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
+    netcdf.putAtt(ncid, varid_lon, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
     netcdf.putAtt(ncid, varid_lon, 'sdn_parameter_name', 'Longitude east');
     netcdf.putAtt(ncid, varid_lon, 'sdn_parameter_urn', 'SDN:P01::ALONZZ01');
     netcdf.putAtt(ncid, varid_lon, 'sdn_uom_name', 'Degrees east');
