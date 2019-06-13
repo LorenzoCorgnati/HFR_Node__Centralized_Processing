@@ -798,10 +798,10 @@ try
     % overflow int in 2038. New epoch will be needed then to keep int
     % representation. Unix time epoch is: 1970-01-01 00:00:00Z = 0 seconds, 86,400 sec/day
     varid_t = netcdf.defVar(ncid, 'TIME', 'double', dimid_t);
-    netcdf.putAtt(ncid, varid_t, 'long_name', 'Time of measurement UTC');
+    netcdf.putAtt(ncid, varid_t, 'long_name', 'Time');
     netcdf.putAtt(ncid, varid_t, 'standard_name', 'time');
     netcdf.putAtt(ncid, varid_t, 'units', ['days since ' time_units]);
-    netcdf.putAtt(ncid, varid_t, 'calendar', 'Julian');
+    netcdf.putAtt(ncid, varid_t, 'calendar', 'Gregorian');
     netcdf.putAtt(ncid, varid_t, 'axis', 'T');
     netcdf.putAtt(ncid, varid_t, 'sdn_parameter_name', 'Elapsed time (since 1950-01-01T00:00:00Z)');
     netcdf.putAtt(ncid, varid_t, 'sdn_parameter_urn', 'SDN:P01::ELTJLD01');
@@ -860,8 +860,8 @@ try
     varid_lat = netcdf.defVar( ncid, 'LATITUDE', 'float', [dimid_range dimid_bearing] );
     netcdf.defVarDeflate(ncid, varid_lat, true, true, 6);
     netcdf.putAtt( ncid, varid_lat, 'standard_name', 'latitude' );
-    netcdf.putAtt( ncid, varid_lat, 'long_name', 'Latitude' );
-    netcdf.putAtt( ncid, varid_lat, 'units', 'degrees_north' );
+    netcdf.putAtt( ncid, varid_lat, 'long_name', 'Latitude of each location' );
+    netcdf.putAtt( ncid, varid_lat, 'units', 'degree_north' );
     netcdf.putAtt(ncid, varid_lat, 'valid_range', single( [-90 90]));
     %         netcdf.putAtt( ncid, varid_lat, 'coordinates', 'BEAR RNGE' );
     netcdf.putAtt(ncid, varid_lat, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
@@ -877,8 +877,8 @@ try
     varid_lon = netcdf.defVar( ncid, 'LONGITUDE', 'float', [dimid_range dimid_bearing] );
     netcdf.defVarDeflate(ncid, varid_lon, true, true, 6);
     netcdf.putAtt( ncid, varid_lon, 'standard_name', 'longitude' );
-    netcdf.putAtt( ncid, varid_lon, 'long_name', 'Longitude' );
-    netcdf.putAtt( ncid, varid_lon, 'units', 'degrees_east' );
+    netcdf.putAtt( ncid, varid_lon, 'long_name', 'Longitude of each location' );
+    netcdf.putAtt( ncid, varid_lon, 'units', 'degree_east' );
     netcdf.putAtt(ncid, varid_lon, 'valid_range', single( [-180 180]));
     %         netcdf.putAtt( ncid, varid_lon, 'coordinates', 'BEAR RNGE' );
     netcdf.putAtt(ncid, varid_lon, '_FillValue', netcdf.getConstant('NC_FILL_FLOAT'));
@@ -995,8 +995,8 @@ try
     varid_u = netcdf.defVar(ncid, 'EWCT', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_u, true, true, 6);
     netcdf.putAtt(ncid, varid_u, 'valid_range', int16( [(-10-addOffset)./scaleFactor (10-addOffset)./scaleFactor]));
-    netcdf.putAtt(ncid, varid_u, 'standard_name', 'surface_eastward_sea_water_velocity');
-    netcdf.putAtt(ncid, varid_u, 'long_name', 'Surface Eastward Sea Water Velocity');
+    netcdf.putAtt(ncid, varid_u, 'standard_name', 'eastward_sea_water_velocity');
+    netcdf.putAtt(ncid, varid_u, 'long_name', 'West-east current component');
     netcdf.putAtt(ncid, varid_u, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_u, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_u, 'add_offset', single(addOffset));
@@ -1012,8 +1012,8 @@ try
     varid_v = netcdf.defVar(ncid, 'NSCT', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_v, true, true, 6);
     netcdf.putAtt(ncid, varid_v, 'valid_range', int16( [(-10-addOffset)./scaleFactor (10-addOffset)./scaleFactor]));
-    netcdf.putAtt(ncid, varid_v, 'standard_name', 'surface_northward_sea_water_velocity');
-    netcdf.putAtt(ncid, varid_v, 'long_name', 'Surface Northward Sea Water Velocity');
+    netcdf.putAtt(ncid, varid_v, 'standard_name', 'northward_sea_water_velocity');
+    netcdf.putAtt(ncid, varid_v, 'long_name', 'South-north current component');
     netcdf.putAtt(ncid, varid_v, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_v, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_v, 'add_offset', single(addOffset));

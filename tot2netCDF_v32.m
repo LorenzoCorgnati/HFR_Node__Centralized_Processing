@@ -636,7 +636,7 @@ try
         'Format',ncfmt);
     
     %% Creates attributes for the variables
-    ncwriteatt(ncfile,'TIME','long_name',char('Time of measurement UTC'));
+    ncwriteatt(ncfile,'TIME','long_name',char('Time'));
     ncwriteatt(ncfile,'TIME','standard_name',char('time'));
     ncwriteatt(ncfile,'TIME','units',char(time_units));
     ncwriteatt(ncfile,'TIME','calendar',char('Gregorian'));
@@ -647,9 +647,9 @@ try
     ncwriteatt(ncfile,'TIME','sdn_uom_urn',char('SDN:P06::UTAA'));
     ncwriteatt(ncfile,'TIME','ancillary_variables',char('TIME_SEADATANET_QC'));
     
-    ncwriteatt(ncfile,'LATITUDE','long_name',char('Latitude'));
+    ncwriteatt(ncfile,'LATITUDE','long_name',char('Latitude of each location'));
     ncwriteatt(ncfile,'LATITUDE','standard_name',char('latitude'));
-    ncwriteatt(ncfile,'LATITUDE','units',char('degrees_north'));
+    ncwriteatt(ncfile,'LATITUDE','units',char('degree_north'));
     ncwriteatt(ncfile,'LATITUDE','axis',char('Y'));
     ncwriteatt(ncfile,'LATITUDE','sdn_parameter_name',char('Latitude north'));
     ncwriteatt(ncfile,'LATITUDE','sdn_parameter_urn',char('SDN:P01::ALATZZ01'));
@@ -658,9 +658,9 @@ try
     ncwriteatt(ncfile,'LATITUDE','grid_mapping',char('crs'));
     ncwriteatt(ncfile,'LATITUDE','ancillary_variables',char('POSITION_SEADATANET_QC'));
     
-    ncwriteatt(ncfile,'LONGITUDE','long_name',char('Longitude'));
+    ncwriteatt(ncfile,'LONGITUDE','long_name',char('Longitude of each location'));
     ncwriteatt(ncfile,'LONGITUDE','standard_name',char('longitude'));
-    ncwriteatt(ncfile,'LONGITUDE','units',char('degrees_east'));
+    ncwriteatt(ncfile,'LONGITUDE','units',char('degree_east'));
     ncwriteatt(ncfile,'LONGITUDE','axis',char('X'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_parameter_name',char('Longitude east'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_parameter_urn',char('SDN:P01::ALONZZ01'));
@@ -700,8 +700,8 @@ try
     ncwriteatt(ncfile,'DEPH','sdn_uom_urn',char('SDN:P06::ULAA'));
     ncwriteatt(ncfile,'DEPH','ancillary_variables',char('DEPTH_SEADATANET_QC'));
     
-    ncwriteatt(ncfile,'EWCT','long_name',char('Surface Eastward Sea Water Velocity'));
-    ncwriteatt(ncfile,'EWCT','standard_name',char('surface_eastward_sea_water_velocity'));
+    ncwriteatt(ncfile,'EWCT','long_name',char('West-east current component'));
+    ncwriteatt(ncfile,'EWCT','standard_name',char('eastward_sea_water_velocity'));
     ncwriteatt(ncfile,'EWCT','units',char('m s-1'));
     ncwriteatt(ncfile,'EWCT','scale_factor',double(scaleFactor));
     ncwriteatt(ncfile,'EWCT','add_offset',double(addOffset));
@@ -718,8 +718,8 @@ try
     %         ncwriteatt(ncfile,'EWCT','valid_max',double(10.0));
     ncwriteatt(ncfile,'EWCT','ancillary_variables',char('QCflag, VART_QC, CSPD_QC, DDNS_QC, GDOP_QC'));
     
-    ncwriteatt(ncfile,'NSCT','long_name',char('Surface Northward Sea Water Velocity'));
-    ncwriteatt(ncfile,'NSCT','standard_name',char('surface_northward_sea_water_velocity'));
+    ncwriteatt(ncfile,'NSCT','long_name',char('South-north current component'));
+    ncwriteatt(ncfile,'NSCT','standard_name',char('northward_sea_water_velocity'));
     ncwriteatt(ncfile,'NSCT','units',char('m s-1'));
     ncwriteatt(ncfile,'NSCT','scale_factor',double(scaleFactor));
     ncwriteatt(ncfile,'NSCT','add_offset',double(addOffset));
