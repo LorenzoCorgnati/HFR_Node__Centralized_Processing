@@ -10,22 +10,25 @@
 %                      (metadata)
 %         networkFields: field names of the cell array containing
 %                       information about the network.
-%         stationData: cell array containing information about the station
-%                      (metadata)
+%         stationData: cell array containing information about the contributing 
+%                      stations (metadata)
 %         stationFields: field names of the cell array containing
 %                       information about the station.
+%         timestamp: timestamp of the total file to be converted.
+%         institutions: cell array containing information about all the stations.
+
 
 % OUTPUT:
 %         T2C_err: error flag (0 = correct, 1 = error)
 %         networkData: cell array containing information about the network.
 %                       It is returned in case an update of the database is
 %                       needed.
-%         stationData: cell array containing information about the station.
+%         stationData: cell array containing information about the contributing 
+%                       stations.
 %                       It is returned in case an update of the database is
 %                       needed.
 %         ncFileNoPath: filename of the converted nc file, without the full path
 %         ncFilesize: size of the converted nc file.
-%         timestamp: timestamp of the total file to be converted.
 
 
 % Author: Lorenzo Corgnati
@@ -34,7 +37,7 @@
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
-function [T2C_err,networkData,stationData,ncFileNoPath,ncFilesize] = tot2netCDF_v32(mat_tot, networkData, networkFields, stationData, stationFields,timestamp)
+function [T2C_err,networkData,stationData,ncFileNoPath,ncFilesize] = tot2netCDF_v32(mat_tot, networkData, networkFields, stationData, stationFields,timestamp,institutions)
 
 disp(['[' datestr(now) '] - - ' 'tot2netCDF_v32.m started.']);
 
@@ -85,7 +88,7 @@ try
     
     % Find the EDMO_code field from station data
     ST_EDMO_codeIndex = find(not(cellfun('isempty', strfind(stationFields, 'EDMO_code'))));
-    ST_EDMO_code = cell2mat(stationData(:,ST_EDMO_codeIndex));
+    ST_EDMO_code = cell2mat(institutions(:,ST_EDMO_codeIndex));
     ST_EDMO_code = ST_EDMO_code(ST_EDMO_code~=0);
     
     % Build the cumulative EDMO code list
@@ -100,7 +103,7 @@ try
     
     % Find the institution_name field from station data
     ST_DoIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_name'))));
-    ST_institution_name = stationData(:,ST_DoIndex);
+    ST_institution_name = institutions(:,ST_DoIndex);
     ST_institution_name(cellfun('isempty',ST_institution_name)) = [];
     
     % Build the cumulative institution name list
