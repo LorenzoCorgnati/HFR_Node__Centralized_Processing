@@ -151,9 +151,9 @@ try
     ST_last_calibration_dateIndex = find(not(cellfun('isempty', strfind(stationFields, 'last_calibration_date'))));
     ST_last_calibration_date = datenum(stationData(:,ST_last_calibration_dateIndex));
     ST_last_calibration_date = ST_last_calibration_date(ST_last_calibration_date~=0);
-    lastPatternStr = [sitesCodes(1,:) ': '];
+    lastPatternStr = [siteCodes(1,:) ': '];
     for lcd_idx=2:length(ST_last_calibration_date)
-        lastPatternStr = [lastPatternStr datestr(ST_last_calibration_date(lcd_idx-1), 'yyyy-mm-dd') 'T' datestr(ST_last_calibration_date(lcd_idx-1), 'HH:MM:SS') 'Z; ' sitesCodes(lcd_idx,:) ': '];
+        lastPatternStr = [lastPatternStr datestr(ST_last_calibration_date(lcd_idx-1), 'yyyy-mm-dd') 'T' datestr(ST_last_calibration_date(lcd_idx-1), 'HH:MM:SS') 'Z; ' siteCodes(lcd_idx,:) ': '];
     end
     lastPatternStr = [lastPatternStr datestr(ST_last_calibration_date(lcd_idx), 'yyyy-mm-dd') 'T' datestr(ST_last_calibration_date(lcd_idx), 'HH:MM:SS') 'Z'];
     
@@ -163,9 +163,9 @@ try
     ST_DoA(cellfun('isempty',ST_DoA)) = [];
     %     ST_DoA = uniqueStrCell(ST_DoA);
     %     DoAStr = strjoin(ST_DoA,', ');
-    DoAStr = [sitesCodes(1,:) ': '];
+    DoAStr = [siteCodes(1,:) ': '];
     for doa_idx=2:length(ST_DoA)
-        DoAStr = [DoAStr ST_DoA{doa_idx} '; ' sitesCodes(doa_idx,:) ': '];
+        DoAStr = [DoAStr ST_DoA{doa_idx} '; ' siteCodes(doa_idx,:) ': '];
     end
     DoAStr = [DoAStr ST_DoA{doa_idx}];
     
@@ -175,9 +175,9 @@ try
     ST_calibration_type(cellfun('isempty',ST_calibration_type)) = [];
     %     ST_calibration_type = uniqueStrCell(ST_calibration_type);
     %     calibration_typeStr = strjoin(ST_calibration_type,', ');
-    calibration_typeStr = [sitesCodes(1,:) ': '];
+    calibration_typeStr = [siteCodes(1,:) ': '];
     for ct_idx=2:length(ST_calibration_type)
-        calibration_typeStr = [calibration_typeStr ST_calibration_type{ct_idx-1} '; ' sitesCodes(ct_idx,:) ': '];
+        calibration_typeStr = [calibration_typeStr ST_calibration_type{ct_idx-1} '; ' siteCodes(ct_idx,:) ': '];
     end
     calibration_typeStr = [calibration_typeStr ST_calibration_type{ct_idx}];
     
@@ -187,9 +187,9 @@ try
     ST_calibration_link(cellfun('isempty',ST_calibration_link)) = [];
     %     ST_calibration_link = uniqueStrCell(ST_calibration_link);
     %     calibration_linkStr = strjoin(ST_calibration_link,', ');
-    calibration_linkStr = [sitesCodes(1,:) ': '];
+    calibration_linkStr = [siteCodes(1,:) ': '];
     for cl_idx=2:length(ST_calibration_link)
-        calibration_linkStr = [calibration_linkStr ST_calibration_link{cl_idx-1} '; ' sitesCodes(cl_idx,:) ': '];
+        calibration_linkStr = [calibration_linkStr ST_calibration_link{cl_idx-1} '; ' siteCodes(cl_idx,:) ': '];
     end
     calibration_linkStr = [calibration_linkStr ST_calibration_link{ct_idx}];
 catch err
