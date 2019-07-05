@@ -51,7 +51,7 @@ while(kk>0)
     
     try
         startDate = startCombinationDate(now);
-        startDate = '2012-01-29';
+%         startDate = '2012-01-29';
     catch err
         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
         EHNP_err = 1;

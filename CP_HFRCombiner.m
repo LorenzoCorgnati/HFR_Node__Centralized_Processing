@@ -412,7 +412,13 @@ try
                     
                     % Combine the Codar radial files into total
                     if((size(radFiles,2)>1) && (HFRC_err~=2))
-                        if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
+                        % Check if all the radials have the same extension
+                        for ext_idx=1:length(toBeCombinedRadialIndices)
+                            extensions{ext_idx} = toBeCombinedRadials_data{toBeCombinedRadialIndices(ext_idx),extensionIndex};
+                        end
+                        extensions = uniqueStrCell(extensions);
+                        % Check the extension
+                        if ((length(extensions)==1) && (strcmp(extensions, 'ruv'))) % Codar data
                             try
                                 disp(['[' datestr(now) '] - - ' 'makeTotals combining radials...']);
                                 [TUV,R] = makeTotals(RADIAL, 'Grid', Grid, 'TimeStamp', RADIAL(1,1).TimeStamp, 'spatthresh', network_data{network_idx,spatthreshIndex}, 'tempthresh', 1/24);
@@ -460,7 +466,7 @@ try
                         
                         % Create the total netCDF file according to the European standard data model
                         try
-                            if (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'ruv')) % Codar data
+                            if (strcmp(extensions, 'ruv')) % Codar data
                                 % v2.1 (THE 2 LINEs BELOW TO BE REMOVED WHEN DUOBLE PRODUCTION WILL STOP)
                                 [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v31(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
                                 disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1 file successfully created and stored.']);
