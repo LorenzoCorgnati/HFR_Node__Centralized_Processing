@@ -367,7 +367,7 @@ end
 % Set citation string and distribution string
 try
     citation_statementIndex = find(not(cellfun('isempty', strfind(networkFields, 'citation_statement'))));
-    citation_str = networkData{citation_statementIndex};
+    citation_str = ['These data were collected and made freely available by the Copernicus project and the programs that contribute to it. ' networkData{citation_statementIndex}];
     distribution_str = 'These data follow Copernicus standards; they are public and free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data.';
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
