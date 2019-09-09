@@ -436,6 +436,7 @@ try
                                 ts = datevec(TUVmask.TimeStamp);
                                 time_str = sprintf('%.4d_%.2d_%.2d_%.2d%.2d',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
                                 network_data{network_idx,matPathIndex} = strtrim(network_data{network_idx,matPathIndex});
+                                % v2.1.1
                                 [tFB_err, matFilePath] = totalFolderBuilder_v211(network_data{network_idx,matPathIndex}, toBeCombinedRadials_data{radial_idx,timeStampIndex});
                                 save([matFilePath filesep network_data{network_idx,network_idIndex} '-Total_' time_str '.mat'], 'TUVmask');
                                 disp(['[' datestr(now) '] - - ' network_data{network_idx,network_idIndex} '-Total_' time_str '.mat' ' file successfully saved.']);
@@ -467,9 +468,6 @@ try
                         % Create the total netCDF file according to the European standard data model
                         try
                             if (strcmp(extensions, 'ruv')) % Codar data
-                                % v2.1 (THE 2 LINEs BELOW TO BE REMOVED WHEN DUOBLE PRODUCTION WILL STOP)
-                                [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v31(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
-                                disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1 file successfully created and stored.']);
                                 % v2.1.1
                                 [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v32(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
                                 % LINE BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING

@@ -387,6 +387,19 @@ end
 
 %%
 
+%% Evaluate measurement vertical max and resolution
+
+try
+    transmit_central_frequencyIndex = find(not(cellfun('isempty', strfind(stationFields, 'transmit_central_frequency'))));
+    txFreq = stationData{transmit_central_frequencyIndex}*1e6; % transmit frequency in Hertz
+    vertMax = (3e8)/(8*pi*txFreq);
+catch err
+    display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
+end
+
+%%
+
 %% Retrieve time coverage period, resolution, duration and metadata date stamp
 try
     temporal_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'temporal_resolution'))));
@@ -890,7 +903,7 @@ try
     netcdf.putAtt(ncid, varid_lon, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % crs
-%     varid_crs = netcdf.defVar( ncid, 'crs', 'short', dimid_t);
+    %     varid_crs = netcdf.defVar( ncid, 'crs', 'short', dimid_t);
     varid_crs = netcdf.defVar( ncid, 'crs', 'short', []);
     netcdf.defVarDeflate(ncid, varid_crs, true, true, 6);
     netcdf.putAtt( ncid, varid_crs, 'grid_mapping_name', 'latitude_longitude' );
@@ -1268,7 +1281,7 @@ try
     netcdf.defVarDeflate(ncid, varid_scdr, true, true, 6);
     netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive Antenna Codes');
     netcdf.putAtt(ncid, varid_scdr, 'units', '1');
-%     netcdf.putAtt(ncid, varid_scdr, 'valid_range', '');
+    %     netcdf.putAtt(ncid, varid_scdr, 'valid_range', '');
     netcdf.putAtt(ncid, varid_scdr, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_urn', '');
@@ -1280,7 +1293,7 @@ try
     netcdf.defVarDeflate(ncid, varid_scdt, true, true, 6);
     netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit Antenna Codes');
     netcdf.putAtt(ncid, varid_scdt, 'units', '1');
-%     netcdf.putAtt(ncid, varid_scdt, 'valid_range', '');
+    %     netcdf.putAtt(ncid, varid_scdt, 'valid_range', '');
     netcdf.putAtt(ncid, varid_scdt, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_name', '');
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_urn', '');
@@ -1448,8 +1461,8 @@ try
     netcdf.putAtt(ncid, varid_global, 'calibration_link', stationData{calibration_linkIndex});
     titleIndex = find(not(cellfun('isempty', strfind(networkFields, 'title'))));
     netcdf.putAtt(ncid, varid_global, 'title', networkData{titleIndex});
-    summaryIndex = find(not(cellfun('isempty', strfind(networkFields, 'summary'))));
-    netcdf.putAtt(ncid, varid_global, 'summary', networkData{summaryIndex});
+    summaryIndex = find(not(cellfun('isempty', strfind(stationFields, 'summary'))));
+    netcdf.putAtt(ncid, varid_global, 'summary', stationData{summaryIndex});
     netcdf.putAtt(ncid, varid_global, 'source', 'coastal structure');
     netcdf.putAtt(ncid, varid_global, 'source_platform_category_code', '17');
     institution_nameIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_name'))));
@@ -1468,7 +1481,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'geospatial_lon_min', num2str(networkData{geospatial_lon_minIndex}));
     geospatial_lon_maxIndex = find(not(cellfun('isempty', strfind(networkFields, 'geospatial_lon_max'))));
     netcdf.putAtt(ncid, varid_global, 'geospatial_lon_max', num2str(networkData{geospatial_lon_maxIndex}));
-    netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_max', '4');
+    netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_max', num2str(vertMax));
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_min', '0');
     netcdf.putAtt(ncid, varid_global, 'time_coverage_start', timeCoverageStart);
     netcdf.putAtt(ncid, varid_global, 'time_coverage_end', timeCoverageEnd);
@@ -1491,7 +1504,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'history', hist_create);
     netcdf.putAtt(ncid, varid_global, 'date_modified', dateCreated);
     netcdf.putAtt(ncid, varid_global, 'date_update', dateCreated);
-    netcdf.putAtt(ncid, varid_global, 'processing_level', '2B');    
+    netcdf.putAtt(ncid, varid_global, 'processing_level', '2B');
     contributor_nameIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_name'))));
     netcdf.putAtt(ncid, varid_global, 'contributor_name', networkData{contributor_nameIndex});
     contributor_roleIndex = find(not(cellfun('isempty', strfind(networkFields, 'contributor_role'))));
@@ -1523,7 +1536,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'geospatial_lon_units', 'degrees_east');
     netcdf.putAtt(ncid, varid_global, 'geospatial_lat_resolution', num2str(latRes));
     netcdf.putAtt(ncid, varid_global, 'geospatial_lon_resolution', num2str(lonRes));
-    netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_resolution', '4');
+    netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_resolution', num2str(vertMax));
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_units', 'm');
     netcdf.putAtt(ncid, varid_global, 'geospatial_vertical_positive', 'down');
     netcdf.putAtt(ncid, varid_global, 'time_coverage_duration', timeCoverageDuration);

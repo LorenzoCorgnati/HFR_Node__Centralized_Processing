@@ -171,6 +171,19 @@ end
 
 %%
 
+%% Evaluate measurement vertical max and resolution
+
+try
+    transmit_central_frequencyIndex = find(not(cellfun('isempty', strfind(stationFields, 'transmit_central_frequency'))));
+    txFreq = cell2mat(stationData(:,transmit_central_frequencyIndex)).*1e6; % transmit frequency in Hertz
+    vertMax = (3e8)/(8*pi*min(txFreq));
+catch err
+    display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    T2C_err = 1;
+end
+
+%%
+
 %% Prepare data
 % Set netcdf format
 ncfmt = 'netcdf4_classic';
@@ -1055,7 +1068,7 @@ try
     geospatial_lon_maxIndex = find(not(cellfun('isempty', strfind(networkFields, 'geospatial_lon_max'))));
     ncwriteatt(ncfile,'/','geospatial_lon_max',char(num2str(networkData{geospatial_lon_maxIndex})));
     ncwriteatt(ncfile,'/','geospatial_vertical_min', char('0'));
-    ncwriteatt(ncfile,'/','geospatial_vertical_max', char('4'));
+    ncwriteatt(ncfile,'/','geospatial_vertical_max', char(num2str(vertMax)));
     ncwriteatt(ncfile, '/','time_coverage_start',char(timeCoverageStart));
     ncwriteatt(ncfile, '/','time_coverage_end',char(timeCoverageEnd));
     % Conventions used
@@ -1108,7 +1121,7 @@ try
     ncwriteatt(ncfile,'/','geospatial_lon_units',char('degrees_east'));
     ncwriteatt(ncfile,'/','geospatial_lat_resolution',char(num2str(latRes)));
     ncwriteatt(ncfile,'/','geospatial_lon_resolution',char(num2str(lonRes)));
-    ncwriteatt(ncfile,'/','geospatial_vertical_resolution', char('4'));
+    ncwriteatt(ncfile,'/','geospatial_vertical_resolution', char(num2str(vertMax)));
     ncwriteatt(ncfile,'/','geospatial_vertical_units', char('m'));
     ncwriteatt(ncfile,'/','geospatial_vertical_positive', char('down'));
     ncwriteatt(ncfile, '/','time_coverage_duration',char(timeCoverageDuration));
