@@ -35,8 +35,8 @@ end
 % Set and exectute the query
 try
     network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
-%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id` LIKE ''%_TEST''';
-%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-WesternItaly''';
+    %     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id` LIKE ''%_TEST''';
+    network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-WesternItaly''';
     network_curs = exec(conn,network_selectquery);
     disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 catch err
@@ -356,19 +356,16 @@ try
                     end
                     
                     % Convert the radial files into netCDF according to the European standard data model
-                    for ruv_idx=1:length(toBeCombinedRadialIndices)
+                    if(~strcmp(,'HFR-WesternItaly'))
+                        for ruv_idx=1:length(toBeCombinedRadialIndices)
                         toBeCombinedStationIndexC = strfind(station_data(:,STstation_idIndex), toBeCombinedRadials_data{toBeCombinedRadialIndices(ruv_idx),RIstation_idIndex});
                         toBeCombinedStationIndex = find(not(cellfun('isempty', toBeCombinedStationIndexC)));
                         try
                             if (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, 'ruv')) % Codar data
-                                if(~strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                                    % v2.1.1
-                                    [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v32(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
-                                    % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                                    disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.1 file successfully created and stored.']);
-                                else
-                                    station_tbUpdateFlag = 0;
-                                end
+                                % v2.1.1
+                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v32(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+                                % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
+                                disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.1 file successfully created and stored.']);
                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                             elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, 'crad_ascii')) % WERA data
                                 % TO BE DONE
@@ -428,6 +425,7 @@ try
                             HFRC_err = 1;
                         end
                     end
+                end
                     
                     % Combine the Codar radial files into total
                     if((size(radFiles,2)>1) && (HFRC_err~=2))
@@ -493,7 +491,8 @@ try
                                     % Plot
                                     shadePlot_WesternItaly;
                                     % Save the map file
-                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_WesternItaly/Totals_map/' time_str '.jpg']);
+%                                     saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_WesternItaly/Totals_map/' time_str '.jpg']);
+                                    saveas(gcf,['/mnt/data/CNR/RADAR/DATI/Dati_HFR_WesternItaly/Totals_map/' time_str '.jpg']);
                                     close
                                     disp(['[' datestr(now) '] - - ' time_str ' map for HFR-TirLig network successfully saved.']);
                                 end
@@ -546,7 +545,7 @@ try
                                 updateData = {1};
                                 
                                 % Update the radial_input_tb table on the database
-                                tablename = 'radial_input_tb';
+                                tablename = 'radial_input_tb';                                
                                 update(conn,tablename,updateColnames,updateData,whereclause);
                                 disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
                             end
