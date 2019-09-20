@@ -475,11 +475,14 @@ try
         range_dim = 0:RangeResolutionMeters*0.001:stationData{number_of_range_cellsIndex};
     end
     
-    if(exist('AngularResolution','var') ~= 0)
-        bearing_dim = 0:AngularResolution:360;
-    else
-        bearing_dim = 0:5:360;
+    if(~exist('AngularResolution','var') ~= 0)
+        AngularResolution = 5;
     end
+    bearing_dim_1 = min(R.bear):-AngularResolution:0;
+    bearing_dim_1 = sort(bearing_dim_1,'asc');
+    bearing_dim_2 = min(R.bear):AngularResolution:max(R.bear);
+    bearing_dim_3 = max(R.bear):AngularResolution:360;    
+    bearing_dim = unique([bearing_dim_1 bearing_dim_2 bearing_dim_3]);
     
     [bearing, range] = meshgrid(bearing_dim, range_dim);
     
