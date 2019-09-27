@@ -302,4 +302,4 @@ if(TC_err==0)
     disp(['[' datestr(now) '] - - ' 'CP_TotalConversion successfully executed.']);
 end
 
-pause(1200);
+pause(20);

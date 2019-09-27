@@ -618,4 +618,4 @@ if(HFRC_err==0)
     disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner successfully executed.']);
 end
 
-pause(1200);
+pause(20);
