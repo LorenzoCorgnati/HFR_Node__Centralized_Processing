@@ -42,6 +42,14 @@ The required toolboxes are:
 - Rdir (http://www.mathworks.com/matlabcentral/fileexchange/19550-recursive-directory-listing);
 - uniqueStrCell (https://www.mathworks.com/matlabcentral/fileexchange/50476-unique-for-cell-array-of-string).
 
+The guidelines on how to synchronize the providers' HFR radial and total data towards the EU HFR Node are available at ​https://doi.org/10.25704/9XPF-76G7
+How to cite:
+- when using these guidelines, ​please use the following citation carefully and correctly​:
+Reyes, E., Rotllán, P., Rubio, A., Corgnati, L., Mader, J., & Mantovani, C. (2019).
+Guidelines on how to sync your High Frequency (HF) radar data with the European HF
+Radar node (Version 1.). ​Balearic Islands Coastal Observing and Forecasting System,
+SOCIB. ​ ​ ​https://doi.org/10.25704/9XPF-76G7
+
 
 Author: Lorenzo Corgnati
 
