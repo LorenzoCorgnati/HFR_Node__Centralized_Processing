@@ -14,7 +14,7 @@ warning('off', 'all');
 
 iTDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB started.']);
+disp(['[' datestr(now) '] - - ' 'CP_inputTUV2DB started.']);
 
 startDateNum = datenum(startDate);
 
@@ -225,5 +225,5 @@ end
 %%
 
 if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_inputTotal2DB successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'CP_inputTUV2DB successfully executed.']);
 end
