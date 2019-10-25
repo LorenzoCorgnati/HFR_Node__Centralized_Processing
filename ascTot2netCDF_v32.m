@@ -1,6 +1,6 @@
-%% curAsc2netCDF_v32.m
-% This function converts hourly total files from native WERA ASCII format
-% .cur_asc in netCDF-4 format according to the European common data and metadata
+%% ascTot2netCDF_v32.m
+% This function converts hourly total .asc (Shom customized WERA totals) files
+% in netCDF-4 format according to the European common data and metadata
 % model integrating CMEMS-INSTAC and SDC CF extension requirements.
 % v3.2 uses scale_factor and add_offset for packing geophysical variables.
 
@@ -26,14 +26,14 @@
 
 
 % Author: Lorenzo Corgnati
-% Date: June 6, 2019
+% Date: October 23, 2019
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
-function [cA2C_err,networkData,ncFileNoPath,ncFilesize] = curAsc2netCDF_v32(totFilename,timestamp,networkData,networkFields,stationData,stationFields)
+function [cA2C_err,networkData,ncFileNoPath,ncFilesize] = ascTot2netCDF_v32(totFilename,timestamp,networkData,networkFields,stationData,stationFields)
 
-disp(['[' datestr(now) '] - - ' 'curAsc2netCDF_v32.m started.']);
+disp(['[' datestr(now) '] - - ' 'ascTot2netCDF_v32.m started.']);
 
 cA2C_err = 0;
 
@@ -46,52 +46,39 @@ addOffset = 0;
 
 %%
 
-% %% Load the total file
-%
-% try
-%     % Load the total file as text
-%     ascFile = textread(totFilename,  '%s', 'whitespace', '\n');
-% catch err
-%     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-%     cA2C_err = 1;
-% end
-%
-% %%
-
 %% Retrieve the file header, the data table, the column names of the data table and site codes and coordinates
 
 try
-    % Read the number of contributing radial stations
-    nStation=textread(totFilename,'%u',1);
+    % Retrieve the number of contributing radial stations
+    nStation=size(stationData,1);
+    
+    % Retrieve site codes and coordinates
+    station_idIndex = find(not(cellfun('isempty', strfind(stationFields, 'station_id'))));
+    site_lonIndex = find(not(cellfun('isempty', strfind(stationFields, 'site_lon'))));
+    site_latIndex = find(not(cellfun('isempty', strfind(stationFields, 'site_lat'))));
+    sitesCodes = cell2mat(stationData(:,station_idIndex));
+    sitesLat = cell2mat(stationData(:,site_latIndex));
+    sitesLon = cell2mat(stationData(:,site_lonIndex));
+    
+    sitesCodes=char(sitesCodes);
     
     %     % Read the file header and the data table
     %     [cA2C_err, ascHeader, tableFields, ascTable] = curAscHeaderDataTable(ascFile);
     % Read the data table
-    [IX,IY,U,V,KL,Acc_U,Acc_V] = textread(totFilename,'%u %u %f %f %d %f %f','headerlines', nStation+9);
-    ascTable=[IX,IY,U,V,KL,Acc_U,Acc_V];
+    [IX,IY,U,V,Acc_U,Acc_V,Flag] = textread(totFilename,'%u %u %f %f %f %f %u','headerlines', 7);
+    ascTable=[IX,IY,U,V,Flag,Acc_U,Acc_V];
     tableFields={'IX'    'IY'    'U[m/s]'    'V[m/s]'    'KL'    'Acc_U[m/s]'    'Acc_V[m/s]'}; % TO BE CANCELLED AFTER JAN'S CONFIRMATION
+        
+    % SONO ARRIVATO QUI
     
-    % Retrieve site codes and coordinates
-    %     [cA2C_err,sitesCodes,sitesLat,sitesLon] = curAscSiteCodeCoord(ascHeader);
-    for st_idx=1:nStation
-        [sitesCodes(st_idx,:),sitesLat(st_idx),NS,sitesLon(st_idx),EW] = textread(totFilename, '%*11c %*0c %*5c %*0c %*3c %*0c %s %*0c %f %*0c %s %*0c %f %*0c %s',1, 'headerlines',st_idx);
-        if(strcmp(NS,'South'))
-            sitesLat(st_idx) = -sitesLat(st_idx);
-        end
-        if(strcmp(EW,'West'))
-            sitesLon(st_idx) = -sitesLon(st_idx);
-        end
-        assert(sitesLat(st_idx)>=-90.0 & sitesLat(st_idx)<=90.0,[sitesCodes{st_idx,:} ' site latitude out of range']);
-        assert(sitesLon(st_idx)>=-180.0 & sitesLon(st_idx)<=180.0,[sitesCodes{st_idx,:} ' site longitude out of range']);
-    end
-    sitesCodes=char(sitesCodes);
-    sitesCodes = upper(sitesCodes(:,1:4));
-    
-    % Retrieve top-left point of the first gridcell, cell size and number of lon and lat gridcells
+    % Retrieve minimum and maximum longitude and latitude and number of lon and lat gridcells
     %     [cA2C_err,topLeftLat,topLeftLon, cellSize, lonCells,latCells] = curAscGridSpec(ascHeader);
-    [topLeftLat,topLeftLon, cellSize, lonCells,latCells]=textread(totFilename,'%f %f %f %u %u',1,'headerlines', nStation+4);
-    assert(topLeftLat>=-90.0 & topLeftLat<=90.0,'Grid top-left latitude out of range');
-    assert(topLeftLon>=-180.0 & topLeftLon<=180.0,'Grid top-left longitude out of range');
+    [minLon,maxLon, lonCells]=textread(totFilename,'%f %f %u',1,'headerlines', 4);
+    [minLat,maxLat, latCells]=textread(totFilename,'%f %f %u',1,'headerlines', 5);
+    assert(minLat>=-90.0 & minLat<=90.0,'Minimum latitude out of range');
+    assert(maxLat>=-90.0 & maxLat<=90.0,'Maximum latitude out of range');
+    assert(minLon>=-180.0 & minLon<=180.0,'Minimum longitude out of range');
+    assert(maxLon>=-180.0 & maxLon<=180.0,'Maximum longitude out of range');
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     cA2C_err = 1;
@@ -104,8 +91,14 @@ end
 
 try
     % Retrieve the lower left and upper right coordinates
-    [LLlon, LLlat] = km2lonlat(topLeftLon,topLeftLat,0,-(cellSize*latCells+1));
-    [URlon, URlat] = km2lonlat(topLeftLon,topLeftLat,(cellSize*lonCells+1),0);
+    LLlon = minLon;
+    LLlat = minLat;
+    URlon = maxLon;
+    URlat = maxLat;
+    
+    % Retrieve grid resolution
+    grid_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'grid_resolution'))));
+    cellSize = networkData{grid_resolutionIndex};
     
     % Create the lon/lat regular grid
     [gridLon, gridLat] = LonLat_grid([LLlon, LLlat], [URlon, URlat], cellSize, 'km');
@@ -1080,10 +1073,10 @@ try
     ncwrite(ncfile,'GDOP',mat_tot.GDOP);
     ncwrite(ncfile,'NARX',length(sitesLat));
     ncwrite(ncfile,'NATX',length(sitesLat));
-    ncwrite(ncfile,'SLTR',sitesLat');
-    ncwrite(ncfile,'SLNR',sitesLon');
-    ncwrite(ncfile,'SLTT',sitesLat');
-    ncwrite(ncfile,'SLNT',sitesLon');
+    ncwrite(ncfile,'SLTR',sitesLat);
+    ncwrite(ncfile,'SLNR',sitesLon);
+    ncwrite(ncfile,'SLTT',sitesLat);
+    ncwrite(ncfile,'SLNT',sitesLon);
     ncwrite(ncfile,'SCDR',sitesCodes');
     ncwrite(ncfile,'SCDT',sitesCodes');
     ncwrite(ncfile,'TIME_QC',sdnTime_QCflag);
@@ -1187,7 +1180,6 @@ try
     ncwriteatt(ncfile, '/','time_coverage_duration',char(timeCoverageDuration));
     ncwriteatt(ncfile, '/','time_coverage_resolution',char(timeCoverageResolution));
     ncwriteatt(ncfile,'/','reference_system',char('EPSG:4806'));
-    grid_resolutionIndex = find(not(cellfun('isempty', strfind(networkFields, 'grid_resolution'))));
     ncwriteatt(ncfile,'/','grid_resolution',char(num2str(networkData{grid_resolutionIndex})));
     ncwriteatt(ncfile,'/','cdm_data_type',char('Grid'));
     % Conventions used
@@ -1222,7 +1214,7 @@ end
 %%
 
 if(cA2C_err==0)
-    disp(['[' datestr(now) '] - - ' 'curAsc2netCDF_v32.m successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'ascTot2netCDF_v32.m successfully executed.']);
 end
 
 return

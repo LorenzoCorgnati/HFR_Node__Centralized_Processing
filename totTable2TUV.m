@@ -102,7 +102,7 @@ try
     for site_idx=1:length(siteLon)
         [s,radialAngles(:,site_idx),a21] = m_idist(siteLon(site_idx), siteLat(site_idx), tuv.LonLat(:,1), tuv.LonLat(:,2), 'wgs84');
     end
-    % Evaluate GDOP for each grid cell (as the square root of the rtace of the covariance matrix of radial angles)
+    % Evaluate GDOP for each grid cell (as the square root of the trace of the covariance matrix of radial angles)
     for cell_idx=1:size(table,1)
         tuv.ErrorEstimates(1,1).TotalErrors(cell_idx) = sqrt(trace(gdop_max_orthog(radialAngles(cell_idx,:))));
     end

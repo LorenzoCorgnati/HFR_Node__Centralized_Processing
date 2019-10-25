@@ -47,8 +47,8 @@ How to cite:
 - when using these guidelines, ​please use the following citation carefully and correctly​:
 Reyes, E., Rotllán, P., Rubio, A., Corgnati, L., Mader, J., & Mantovani, C. (2019).
 Guidelines on how to sync your High Frequency (HF) radar data with the European HF
-Radar node (Version 1.). ​Balearic Islands Coastal Observing and Forecasting System,
-SOCIB. ​ ​ ​https://doi.org/10.25704/9XPF-76G7
+Radar node (Version 1.1). Balearic Islands Coastal Observing and Forecasting System,
+SOCIB . https://doi.org/10.25704/9XPF-76G7
 
 
 Author: Lorenzo Corgnati

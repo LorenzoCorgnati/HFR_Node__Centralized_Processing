@@ -84,7 +84,7 @@ try
     velThr(totVel<=Total_QC_params.VelThr) = 1;
     
     % GDOP Threshold quality flags
-    if(numel(isnan(mat_tot.GDOP))<numel(mat_tot.GDOP))
+    if(sum(sum(isnan(mat_tot.GDOP)))<numel(mat_tot.GDOP))
         GDOPThr(mat_tot.GDOP>Total_QC_params.GDOPThr) = 4;
         GDOPThr(mat_tot.GDOP<=Total_QC_params.GDOPThr) = 1;
     else

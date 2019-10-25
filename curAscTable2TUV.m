@@ -8,6 +8,8 @@
 %         ts: timestamp of the total file
 %         gridLon: matrix containing the longitudes of the regular grid
 %         gridLat: matrix containing the latitudes of the regular grid
+%         siteLon: array containing the longitudes of the radial sites
+%         siteLat: array containing the latitudes of the radial sites
 
 % OUTPUT:
 %         ca2T_err: error flag (0 = correct, 1 = error)
@@ -20,7 +22,7 @@
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
-function [ca2T_err,tuv] = curAscTable2TUV(table,fields,ts,gridLon,gridLat)
+function [ca2T_err,tuv] = curAscTable2TUV(table,fields,ts,gridLon,gridLat,siteLon,siteLat)
 
 disp(['[' datestr(now) '] - - ' 'curAscTable2TUV.m started.']);
 
@@ -84,6 +86,16 @@ try
     % Insert the U accuracy and V accuracy data
     tuv.ErrorEstimates(1,1).Uerr = table(:,uAccIndex);
     tuv.ErrorEstimates(1,1).Verr = table(:,vAccIndex);
+    
+    % Evaluate GDOP and add it
+    % Evaluate radial angles for each grid cell
+    for site_idx=1:length(siteLon)
+        [s,radialAngles(:,site_idx),a21] = m_idist(siteLon(site_idx), siteLat(site_idx), tuv.LonLat(:,1), tuv.LonLat(:,2), 'wgs84');
+    end
+    % Evaluate GDOP for each grid cell (as the square root of the trace of the covariance matrix of radial angles)
+    for cell_idx=1:size(table,1)
+        tuv.ErrorEstimates(1,1).TotalErrors(cell_idx) = sqrt(trace(gdop_max_orthog(radialAngles(cell_idx,:))));
+    end
     
     % Add the TimeStamp
     tsCell = strsplit(ts);

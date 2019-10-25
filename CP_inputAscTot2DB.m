@@ -1,20 +1,20 @@
-%% CP_inputTUV2DB.m
-% This application lists the input tuv files pushed by the HFR data providers
-% and insert into the HFR database the information needed for the conversion of
-% the total data files into the European standard data
-% model.
+%% CP_inputAscTot2DB.m
+% This application lists the input asc total (Shom customized WERA totals)
+% files pushed by the HFR data providers and insert into the HFR database 
+% the information needed for the conversion of the total data files into 
+% the European standard data model.
 
 % Author: Lorenzo Corgnati
-% Date: October 16, 2018
+% Date: October 21, 2019
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
 warning('off', 'all');
 
-iTDB_err = 0;
+iCurDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_inputTUV2DB started.']);
+disp(['[' datestr(now) '] - - ' 'CP_inputAscTot2DB started.']);
 
 startDateNum = datenum(startDate);
 
@@ -27,7 +27,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Connection to database successfully established.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 %%
@@ -41,7 +41,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 % Fetch data
@@ -51,7 +51,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 % Retrieve column names
@@ -60,7 +60,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 % Retrieve the number of networks
@@ -69,7 +69,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 % Close cursor
@@ -78,7 +78,7 @@ try
     disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 %%
@@ -95,38 +95,38 @@ try
     inputPathIndex = find(not(cellfun('isempty', inputPathIndexC)));
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 % Scan the networks
 try
     for network_idx=1:numNetworks
-        iTDB_err = 0;
+        iCurDB_err = 0;
         if(~isempty(network_data{network_idx,inputPathIndex}))
             % Trim heading and trailing whitespaces from folder path
             network_data{network_idx,inputPathIndex} = strtrim(network_data{network_idx,inputPathIndex});
-            % List the input tuv files
+            % List the input cur_asc files
             try
-                tuvFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.tuv'],'datenum>floor(now-8)');
+                ascFiles = rdir([network_data{network_idx,inputPathIndex} filesep '**' filesep '*.asc'],'datenum>floor(now-8)');
                 disp(['[' datestr(now) '] - - ' 'Total files from ' network_data{network_idx,network_idIndex} ' network successfully listed.']);
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                iTDB_err = 1;
+                iCurDB_err = 1;
             end
-            % Insert information about the tuv file into the database (if not yet present)
-            for tuv_idx=1:length(tuvFiles)
-                iTDB_err = 0;
+            % Insert information about the cur_asc file into the database (if not yet present)
+            for asc_idx=1:length(ascFiles)
+                iCurDB_err = 0;
+                % Retrieve the filename
+                [pathstr,name,ext]=fileparts(ascFiles(asc_idx).name);
+                noFullPathName=[name ext];
+                % Check if the current cur_asc file is already present on the database
                 try
-                    % Retrieve the filename
-                    [pathstr,name,ext]=fileparts(tuvFiles(tuv_idx).name);
-                    noFullPathName=[name ext];
-                    % Check if the current tuv file is already present on the database
                     dbTotals_selectquery = ['SELECT * FROM total_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
                     dbTotals_curs = exec(conn,dbTotals_selectquery);
                     disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table for checking if ' noFullPathName ' total file is already present in the database successfully executed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
+                    iCurDB_err = 1;
                 end
                 
                 % Fetch data
@@ -135,28 +135,37 @@ try
                     disp(['[' datestr(now) '] - - ' 'Data about the presence of ' noFullPathName ' total file in the database successfully fetched from total_input_tb table.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
+                    iCurDB_err = 1;
                 end
                                 
                 if(rows(dbTotals_curs) == 0)
-                    % Retrieve information about the tuv file
+                    % Retrieve information about the cur_asc file
                     try
-                        % Load the total file as structure
-                        totStruct = loadRDLFile(tuvFiles(tuv_idx).name,'false','warning');
-                        % Read the file header
-                        totHeader = totStruct.OtherMetadata.Header;
-                        % Retrieve information from header
-                        for header_idx=1:length(totHeader)
-                            splitLine = regexp(totHeader{header_idx}, ' ', 'split');
-                            % Retrieve TimeStamp
-                            if(strcmp(splitLine{1}, '%TimeStamp:'))
-                                TimeStamp = strrep(totHeader{header_idx}(length('%TimeStamp:')+2:length(totHeader{header_idx})), '"', '');
-                                break;
-                            end
-                        end
+%                         % Load the total file as text
+%                         ascFile = textread(ascFiles(asc_idx).name,  '%s', 'whitespace', '\n');
+%                         % Read the file header and look for timestamp
+%                         for line_idx=1:length(ascFile)
+%                             splitLine = regexp(ascFile{line_idx}, '[ \t]+', 'split');
+%                             if(length(splitLine)>1)
+%                                 expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{4})';
+%                                 expressionTime = '([0-9]{2}:[0-9]{2})';
+%                                 [startIndexDate,endIndexDate] = regexp(splitLine{1},expressionDate);
+%                                 [startIndexTime,endIndexTime] = regexp(splitLine{2},expressionTime);
+%                                 if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (sum(splitLine{3}=='UTC')==3))
+%                                     date = splitLine{1}(startIndexDate:endIndexDate);
+%                                     time = splitLine{2}(startIndexTime:endIndexTime);
+%                                     TimeStampVec = datevec([date ' ' time]);
+%                                     TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
+%                                     break;
+%                                 end
+%                             end
+%                         end
+                        [dateY, dateM, dateD, timeH, timeM, timeS] = textread(ascFiles(asc_idx).name, '%4d %*0c %2d %*0c %2d %*0c %2d %*0c %2d %*0c %2d',1, 'headerlines',2);
+                        TimeStampVec = [dateY dateM dateD timeH timeM timeS];
+                        TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iTDB_err = 1;
+                        iCurDB_err = 1;
                     end
                     
                     % Evaluate datetime from, Time Stamp
@@ -164,25 +173,25 @@ try
                         [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iTDB_err = 1;
+                        iCurDB_err = 1;
                     end
                     
-                    % Retrieve information about the tuv file
+                    % Retrieve information about the cur_asc file
                     try
-                        tuvFileInfo = dir(tuvFiles(tuv_idx).name);
-                        tuvFilesize = tuvFileInfo.bytes/1024;
+                        ascFileInfo = dir(ascFiles(asc_idx).name);
+                        ascFilesize = ascFileInfo.bytes/1024;
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iTDB_err = 1;
+                        iCurDB_err = 1;
                     end
                     
-                    % Write tuv info in total_input_tb table
+                    % Write cur_asc info in total_input_tb table
                     try
                         % Define a cell array containing the column names to be added
                         addColnames = {'filename' 'filepath' 'network_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
                         
                         % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,pathstr,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),tuvFilesize,ext,0};
+                        addData = {noFullPathName,pathstr,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ascFilesize,ext,0};
                         
                         % Append the product data into the total_input_tb table on the database.
                         tablename = 'total_input_tb';
@@ -190,7 +199,7 @@ try
                         disp(['[' datestr(now) '] - - ' noFullPathName ' total file information successfully inserted into total_input_tb table.']);
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        iTDB_err = 1;
+                        iCurDB_err = 1;
                     end                    
                 end
                 
@@ -200,14 +209,14 @@ try
                     disp(['[' datestr(now) '] - - ' 'Cursor to total_input_tb table successfully closed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    iTDB_err = 1;
+                    iCurDB_err = 1;
                 end                
             end
         end
     end
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 %%
@@ -219,11 +228,11 @@ try
     disp(['[' datestr(now) '] - - ' 'Connection to database successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    iTDB_err = 1;
+    iCurDB_err = 1;
 end
 
 %%
 
-if(iTDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_inputTUV2DB successfully executed.']);
+if(iCurDB_err==0)
+    disp(['[' datestr(now) '] - - ' 'CP_inputAscTot2DB successfully executed.']);
 end

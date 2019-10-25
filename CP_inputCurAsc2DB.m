@@ -1,8 +1,7 @@
 %% CP_inputCurAsc2DB.m
 % This application lists the input cur_asc (WERA totals) files pushed by the HFR data providers
 % and insert into the HFR database the information needed for the conversion of
-% the total data files into the European standard data
-% model.
+% the total data files into the European standard data model.
 
 % Author: Lorenzo Corgnati
 % Date: October 3, 2018
@@ -191,7 +190,7 @@ try
                         addColnames = {'filename' 'filepath' 'network_id' 'timestamp' 'datetime' 'reception_date' 'filesize' 'extension' 'NRT_processed_flag'};
                         
                         % Define a cell array that contains the data for insertion
-                        addData = {noFullPathName,pathstr,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ascFilesize,'cur_asc',0};
+                        addData = {noFullPathName,pathstr,network_data{network_idx,network_idIndex},TimeStamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),ascFilesize,ext,0};
                         
                         % Append the product data into the total_input_tb table on the database.
                         tablename = 'total_input_tb';

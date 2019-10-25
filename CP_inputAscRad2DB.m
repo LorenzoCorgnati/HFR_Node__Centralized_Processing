@@ -1,11 +1,12 @@
-%% CP_inputCradAscii2DB.m
-% This application lists the input crad_ascii (WERA radials) files pushed by the HFR data providers
-% and insert into the HFR database the information needed for the
-% combination of radial files into totals and for the generation of the
-% radial and total data files into the European standard data model.
+%% CP_inputAscRad2DB.m
+% This application lists the input asc radial (Shom customized WERA totals)
+% files pushed by the HFR data providers and insert into the HFR database
+% the information needed for the combination of radial files into totals 
+% and for the generation of the radial and total data files into the 
+% European standard data model.
 
 % Author: Lorenzo Corgnati
-% Date: October 16, 2018
+% Date: October 21, 2019
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
@@ -14,7 +15,7 @@ warning('off', 'all');
 
 iCradDB_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_inputCradAscii2DB started.']);
+disp(['[' datestr(now) '] - - ' 'CP_inputAscRad2DB started.']);
 
 startDateNum = datenum(startDate);
 
@@ -164,7 +165,7 @@ try
                 station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 % List the input crad_ascii files for the current station
                 try
-                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(now-8)');
+                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.asc'],'datenum>floor(now-8)');
                     disp(['[' datestr(now) '] - - ' 'Radial files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -174,11 +175,11 @@ try
                 % Insert information about the crad_ascii file into the database (if not yet present)
                 for crad_idx=1:length(cradFiles)
                     iCradDB_err = 0;
+                    % Retrieve the filename
+                    [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);
+                    noFullPathName=[name ext];
+                    % Check if the current crad_ascii file is already present on the database
                     try
-                        % Retrieve the filename
-                        [pathstr,name,ext]=fileparts(cradFiles(crad_idx).name);
-                        noFullPathName=[name ext];
-                        % Check if the current crad_ascii file is already present on the database
                         dbRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND filename = ' '''' noFullPathName ''' ORDER BY timestamp'];
                         dbRadials_curs = exec(conn,dbRadials_selectquery);
                         disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for checking if ' noFullPathName ' radial file is already present in the database successfully executed.']);
@@ -199,38 +200,17 @@ try
                     if(rows(dbRadials_curs) == 0)
                         % Retrieve information about the crad_ascii file
                         try
-%                             % Load the total file as text
-%                             cradFile = textread(cradFiles(crad_idx).name,  '%s', 'whitespace', '\n');
-%                             % Read the file header and look for timestamp
-%                             for line_idx=1:length(cradFile)
-%                                 splitLine = regexp(cradFile{line_idx}, '[ \t]+', 'split');
-%                                 if(length(splitLine)>1)
-%                                     expressionDate = '([0-9]{2}-[A-Z]{3}-[0-9]{2})';
-%                                     expressionTime = '([0-9]{2}:[0-9]{2})';
-%                                     expressionUTC = 'UTC';
-%                                     [startIndexDate,endIndexDate] = regexp(cradFile{line_idx},expressionDate);
-%                                     [startIndexTime,endIndexTime] = regexp(cradFile{line_idx},expressionTime);
-%                                     [startIndexUTC,endIndexUTC] = regexp(cradFile{line_idx},expressionUTC);
-%                                     if((~isempty(startIndexDate)) && (~isempty(startIndexTime)) && (~isempty(startIndexUTC)))
-%                                         date = cradFile{line_idx}(startIndexDate:endIndexDate);
-%                                         time = cradFile{line_idx}(startIndexTime:endIndexTime);
-%                                         TimeStampVec = datevec([date ' ' time]);
-%                                         TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
-%                                         break;
-%                                     end
-%                                 end
-%                             end
                             % Read the timestamp from the header
-                            [date,time] = textread(cradFiles(crad_idx).name, '%*15c %9c %*0c %5c',1);
-                            TimeStampVec = datevec([date ' ' time]);
+                            [dateY, dateM, dateD, timeH, timeM, timeS] = textread(cradFiles(crad_idx).name, '%4d %*0c %2d %*0c %2d %*0c %2d %*0c %2d %*0c %2d',1, 'headerlines',3);
+                            TimeStampVec = [dateY dateM dateD timeH timeM timeS];
                             TimeStamp = [num2str(TimeStampVec(1)) ' ' num2str(TimeStampVec(2),'%02d') ' ' num2str(TimeStampVec(3),'%02d') ' ' num2str(TimeStampVec(4),'%02d') ' ' num2str(TimeStampVec(5),'%02d') ' ' num2str(TimeStampVec(6),'%02d')];
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             iCradDB_err = 1;
                         end
                         
-                        % Evaluate datetime from, Time Stamp
                         try
+                            % Evaluate datetime from, Time Stamp
                             [t2d_err,DateTime] = timestamp2datetime(TimeStamp);
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -261,7 +241,7 @@ try
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             iCradDB_err = 1;
-                        end                        
+                        end                       
                     end
                 end
             end
@@ -283,9 +263,9 @@ catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     iCradDB_err = 1;
 end
-
+    
 %%
 
 if(iCradDB_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_inputCradAscii2DB successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'CP_inputAscRad2DB successfully executed.']);
 end
