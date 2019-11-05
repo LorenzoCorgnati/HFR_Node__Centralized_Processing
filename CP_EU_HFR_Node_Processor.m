@@ -61,6 +61,7 @@ while(kk>0)
     
     % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
     CP_inputRUV2DB;
+    CP_inputMetNoRadials2DB;
     CP_inputAscRad2DB;
     CP_inputCradAscii2DB;
     CP_HFRCombiner;

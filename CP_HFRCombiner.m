@@ -37,6 +37,7 @@ try
     network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
 %     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id` LIKE ''%_TEST''';
 %     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-WesternItaly''';
+%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-Skagerrak''';
     network_curs = exec(conn,network_selectquery);
     disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
 catch err
@@ -315,7 +316,7 @@ try
                 NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag_integrated_network'))));
             else
                 NRT_processed_flagIndex = strmatch('NRT_processed_flag',toBeCombinedRadials_columnNames,'exact');
-%                 NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag'))));
+                %                 NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag'))));
             end
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -348,6 +349,12 @@ try
                         if (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.ruv')) % Codar data
                             disp(['[' datestr(now) '] - - ' 'loadRDLfile loading ...']);
                             RADIAL = loadRDLFile(radFiles, 'false', 'warning');
+                        elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
+                            for mat_idx=1:length(radFiles)
+                                 load(radFiles{mat_idx});
+                                 RADIAL(mat_idx) = ruvRad;
+                                 clear ruvRad
+                            end
                         elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
                             % TO BE DONE
                         end
@@ -371,7 +378,13 @@ try
                                     station_tbUpdateFlag = 0;
                                 end
                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
-                            elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, 'crad_ascii')) % WERA data
+                            elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
+                                % v2.1.1
+                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = mat2netCDF_v32(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+                                % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
+                                disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.1 file successfully created and stored.']);
+                                contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;                                
+                            elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
                                 % TO BE DONE
                             end
                             %                                 % LINES BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
@@ -438,7 +451,7 @@ try
                         end
                         extensions = uniqueStrCell(extensions);
                         % Check the extension
-                        if ((length(extensions)==1) && (strcmp(extensions, '.ruv'))) % Codar data
+                        if ((length(extensions)==1) && ((strcmp(extensions, '.ruv')) || (strcmp(extensions, '.mat')))) % Codar data
                             try
                                 disp(['[' datestr(now) '] - - ' 'makeTotals combining radials...']);
                                 [TUV,R] = makeTotals(RADIAL, 'Grid', Grid, 'TimeStamp', RADIAL(1,1).TimeStamp, 'spatthresh', network_data{network_idx,spatthreshIndex}, 'tempthresh', 1/24);
@@ -506,7 +519,7 @@ try
                         
                         % Create the total netCDF file according to the European standard data model
                         try
-                            if (strcmp(extensions, '.ruv')) % Codar data
+                            if (strcmp(extensions, '.ruv') || strcmp(extensions, '.mat')) % Codar data
                                 % v2.1.1
                                 [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v32(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
                                 % LINE BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
