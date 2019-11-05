@@ -763,7 +763,7 @@ try
     dimid_t = netcdf.defDim(ncid, 'TIME', 1);
     dimid_bearing = netcdf.defDim(ncid, 'BEAR', numel( bearing_dim));
     dimid_range = netcdf.defDim(ncid, 'RNGE', numel( range_dim));
-    dimid_depth = netcdf.defDim(ncid, 'DEPTH', 1);
+    dimid_depth = netcdf.defDim(ncid, 'DEPH', 1);
     dimid_maxsite = netcdf.defDim(ncid, 'MAXSITE', maxsite);
     dimid_maxinst = netcdf.defDim(ncid, 'MAXINST', length(EDMO_code));
     dimid_refmax = netcdf.defDim(ncid, 'REFMAX', refmax);
@@ -808,7 +808,7 @@ try
     netcdf.putAtt(ncid, varid_t, 'sdn_parameter_urn', 'SDN:P01::ELTJLD01');
     netcdf.putAtt(ncid, varid_t, 'sdn_uom_name', 'Days');
     netcdf.putAtt(ncid, varid_t, 'sdn_uom_urn', 'SDN:P06::UTAA');
-    netcdf.putAtt(ncid, varid_t, 'ancillary_variables', 'TIME_QC');
+    netcdf.putAtt(ncid, varid_t, 'ancillary_variables', 'TIME_SEADATANET_QC');
     
     % Bearing (arbitrary 'y' dimension)
     varid_bearing = netcdf.defVar(ncid, 'BEAR', 'float', dimid_bearing);
@@ -819,7 +819,7 @@ try
     netcdf.putAtt(ncid, varid_bearing, 'sdn_parameter_urn', 'SDN:P01::BEARRFTR');
     netcdf.putAtt(ncid, varid_bearing, 'sdn_uom_name', 'Degrees true');
     netcdf.putAtt(ncid, varid_bearing, 'sdn_uom_urn', 'SDN:P06::UABB');
-    netcdf.putAtt(ncid, varid_bearing, 'ancillary_variables', 'POSITION_QC');
+    netcdf.putAtt(ncid, varid_bearing, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % Range (arbitrary 'x' dimension)
     varid_range = netcdf.defVar(ncid, 'RNGE', 'float', dimid_range);
@@ -830,7 +830,7 @@ try
     netcdf.putAtt(ncid, varid_range, 'sdn_parameter_urn', 'SDN:P01::RIFNAX01');
     netcdf.putAtt(ncid, varid_range, 'sdn_uom_name', 'Kilometres');
     netcdf.putAtt(ncid, varid_range, 'sdn_uom_urn', 'SDN:P06::ULKM');
-    netcdf.putAtt(ncid, varid_range, 'ancillary_variables', 'POSITION_QC');
+    netcdf.putAtt(ncid, varid_range, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % Depth (arbitrary 'z' dimension)
     varid_depth = netcdf.defVar(ncid, 'DEPH', 'float', dimid_depth);
@@ -844,7 +844,7 @@ try
     netcdf.putAtt(ncid, varid_depth, 'sdn_parameter_urn', 'SDN:P01::ADEPZZ01');
     netcdf.putAtt(ncid, varid_depth, 'sdn_uom_name', 'Metres');
     netcdf.putAtt(ncid, varid_depth, 'sdn_uom_urn', 'SDN:P06::ULAA');
-    netcdf.putAtt(ncid, varid_depth, 'ancillary_variables', 'DEPTH_QC');
+    netcdf.putAtt(ncid, varid_depth, 'ancillary_variables', 'DEPTH_SEADATANET_QC');
     
     
     %% Add auxillary coordinate variables to provide mapping from range and bearing to lat, lon.
@@ -872,7 +872,7 @@ try
     netcdf.putAtt(ncid, varid_lat, 'sdn_uom_name', 'Degrees north');
     netcdf.putAtt(ncid, varid_lat, 'sdn_uom_urn', 'SDN:P06::DEGN');
     netcdf.putAtt(ncid, varid_lat, 'grid_mapping', 'crs');
-    netcdf.putAtt(ncid, varid_lat, 'ancillary_variables', 'POSITION_QC');
+    netcdf.putAtt(ncid, varid_lat, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % Longitude
     varid_lon = netcdf.defVar( ncid, 'LONGITUDE', 'float', [dimid_range dimid_bearing] );
@@ -888,7 +888,7 @@ try
     netcdf.putAtt(ncid, varid_lon, 'sdn_uom_name', 'Degrees east');
     netcdf.putAtt(ncid, varid_lon, 'sdn_uom_urn', 'SDN:P06::DEGE');
     netcdf.putAtt(ncid, varid_lon, 'grid_mapping', 'crs');
-    netcdf.putAtt(ncid, varid_lon, 'ancillary_variables', 'POSITION_QC');
+    netcdf.putAtt(ncid, varid_lon, 'ancillary_variables', 'POSITION_SEADATANET_QC');
     
     % crs
     %     varid_crs = netcdf.defVar( ncid, 'crs', 'short', dimid_t);
@@ -1293,9 +1293,9 @@ try
     %% Add QC variables
     
     % Time QC Flag
-    varid_tqc = netcdf.defVar(ncid, 'TIME_QC', 'byte', dimid_t);
+    varid_tqc = netcdf.defVar(ncid, 'TIME_SEADATANET_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_tqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time Quality Flag');
+    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time SeaDataNet Quality Flag');
     netcdf.putAtt(ncid, varid_tqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_tqc, 'flag_values', int8( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_tqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
@@ -1306,9 +1306,9 @@ try
     netcdf.putAtt(ncid, varid_tqc, 'units', '1');
     
     % Position QC Flag
-    varid_posqc = netcdf.defVar(ncid, 'POSITION_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
+    varid_posqc = netcdf.defVar(ncid, 'POSITION_SEADATANET_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_posqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position Quality Flags');
+    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position SeaDataNet Quality Flags');
     netcdf.putAtt(ncid, varid_posqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_posqc, 'flag_values', int8( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_posqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
@@ -1320,9 +1320,9 @@ try
     netcdf.putAtt(ncid, varid_posqc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Depth QC Flag
-    varid_dqc = netcdf.defVar(ncid, 'DEPTH_QC', 'byte', dimid_t);
+    varid_dqc = netcdf.defVar(ncid, 'DEPTH_SEADATANET_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_dqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth Quality Flag');
+    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth SeaDataNet Quality Flag');
     netcdf.putAtt(ncid, varid_dqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_dqc, 'flag_values', int8( [0 1 2 3 4 7 8 9]));
     netcdf.putAtt(ncid, varid_dqc, 'flag_meanings', 'unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value');
