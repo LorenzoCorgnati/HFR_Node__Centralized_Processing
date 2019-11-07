@@ -228,7 +228,9 @@ try
                     % v2.1.1
                     [TC_err, network_data(network_idx,:), outputFilename, outputFilesize] = ascTot2netCDF_v32([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
                 end
-                disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.1 file successfully created and stored.']);
+                if(TC_err==0)
+                    disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.1 file successfully created and stored.']);
+                end
             catch err
                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                 TC_err = 1;
