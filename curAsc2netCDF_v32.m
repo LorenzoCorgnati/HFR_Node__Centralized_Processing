@@ -504,7 +504,7 @@ if(cA2C_err == 0)
         Total_QC_params.TempDerThr.hour2 = [ncFilePath(1:length(ncFilePath)-length(twoHoursBefore.fP)) twoHoursBefore.fP filesep networkData{network_idIndex} '-Total_' twoHoursBefore.TS '.nc'];
         Total_QC_params.TempDerThr.hour1 = [ncFilePath(1:length(ncFilePath)-length(oneHourBefore.fP)) oneHourBefore.fP filesep networkData{network_idIndex} '-Total_' oneHourBefore.TS '.nc'];
         
-        [overall_QCflag, varianceThreshold_QCflag, temporalDerivativeThreshold_QCflag, GDOP_QCflag, dataDensity_QCflag, velocityThreshold_QCflag] = curAscTotalQCtests_v11(mat_tot, Total_QC_params);
+        [overall_QCflag, varianceThreshold_QCflag, GDOP_QCflag, dataDensity_QCflag, velocityThreshold_QCflag] = curAscTotalQCtests_v11(mat_tot, Total_QC_params);
     catch err
         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
         cA2C_err = 1;
@@ -1093,7 +1093,7 @@ if(cA2C_err == 0)
         ncwrite(ncfile,'POSITION_SEADATANET_QC',sdnPosition_QCflag);
         ncwrite(ncfile,'DEPTH_SEADATANET_QC',sdnDepth_QCflag);
         ncwrite(ncfile,'QCflag',overall_QCflag);
-        ncwrite(ncfile,'VART_QC',temporalDerivativeThreshold_QCflag);
+        ncwrite(ncfile,'VART_QC',varianceThreshold_QCflag);
         ncwrite(ncfile,'GDOP_QC',GDOP_QCflag);
         ncwrite(ncfile,'DDNS_QC',dataDensity_QCflag);
         ncwrite(ncfile,'CSPD_QC',velocityThreshold_QCflag);
