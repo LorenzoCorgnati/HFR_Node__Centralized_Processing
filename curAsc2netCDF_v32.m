@@ -1200,7 +1200,7 @@ if(cA2C_err == 0)
         ncwriteatt(ncfile,'/','metadata_contact',char('lorenzo.corgnati@sp.ismar.cnr.it'));
         ncwriteatt(ncfile,'/','metadata_date_stamp',char(dateCreated));
         ncwriteatt(ncfile,'/','standard_name_vocabulary',char('NetCDF Climate and Forecast (CF) Metadata Convention Standard Name Table Version 1.6'));
-        ncwriteatt(ncfile,'/','sensor',char('CODAR SeaSonde'));
+        ncwriteatt(ncfile,'/','sensor',char('WERA'));
         ncwriteatt(ncfile,'/','institution_reference',char(institution_websiteStr));
         ncwriteatt(ncfile,'/','date_issued',char(dateCreated));
         ncwriteatt(ncfile,'/','software_name',char('HFR_Combiner'));
