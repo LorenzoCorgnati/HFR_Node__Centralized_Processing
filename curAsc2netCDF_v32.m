@@ -940,8 +940,7 @@ if(cA2C_err == 0)
         ncwriteatt(ncfile,'VART_QC','flag_values',int8([0 1 2 3 4 7 8 9]));
         ncwriteatt(ncfile,'VART_QC','flag_meanings',char('unknown good_data probably_good_data potentially_correctable_bad_data bad_data nominal_value interpolated_value missing_value'));
         ncwriteatt(ncfile,'VART_QC','comment',char(['OceanSITES quality flagging for variance threshold QC test. ' ...
-            'Test not applicable. The Temporal Derivative test is applied.' ...
-            'Threshold set to ' num2str(Total_QC_params.TempDerThr.threshold) ' m/s. ']));
+            'Threshold set to ' num2str(Total_QC_params.VarThr) ' m2/s2. ']));
         ncwriteatt(ncfile,'VART_QC','scale_factor',int8(1));
         ncwriteatt(ncfile,'VART_QC','add_offset',int8(0));
         
