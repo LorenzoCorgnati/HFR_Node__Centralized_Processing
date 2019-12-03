@@ -1,10 +1,10 @@
-%% CP_TotalConversion_main.m
+%% TotalConversion_main.m
 % This application reads the HFR database for collecting information about
 % the total data files to be converted into the European standard data
 % model and calls the conversion functions.
 
 % Author: Lorenzo Corgnati
-% Date: October 16, 2018
+% Date: June 8, 2018
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
@@ -13,7 +13,7 @@ warning('off', 'all');
 
 TC_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_TotalConversion started.']);
+disp(['[' datestr(now) '] - - ' 'TotalConversion started.']);
 
 %%
 
@@ -29,13 +29,61 @@ end
 
 %%
 
-%% Query the database for retrieving network data
+%% Query the database for retrieving the networks managed by the HFR provider username
 
 % Set and exectute the query
 try
-    network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
+    HFRPusername_selectquery = ['SELECT network_id FROM account_tb WHERE username = ' '''' HFRPusername ''' '];
+    HFRPusername_curs = exec(conn,HFRPusername_selectquery);
+    disp(['[' datestr(now) '] - - ' 'Query to account_tb table for retrieving the networks managed by the HFR provider username successfully executed.']);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
+end
+
+% Fetch data
+try
+    HFRPusername_curs = fetch(HFRPusername_curs);
+    HFRPusername_data = HFRPusername_curs.Data;
+    disp(['[' datestr(now) '] - - ' 'Data of the networks managed by the HFR provider username successfully fetched from account_tb table.']);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
+end
+
+% Close cursor
+try
+    close(HFRPusername_curs);
+    disp(['[' datestr(now) '] - - ' 'Cursor to account_tb table successfully closed.']);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
+end
+
+%%
+
+%% Retrieve networks ID managed by the HFR provider username
+
+try
+    HFRPnetworks = regexp(HFRPusername_data{1}, '[ ,;]+', 'split');
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    TC_err = 1;
+end
+
+%%
+
+%% Query the database for retrieving data from managed networks
+
+% Set and exectute the query
+try
+    network_selectquery = 'SELECT * FROM network_tb WHERE (network_id = ''';
+    for HFRPntw_idx=1:length(HFRPnetworks)-1
+        network_selectquery = [network_selectquery HFRPnetworks{HFRPntw_idx} ''' OR network_id = ' ''''];
+    end
+    network_selectquery = [network_selectquery HFRPnetworks{length(HFRPnetworks)} ''') AND EU_HFR_processing_flag=0'];
     network_curs = exec(conn,network_selectquery);
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving data of the managed networks successfully executed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     TC_err = 1;
@@ -45,7 +93,7 @@ end
 try
     network_curs = fetch(network_curs);
     network_data = network_curs.Data;
-    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
+    disp(['[' datestr(now) '] - - ' 'Data of the managed networks successfully fetched from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     TC_err = 1;
@@ -63,7 +111,7 @@ end
 % Retrieve the number of networks
 try
     numNetworks = rows(network_curs);
-    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
+    disp(['[' datestr(now) '] - - ' 'Number of managed networks successfully retrieved from network_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     TC_err = 1;
@@ -148,7 +196,7 @@ try
         
         % Retrieve the total files to be converted
         try
-            toBeConvertedTotals_selectquery = ['SELECT * FROM total_input_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0'];
+            toBeConvertedTotals_selectquery = ['SELECT * FROM total_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0'];
             toBeConvertedTotals_curs = exec(conn,toBeConvertedTotals_selectquery);
             disp(['[' datestr(now) '] - - ' 'Query to total_input_tb table for retrieving the total files from ' network_data{network_idx,network_idIndex} ' network to be converted successfully executed.']);
         catch err
@@ -220,10 +268,10 @@ try
             try
                 if (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, '.tuv')) % Codar data
                     % v2.1.2
-                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = tuv2netCDF_v33([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
+                    [TC_err, network_data(network_idx,:), outputFilename, outputFilesize] = tuv2netCDF_v33([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
                 elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, '.cur_asc')) % WERA data
                     % v2.1.2
-                    [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = curAsc2netCDF_v33([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
+                    [TC_err, network_data(network_idx,:), outputFilename, outputFilesize] = curAsc2netCDF_v33([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
                 elseif (strcmp(toBeConvertedTotals_data{toBeConverted_idx,extensionIndex}, '.asc')) % WERA data
                     % v2.1.2
                     [TC_err, network_data(network_idx,:), outputFilename, outputFilesize] = ascTot2netCDF_v33([toBeConvertedTotals_data{toBeConverted_idx,filepathIndex} filesep toBeConvertedTotals_data{toBeConverted_idx,filenameIndex}],toBeConvertedTotals_data{toBeConverted_idx,timestampIndex},network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
@@ -261,7 +309,11 @@ try
             % Insert converted total info in total_HFRnetCDF_tb table
             try
                 if((TC_err==0) && (exist('outputFilename','var') ~= 0))
-                    % Evaluate datetime from, Time Stamp
+                    % Delete the eventually present entry with the same name from the database
+                    total_deletequery = ['DELETE FROM total_HFRnetCDF_tb WHERE filename = ' '''' outputFilename ''''];
+                    total_deletecurs = exec(conn,total_deletequery);
+                    
+                    % Evaluate datetime from Time Stamp
                     [t2d_err,DateTime] = timestamp2datetime(toBeConvertedTotals_data{toBeConverted_idx,timestampIndex});
                     
                     % Define a cell array containing the column names to be added
@@ -304,7 +356,7 @@ end
 %%
 
 if(TC_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_TotalConversion successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'TotalConversion successfully executed.']);
 end
 
-pause(20);
+pause(1200);

@@ -1,9 +1,8 @@
-%% CP_EU_HFR_Node_Processor.m
+%% EU_HFR_Node_Processor.m
 % This wrapper launches the scripts for inserting into the HFR database
-% the information about radial and totala files (both Codar and WERA)
-% pushed by the data providers and for combining radials into totals and
-% converting radials and totals to netCDF files according to the European
-% standard data model.
+% the information about radial and totala files (both Codar and WERA) and
+% for combining radials into totals and converting radials and totals to
+% netCDF files according to the European standard data model.
 
 % Author: Lorenzo Corgnati
 % Date: October 20, 2018
@@ -28,11 +27,17 @@ set(0,'DefaultFigureColormap',feval('jet'));
 
 EHNP_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor started.']);
+disp(['[' datestr(now) '] - - ' 'EU_HFR_Node_Processor started.']);
 
 %%
 
-%% Set database parameters
+%% Set HFR provider username
+
+HFRPusername = 'lorenzo';
+
+%%
+
+%% Set database parameters NOT TO BE CHANGED
 
 sqlConfig.user = 'HFR_lorenzo';
 sqlConfig.password = 'xWeLXHFQfvpBmDYO';
@@ -45,7 +50,7 @@ sqlConfig.database = 'HFR_node_db';
 % Set the infinite loop for continuous operation
 kk = 5;
 while(kk>0)
-    disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop started.']);
+    disp(['[' datestr(now) '] - - ' 'EU_HFR_Node_Processor loop started.']);
     
     %% Set datetime of the starting date of the processing period
     
@@ -54,25 +59,24 @@ while(kk>0)
 %         startDate = '2012-01-29';
     catch err
         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-        EHNP_err = 1;
+        HFRC_err = 1;
     end
     
     %%
     
     % RADIALS COMBINATION & RADIALS AND TOTALS CONVERSION
-    CP_inputRUV2DB;
-    CP_inputMetNoRadials2DB;
-    CP_inputAscRad2DB;
-    CP_inputCradAscii2DB;
-    CP_HFRCombiner;
+    inputRUV2DB;
+%     inputAscRad2DB;
+%     inputCradAscii2DB;
+%     HFRCombiner;
     
     % TOTALS CONVERSION
-    CP_inputTUV2DB;
-    CP_inputAscTot2DB;
-    CP_inputCurAsc2DB;
-    CP_TotalConversion;
+    inputTUV2DB;
+    inputAscTot2DB;
+    inputCurAsc2DB;
+    TotalConversion;
     
-    disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Processor loop ended.']);
+    disp(['[' datestr(now) '] - - ' 'EU_HFR_Node_Processor loop ended.']);
 end
 
 %%

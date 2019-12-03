@@ -1,4 +1,4 @@
-%% CP_HFRCombiner.m
+%% HFRCombiner.m
 % This application reads the HFR database for collecting information about
 % the radial data files to be combined into totals and performs the
 % combination and the generation of radial and total data files into the
@@ -14,7 +14,7 @@ warning('off', 'all');
 
 HFRC_err = 0;
 
-disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner started.']);
+disp(['[' datestr(now) '] - - ' 'HFRCombiner started.']);
 
 %%
 
@@ -30,16 +30,13 @@ end
 
 %%
 
-%% Query the database for retrieving network data
+%% Query the database for retrieving the networks managed by the HFR provider username
 
 % Set and exectute the query
 try
-    network_selectquery = 'SELECT * FROM network_tb WHERE EU_HFR_processing_flag=1';
-%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id` LIKE ''%_TEST''';
-%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-WesternItaly''';
-%     network_selectquery = 'SELECT * FROM `network_tb` WHERE `network_id`=''HFR-Skagerrak''';
-    network_curs = exec(conn,network_selectquery);
-    disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving network data successfully executed.']);
+    HFRPusername_selectquery = ['SELECT network_id FROM account_tb WHERE username = ' '''' HFRPusername ''''];
+    HFRPusername_curs = exec(conn,HFRPusername_selectquery);
+    disp(['[' datestr(now) '] - - ' 'Query to account_tb table for retrieving the networks managed by the HFR provider username successfully executed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     HFRC_err = 1;
@@ -47,27 +44,9 @@ end
 
 % Fetch data
 try
-    network_curs = fetch(network_curs);
-    network_data = network_curs.Data;
-    disp(['[' datestr(now) '] - - ' 'Network data successfully fetched from network_tb table.']);
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    HFRC_err = 1;
-end
-
-% Retrieve column names
-try
-    network_columnNames = columnnames(network_curs,true);
-    disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    HFRC_err = 1;
-end
-
-% Retrieve the number of networks
-try
-    numNetworks = rows(network_curs);
-    disp(['[' datestr(now) '] - - ' 'Number of networks successfully retrieved from network_tb table.']);
+    HFRPusername_curs = fetch(HFRPusername_curs);
+    HFRPusername_data = HFRPusername_curs.Data;
+    disp(['[' datestr(now) '] - - ' 'Data of the networks managed by the HFR provider username successfully fetched from account_tb table.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     HFRC_err = 1;
@@ -75,11 +54,79 @@ end
 
 % Close cursor
 try
-    close(network_curs);
-    disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
+    close(HFRPusername_curs);
+    disp(['[' datestr(now) '] - - ' 'Cursor to account_tb table successfully closed.']);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     HFRC_err = 1;
+end
+
+%%
+
+%% Retrieve networks ID managed by the HFR provider username
+
+try
+    HFRPnetworks = regexp(HFRPusername_data{1}, '[ ,;]+', 'split');
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    HFRC_err = 1;
+end
+
+%%
+
+%% Query the database for retrieving data from managed networks
+
+if(HFRC_err==0)
+    % Set and exectute the query
+    try
+        network_selectquery = 'SELECT * FROM network_tb WHERE (network_id = ''';
+        for HFRPntw_idx=1:length(HFRPnetworks)-1
+            network_selectquery = [network_selectquery HFRPnetworks{HFRPntw_idx} ''' OR network_id = ' ''''];
+        end
+        network_selectquery = [network_selectquery HFRPnetworks{length(HFRPnetworks)} ''') AND EU_HFR_processing_flag=0'];
+        network_curs = exec(conn,network_selectquery);
+        disp(['[' datestr(now) '] - - ' 'Query to network_tb table for retrieving data of the managed networks successfully executed.']);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        HFRC_err = 1;
+    end
+    
+    % Fetch data
+    try
+        network_curs = fetch(network_curs);
+        network_data = network_curs.Data;
+        disp(['[' datestr(now) '] - - ' 'Data of the managed networks successfully fetched from network_tb table.']);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        HFRC_err = 1;
+    end
+    
+    % Retrieve column names
+    try
+        network_columnNames = columnnames(network_curs,true);
+        disp(['[' datestr(now) '] - - ' 'Column names from network_tb table successfully retrieved.']);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        HFRC_err = 1;
+    end
+    
+    % Retrieve the number of networks
+    try
+        numNetworks = rows(network_curs);
+        disp(['[' datestr(now) '] - - ' 'Number of managed networks successfully retrieved from network_tb table.']);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        HFRC_err = 1;
+    end
+    
+    % Close cursor
+    try
+        close(network_curs);
+        disp(['[' datestr(now) '] - - ' 'Cursor to network_tb table successfully closed.']);
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        HFRC_err = 1;
+    end
 end
 
 %%
@@ -110,29 +157,25 @@ catch err
     HFRC_err = 1;
 end
 
-% Scan the networks
 try
+    % Scan the networks
     for network_idx=1:numNetworks
         HFRC_err = 0;
-        try
-            % Build the regular LonLat grid given the geographical boundaries and the grid resolution for the radial combination into total
-            [gridLon, gridLat] = LonLat_grid([network_data{network_idx,geospatial_lon_minIndex},network_data{network_idx,geospatial_lat_minIndex}], [network_data{network_idx,geospatial_lon_maxIndex},network_data{network_idx,geospatial_lat_maxIndex}], network_data{network_idx,grid_resolutionIndex}, 'km');
-            gridLat = flipud(gridLat);
-            lon = gridLon(1,:);
-            lat = gridLat(:,1);
-            length_lon=length(lon);
-            length_lat=length(lat);
-            for i=1:length_lon
-                lonG(1+(i-1)*length_lat:(i-1)*length_lat+length_lat) = lon(i)*ones(1,length_lat);
-                latG(1+(i-1)*length_lat:(i-1)*length_lat+length_lat) = lat;
-            end
-            Grid(:,1) = lonG';
-            Grid(:,2) = latG';
-            disp(['[' datestr(now) '] - - ' 'Grid for radial combination for ' network_data{network_idx, network_idIndex} ' successfully generated.']);
-        catch err
-            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-            HFRC_err = 1;
+        % Build the regular LonLat grid given the geographical boundaries and the grid resolution for the radial combination into total
+        [gridLon, gridLat] = LonLat_grid([network_data{network_idx,geospatial_lon_minIndex},network_data{network_idx,geospatial_lat_minIndex}], [network_data{network_idx,geospatial_lon_maxIndex},network_data{network_idx,geospatial_lat_maxIndex}], network_data{network_idx,grid_resolutionIndex}, 'km');
+        gridLat = flipud(gridLat);
+        lon = gridLon(1,:);
+        lat = gridLat(:,1);
+        length_lon=length(lon);
+        length_lat=length(lat);
+        for i=1:length_lon
+            lonG(1+(i-1)*length_lat:(i-1)*length_lat+length_lat) = lon(i)*ones(1,length_lat);
+            latG(1+(i-1)*length_lat:(i-1)*length_lat+length_lat) = lat;
         end
+        Grid(:,1) = lonG';
+        Grid(:,2) = latG';
+        
+        disp(['[' datestr(now) '] - - ' 'Grid for radial combination for ' network_data{network_idx, network_idIndex} ' network successfully generated.']);
         
         % Build the mask for the total masking
         try
@@ -146,7 +189,7 @@ try
         try
             fname = makeCoast([network_data{network_idx,geospatial_lon_minIndex},network_data{network_idx,geospatial_lon_maxIndex}],[network_data{network_idx,geospatial_lat_minIndex},network_data{network_idx,geospatial_lat_maxIndex}],'transverse mercator',['Total_Masks' filesep network_data{network_idx,network_idIndex} filesep network_data{network_idx,network_idIndex} '_MaskMap.mat'],5);
             load(['Total_Masks' filesep network_data{network_idx,network_idIndex} filesep network_data{network_idx,network_idIndex} '_MaskMap.mat']);
-            disp(['[' datestr(now) '] - - ' 'Mask area for ' network_data{network_idx, network_idIndex} ' successfully generated.']);
+            disp(['[' datestr(now) '] - - ' 'Mask area for ' network_data{network_idx, network_idIndex} ' network successfully generated.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -154,12 +197,7 @@ try
         
         % Retrieve the radial files to be combined and converted
         try
-            % Manage the case of the ISMAR-LaMMA integrated network (HFR-WesternItaly)
-            if(strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'''];
-            else
-                station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
-            end
+            station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
             station_curs = exec(conn,station_selectquery);
             disp(['[' datestr(now) '] - - ' 'Query to station_tb table for retrieving the stations of the ' network_data{network_idx,network_idIndex} ' network successfully executed.']);
         catch err
@@ -233,6 +271,9 @@ try
                     numActiveStations = numActiveStations - 1;
                 end
             end
+            if(numActiveStations == 0)
+                numActiveStations = numStations;
+            end
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -240,12 +281,7 @@ try
         
         % Retrieve the radial files related to the current station to be combined
         try
-            % Manage the case of the ISMAR-LaMMA integrated network (HFR-WesternItaly)
-            if(strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'') AND NRT_processed_flag_integrated_network = 0 ORDER BY timestamp'];
-            else
-                toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0 ORDER BY timestamp'];
-            end
+            toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''' AND NRT_processed_flag = 0 ORDER BY timestamp'];
             toBeCombinedRadials_curs = exec(conn,toBeCombinedRadials_selectquery);
             disp(['[' datestr(now) '] - - ' 'Query to radial_input_tb table for retrieving the radial files from ' network_data{network_idx,network_idIndex} ' network to be combined successfully executed.']);
         catch err
@@ -266,7 +302,7 @@ try
         % Retrieve column names
         try
             toBeCombinedRadials_columnNames = columnnames(toBeCombinedRadials_curs,true);
-            disp(['[' datestr(now) '] - - ' 'Column names from radial_input_folder_path table successfully retrieved.']);
+            disp(['[' datestr(now) '] - - ' 'Column names from radial_input_tb table successfully retrieved.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -281,10 +317,10 @@ try
             HFRC_err = 1;
         end
         
-        % Close cursor to radial_input_folder_path table
+        % Close cursor to radial_input_tb table
         try
             close(toBeCombinedRadials_curs);
-            disp(['[' datestr(now) '] - - ' 'Cursor to radial_input_folder_path table successfully closed.']);
+            disp(['[' datestr(now) '] - - ' 'Cursor to radial_input_tb table successfully closed.']);
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -312,12 +348,8 @@ try
             extensionIndex = find(not(cellfun('isempty', extensionIndexC)));
             
             % Find the index of the NRT_processed_flag field
-            if(strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag_integrated_network'))));
-            else
-                NRT_processed_flagIndex = strmatch('NRT_processed_flag',toBeCombinedRadials_columnNames,'exact');
-                %                 NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag'))));
-            end
+            NRT_processed_flagIndex = strmatch('NRT_processed_flag',toBeCombinedRadials_columnNames,'exact');
+%             NRT_processed_flagIndex = find(not(cellfun('isempty', strfind(toBeCombinedRadials_columnNames, 'NRT_processed_flag'))));
         catch err
             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
             HFRC_err = 1;
@@ -349,13 +381,7 @@ try
                         if (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.ruv')) % Codar data
                             disp(['[' datestr(now) '] - - ' 'loadRDLfile loading ...']);
                             RADIAL = loadRDLFile(radFiles, 'false', 'warning');
-                        elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
-                            for mat_idx=1:length(radFiles)
-                                 load(radFiles{mat_idx});
-                                 RADIAL(mat_idx) = ruvRad;
-                                 clear ruvRad
-                            end
-                        elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
+                        elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, 'crad_ascii')) % WERA data
                             % TO BE DONE
                         end
                     catch err
@@ -369,27 +395,15 @@ try
                         toBeCombinedStationIndex = find(not(cellfun('isempty', toBeCombinedStationIndexC)));
                         try
                             if (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.ruv')) % Codar data
-                                if(~strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                                    % v2.1.2
-                                    [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v33(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
-                                    % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                                    disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.2 file successfully created and stored.']);
-                                else
-                                    station_tbUpdateFlag = 0;
-                                end
-                                contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
-                            elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
                                 % v2.1.2
-                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = mat2netCDF_v33(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
-                                % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
+                                [R2C_err,network_data(network_idx,:),station_data(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v33(RADIAL(ruv_idx),network_data(network_idx,:),network_columnNames,station_data(toBeCombinedStationIndex,:),station_columnNames,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
                                 disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.2 file successfully created and stored.']);
-                                contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;                                
+                                contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                             elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
-                                % TO BE DONE
+                                % TO BE DONE -- UNCOMMENT LINES BELOW WHEN DONE
+                                %                                 disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1 file successfully created and stored.']);
+                                %                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                             end
-                            %                                 % LINES BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                            %                                 disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1 file successfully created and stored.']);
-                            %                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                         catch err
                             display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             HFRC_err = 2;
@@ -435,12 +449,13 @@ try
                                 whereclause = ['WHERE station_id = ' '''' station_data{toBeCombinedStationIndex,STstation_idIndex} ''''];
                                 update(conn,tablename,updateColnames,updateData,whereclause);
                                 station_tbUpdateFlag = 0;
-                                disp(['[' datestr(now) '] - - ' 'station_tb table successfully updated with last calibration date.']);
+                                disp(['[' datestr(now) '] - - ' 'station_tb table successfully updated with last calibration date for ' station_data{toBeCombinedStationIndex,STstation_idIndex} ' station.']);
                             end
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                             HFRC_err = 1;
                         end
+                        
                     end
                     
                     % Combine the Codar radial files into total
@@ -451,7 +466,7 @@ try
                         end
                         extensions = uniqueStrCell(extensions);
                         % Check the extension
-                        if ((length(extensions)==1) && ((strcmp(extensions, '.ruv')) || (strcmp(extensions, '.mat')))) % Codar data
+                        if ((length(extensions)==1) && (strcmp(extensions, '.ruv'))) % Codar data
                             try
                                 disp(['[' datestr(now) '] - - ' 'makeTotals combining radials...']);
                                 [TUV,R] = makeTotals(RADIAL, 'Grid', Grid, 'TimeStamp', RADIAL(1,1).TimeStamp, 'spatthresh', network_data{network_idx,spatthreshIndex}, 'tempthresh', 1/24);
@@ -477,62 +492,19 @@ try
                                 disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                                 HFRC_err = 1;
                             end
-                            
-                            % Plot the current map for HFR-TirLig network
-                            try
-                                if(strcmp(network_data{network_idx,network_idIndex},'HFR-TirLig'))
-                                    % Totals cleaning for GDOP
-                                    gdop_sP = sqrt(6.25);
-                                    maxspd_sP = 500;
-                                    [TUVclean,I] = cleanTotals(TUVmask,maxspd_sP,{'GDOPMaxOrthog','TotalErrors',gdop_sP});
-                                    % Plot
-                                    shadePlot_TirLig;
-                                    % Save the map file
-                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_TirLig/Totals_map/' time_str '.jpg']);
-                                    close
-                                    disp(['[' datestr(now) '] - - ' time_str ' map for HFR-TirLig network successfully saved.']);
-                                end
-                            catch err
-                                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                                HFRC_err = 1;
-                            end
-                            
-                            % Plot the current map for HFR-WesternItaly network
-                            try
-                                if(strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                                    % Totals cleaning for GDOP
-                                    gdop_sP = sqrt(6.25);
-                                    maxspd_sP = 500;
-                                    [TUVclean,I] = cleanTotals(TUVmask,maxspd_sP,{'GDOPMaxOrthog','TotalErrors',gdop_sP});
-                                    % Plot
-                                    shadePlot_WesternItaly;
-                                    % Save the map file
-                                    saveas(gcf,['/home/radarcombine/EU_HFR_NODE/HFR_WesternItaly/Totals_map/' time_str '.jpg']);
-                                    close
-                                    disp(['[' datestr(now) '] - - ' time_str ' map for HFR-TirLig network successfully saved.']);
-                                end
-                            catch err
-                                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                                HFRC_err = 1;
-                            end
                         end
                         
                         % Create the total netCDF file according to the European standard data model
-                        try
-                            if (strcmp(extensions, '.ruv') || strcmp(extensions, '.mat')) % Codar data
-                                % v2.1.2
-                                [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v33(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
-                                % LINE BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                                disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
-                            elseif (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'crad_ascii')) % WERA data
-                                % TO BE DONE
-                            end
-                            %                         % LINE BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONCERTER IS RUNNING
-                            %                         disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1 file successfully created and stored.']);
-                        catch err
-                            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                            HFRC_err = 1;
+                        if (strcmp(extensions, '.ruv')) % Codar data
+                            % v2.1.2
+                            [T2C_err,network_data(network_idx,:),station_data(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v33(TUVmask,network_data(network_idx,:),network_columnNames,station_data(contrSitesIndices,:),station_columnNames,toBeCombinedRadials_data{radial_idx,timeStampIndex},station_data);
+                            % LINE BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
+                            disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
+                        elseif (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'crad_ascii')) % WERA data
+                            % TO BE DONE
                         end
+                        %                         % LINE BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONCERTER IS RUNNING
+                        %                         disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1 file successfully created and stored.']);
                         
                         % Update NRT_processed_flag in the local radial table
                         try
@@ -548,19 +520,14 @@ try
                         try
                             if((HFRC_err==0) && (length(toBeCombinedRadialIndices) == numActiveStations))
                                 % Define a cell array containing the column names to be updated
-                                if(strcmp(network_data{network_idx,network_idIndex},'HFR-WesternItaly'))
-                                    updateColnames = {'NRT_processed_flag_integrated_network'};
-                                    whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'')'];
-                                else
-                                    updateColnames = {'NRT_processed_flag'};
-                                    whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
-                                end
+                                updateColnames = {'NRT_processed_flag'};
                                 
                                 % Define a cell array that contains the data for insertion
                                 updateData = {1};
                                 
                                 % Update the radial_input_tb table on the database
                                 tablename = 'radial_input_tb';
+                                whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND network_id = ' '''' network_data{network_idx,network_idIndex} ''''];
                                 update(conn,tablename,updateColnames,updateData,whereclause);
                                 disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
                             end
@@ -576,7 +543,7 @@ try
                                 total_deletequery = ['DELETE FROM total_HFRnetCDF_tb WHERE filename = ' '''' totOutputFilename ''''];
                                 total_deletecurs = exec(conn,total_deletequery);
                                 
-                                % Evaluate datetime from, Time Stamp
+                                % Evaluate datetime from Time Stamp
                                 [t2d_err,DateTime] = timestamp2datetime(toBeCombinedRadials_data{radial_idx,timeStampIndex});
                                 
                                 % Define a cell array containing the column names to be added
@@ -588,7 +555,7 @@ try
                                 % Append the product data into the total_HFRnetCDF_tb table on the database.
                                 tablename = 'total_HFRnetCDF_tb';
                                 datainsert(conn,tablename,addColnames,addData);
-                                disp(['[' datestr(now) '] - - ' totOutputFilename 'total combined file information successfully inserted into total_HFRnetCDF_tb table.']);
+                                disp(['[' datestr(now) '] - - ' totOutputFilename ' total combined file information successfully inserted into total_HFRnetCDF_tb table.']);
                             end
                         catch err
                             disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -608,6 +575,7 @@ try
         clear Grid gridLon gridLat lonG latG lon lat;
         
     end
+    
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     HFRC_err = 1;
@@ -628,7 +596,7 @@ end
 %%
 
 if(HFRC_err==0)
-    disp(['[' datestr(now) '] - - ' 'CP_HFRCombiner successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'HFRCombiner successfully executed.']);
 end
 
-pause(20);
+pause(1200);
