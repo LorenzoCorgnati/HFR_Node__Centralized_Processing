@@ -82,12 +82,13 @@ end
 
 %%
 
-%% Retrieve EDMO codes and institution names
+%% Retrieve EDMO codes and institution names and websites
 
 try
     % Find the EDMO_code field from network data
     NT_EDMO_codeIndex = find(not(cellfun('isempty', strfind(networkFields, 'EDMO_code'))));
     NT_EDMO_code = networkData{NT_EDMO_codeIndex};
+    NT_EDMO_code = NT_EDMO_code(NT_EDMO_code~=0);
     
     % Find the EDMO_code field from station data
     ST_EDMO_codeIndex = find(not(cellfun('isempty', strfind(stationFields, 'EDMO_code'))));
@@ -113,6 +114,21 @@ try
     institutionList = [NT_institution_name; ST_institution_name];
     institution_names = institutionList(ia);
     institution_nameStr = strjoin(institution_names,'; ');
+    
+    % Find the institution website field from network data
+    NT_institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
+    NT_institution_website = networkData{NT_institution_websiteIndex};
+    
+    % Find the institution website field from station data
+    ST_institution_websiteIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_website'))));
+    ST_institution_website = institutions(:,ST_institution_websiteIndex);
+    ST_institution_website(cellfun('isempty',ST_institution_website)) = [];
+    
+    % Build the cumulative institution website list
+    websiteList = [NT_institution_website; ST_institution_website];
+    institution_websites = websiteList(ia);
+    institution_websiteStr = strjoin(institution_websites,'; ');    
+    
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     T2C_err = 1;
@@ -354,26 +370,25 @@ end
 
 % Set naming authority
 try
-    institution_websiteIndex = find(not(cellfun('isempty', strfind(networkFields, 'institution_website'))));
-    institution_websiteStr = networkData{institution_websiteIndex};
-    if(~isempty(strfind(institution_websiteStr,'http://')))
-        tmpStr = strrep(institution_websiteStr,'http://','');
-    elseif(~isempty(strfind(institution_websiteStr,'https://')))
-        tmpStr = strrep(institution_websiteStr,'https://','');
-    else
-        tmpStr = institution_websiteStr;
-    end
-    tmpStr = strrep(tmpStr,'www.','');
-    tmpStr = strrep(tmpStr,'/','');
-    splitStr = strsplit(tmpStr,'.');
-    naming_authorityStr = [];
-    for split_idx=length(splitStr):-1:1
-        naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
-        if(split_idx~=1)
-            naming_authorityStr = [naming_authorityStr '.'];
-        end
-    end
-    naming_authorityStr= naming_authorityStr(~isspace(naming_authorityStr));
+%     if(~isempty(strfind(institution_websiteStr,'http://')))
+%         tmpStr = strrep(institution_websiteStr,'http://','');
+%     elseif(~isempty(strfind(institution_websiteStr,'https://')))
+%         tmpStr = strrep(institution_websiteStr,'https://','');
+%     else
+%         tmpStr = institution_websiteStr;
+%     end
+%     tmpStr = strrep(tmpStr,'www.','');
+%     tmpStr = strrep(tmpStr,'/','');
+%     splitStr = strsplit(tmpStr,'.');
+%     naming_authorityStr = [];
+%     for split_idx=length(splitStr):-1:1
+%         naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
+%         if(split_idx~=1)
+%             naming_authorityStr = [naming_authorityStr '.'];
+%         end
+%     end
+%     naming_authorityStr = naming_authorityStr(~isspace(naming_authorityStr));
+    naming_authorityStr = 'eu.eurogoos';
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     T2C_err = 1;

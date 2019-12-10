@@ -160,24 +160,25 @@ end
 try
     institution_websiteIndex = find(not(cellfun('isempty', strfind(stationFields, 'institution_website'))));
     institution_websiteStr = stationData{institution_websiteIndex};
-    if(~isempty(strfind(institution_websiteStr,'http://')))
-        tmpStr = strrep(institution_websiteStr,'http://','');
-    elseif(~isempty(strfind(institution_websiteStr,'https://')))
-        tmpStr = strrep(institution_websiteStr,'https://','');
-    else
-        tmpStr = institution_websiteStr;
-    end
-    tmpStr = strrep(tmpStr,'www.','');
-    tmpStr = strrep(tmpStr,'/','');
-    splitStr = strsplit(tmpStr,'.');
-    naming_authorityStr = [];
-    for split_idx=length(splitStr):-1:1
-        naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
-        if(split_idx~=1)
-            naming_authorityStr = [naming_authorityStr '.'];
-        end
-    end
-    naming_authorityStr= naming_authorityStr(~isspace(naming_authorityStr));
+%     if(~isempty(strfind(institution_websiteStr,'http://')))
+%         tmpStr = strrep(institution_websiteStr,'http://','');
+%     elseif(~isempty(strfind(institution_websiteStr,'https://')))
+%         tmpStr = strrep(institution_websiteStr,'https://','');
+%     else
+%         tmpStr = institution_websiteStr;
+%     end
+%     tmpStr = strrep(tmpStr,'www.','');
+%     tmpStr = strrep(tmpStr,'/','');
+%     splitStr = strsplit(tmpStr,'.');
+%     naming_authorityStr = [];
+%     for split_idx=length(splitStr):-1:1
+%         naming_authorityStr = [naming_authorityStr splitStr{split_idx}];
+%         if(split_idx~=1)
+%             naming_authorityStr = [naming_authorityStr '.'];
+%         end
+%     end
+%     naming_authorityStr= naming_authorityStr(~isspace(naming_authorityStr));
+    naming_authorityStr = 'eu.eurogoos';
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     R2C_err = 1;
