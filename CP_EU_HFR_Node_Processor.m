@@ -63,7 +63,7 @@ while(kk>0)
     CP_inputRUV2DB;
     CP_inputMetNoRadials2DB;
     CP_inputAscRad2DB;
-    CP_inputCradAscii2DB;
+%     CP_inputCradAscii2DB;
     CP_HFRCombiner;
     
     % TOTALS CONVERSION
