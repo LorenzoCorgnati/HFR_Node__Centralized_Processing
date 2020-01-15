@@ -331,19 +331,13 @@ try
                 end
                 
                 % Retrieve the indices (related to the netCDF data array) of the timestamps to be converted for HFR-MATROOS network
-                if(numMATROOSconverted~=0)
-                    [TC_err, MATROOStoBeConvertedIndices] = MATROOScompareTimeStamps(cell2mat(MATROOSconverted_data),OpenDAPncData.time);
-                else
-                    MATROOStoBeConvertedIndices = 1:length(OpenDAPncData.time);
-                end
+                if
+                [TC_err, MATROOStoBeConvertedIndices] = MATROOScompareTimeStamps(cell2mat(MATROOSconverted_data),OpenDAPncData.time);
                 
                 % Convert files
                 for MtBC_idx=1:length(MATROOStoBeConvertedIndices)
                     % v2.1.2
                     [TC_err, network_data(network_idx,:), outputFilename,outputFilesize] = MATROOS2netCDF_v33(OpenDAPncData,MATROOStoBeConvertedIndices(MtBC_idx),network_data(network_idx,:),network_columnNames,station_data,station_columnNames);
-                    if(TC_err==0)
-                        disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
-                    end
                     
                     % Insert converted total info in total_HFRnetCDF_tb table
                     try
@@ -364,7 +358,7 @@ try
                             % Append the product data into the total_HFRnetCDF_tb table on the database.
                             tablename = 'total_HFRnetCDF_tb';
                             datainsert(conn,tablename,addColnames,addData);
-                            disp(['[' datestr(now) '] - - ' outputFilename ' total file information successfully inserted into total_HFRnetCDF_tb table.']);
+                            disp(['[' datestr(now) '] - - ' outputFilename 'total file information successfully inserted into total_HFRnetCDF_tb table.']);
                         end
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
