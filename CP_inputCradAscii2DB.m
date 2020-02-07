@@ -164,7 +164,7 @@ try
                 station_data{station_idx,inputPathIndex} = strtrim(station_data{station_idx,inputPathIndex});
                 % List the input crad_ascii files for the current station
                 try
-                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(now-8)');
+                    cradFiles = rdir([station_data{station_idx,inputPathIndex} filesep '**' filesep '*.crad_ascii'],'datenum>floor(now-3)');
                     disp(['[' datestr(now) '] - - ' 'Radial files from ' station_data{station_idx,station_idIndex} ' station successfully listed.']);
                 catch err
                     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

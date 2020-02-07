@@ -24,9 +24,9 @@ sCD_err = 0;
 
 warning('off', 'all');
 
-% Evaluate the starting date as 8 days ago
+% Evaluate the starting date as 3 days ago
 try
-    tsStart = tsNow - 8;
+    tsStart = tsNow - 3;
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     sCD_err = 1;
