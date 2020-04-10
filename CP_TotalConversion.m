@@ -52,9 +52,192 @@ end
 % Scan the networks
 try
     TC_err = 0;
-    
+    % Process HFR-MATROOS network
+    if(strcmp(networkData{1,network_idIndex},'HFR-MATROOS'))
+        % Read data via OpenDAP
+        [TC_err, OpenDAPncData] = MATROOSreadOpenDAP(startDate,networkData(1,:),networkFields);
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' 'HFR-MATROOS data successfully read via OpenDAP.']);
+            % Retrieve the timestamps of the files already converted
+            try
+                MATROOSconverted_selectquery = ['SELECT datetime FROM total_HFRnetCDF_tb WHERE datetime>' '''' startDate ''' AND network_id = ''HFR-MATROOS'''];
+                MATROOSconverted_curs = exec(conn,MATROOSconverted_selectquery);
+                disp(['[' datestr(now) '] - - ' 'Query to total_HFRnetCDF_tb table for retrieving the timestamps from HFR-MATROOS network already converted successfully executed.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Fetch data
+            try
+                MATROOSconverted_curs = fetch(MATROOSconverted_curs);
+                MATROOSconverted_data = MATROOSconverted_curs.Data;
+                disp(['[' datestr(now) '] - - ' 'Data of the timestamps from HFR-MATROOS network already converted successfully fetched from total_HFRnetCDF_tb table.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Retrieve the number of already converted timestamps for HFR-MATROOS network
+            try
+                numMATROOSconverted = rows(MATROOSconverted_curs);
+                disp(['[' datestr(now) '] - - ' 'Number of already converted timestamps for HFR-MATROOS network successfully retrieved from total_HFRnetCDF_tb table.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Close cursor to station_tb table
+            try
+                close(MATROOSconverted_curs);
+                disp(['[' datestr(now) '] - - ' 'Cursor to total_HFRnetCDF_tb table successfully closed.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Retrieve the indices (related to the netCDF data array) of the timestamps to be converted for HFR-MATROOS network
+            if(numMATROOSconverted~=0)
+                [TC_err, MATROOStoBeConvertedIndices] = MATROOScompareTimeStamps(cell2mat(MATROOSconverted_data),OpenDAPncData.time);
+            else
+                MATROOStoBeConvertedIndices = 1:length(OpenDAPncData.time);
+            end
+            
+            % Convert files
+            for MtBC_idx=1:length(MATROOStoBeConvertedIndices)
+                % v2.1.2
+                [TC_err, networkData(1,:), outputFilename,outputFilesize] = MATROOS2netCDF_v33(OpenDAPncData,MATROOStoBeConvertedIndices(MtBC_idx),networkData(1,:),networkFields,stationData,stationFields);
+                if(TC_err==0)
+                    disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
+                end
+                
+                % Insert converted total info in total_HFRnetCDF_tb table
+                try
+                    if((TC_err==0) && (exist('outputFilename','var') ~= 0))
+                        % Define timestamp
+                        ts = datevec(OpenDAPncData.time(MATROOStoBeConvertedIndices(MtBC_idx)));
+                        DBtimestamp = sprintf('%.4d %.2d %.2d %.2d %.2d 00',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
+                        
+                        % Evaluate datetime from, Time Stamp
+                        [t2d_err,DateTime] = timestamp2datetime(DBtimestamp);
+                        
+                        % Define a cell array containing the column names to be added
+                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'check_flag'};
+                        
+                        % Define a cell array that contains the data for insertion
+                        addData = {outputFilename,networkData{1,network_idIndex},DBtimestamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),outputFilesize,0};
+                        
+                        % Append the product data into the total_HFRnetCDF_tb table on the database.
+                        tablename = 'total_HFRnetCDF_tb';
+                        datainsert(conn,tablename,addColnames,addData);
+                        disp(['[' datestr(now) '] - - ' outputFilename ' total file information successfully inserted into total_HFRnetCDF_tb table.']);
+                    end
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    TC_err = 1;
+                end
+                
+                clear outputFilename outputFilesize;
+                
+            end
+            
+        else
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> Something went wrong in reading HFR-MATROOS data via OpenDAP.']);
+        end
+    % Process HFR-US networks    
+    elseif(contains(networkData{1,network_idIndex},'HFR-US'))
+        % Read data via OpenDAP
+        [TC_err, OpenDAPncData] = USreadOpenDAP(startDate,networkData(1,:),networkFields);
+        if(TC_err==0)
+            disp(['[' datestr(now) '] - - ' networkData{1,network_idIndex} ' data successfully read via OpenDAP.']);
+            % Retrieve the timestamps of the files already converted
+            try
+                USconverted_selectquery = ['SELECT datetime FROM total_HFRnetCDF_tb WHERE datetime>' '''' startDate ''' AND network_id =' '''' networkData{1,network_idIndex} ''''];
+                USconverted_curs = exec(conn,USconverted_selectquery);
+                disp(['[' datestr(now) '] - - ' 'Query to total_HFRnetCDF_tb table for retrieving the timestamps from ' networkData{1,network_idIndex} ' network already converted successfully executed.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Fetch data
+            try
+                USconverted_curs = fetch(USconverted_curs);
+                USconverted_data = USconverted_curs.Data;
+                disp(['[' datestr(now) '] - - ' 'Data of the timestamps from ' networkData{1,network_idIndex} ' network already converted successfully fetched from total_HFRnetCDF_tb table.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Retrieve the number of already converted timestamps for HFR-MATROOS network
+            try
+                numUSconverted = rows(USconverted_curs);
+                disp(['[' datestr(now) '] - - ' 'Number of already converted timestamps for ' networkData{1,network_idIndex} ' network successfully retrieved from total_HFRnetCDF_tb table.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Close cursor to station_tb table
+            try
+                close(USconverted_curs);
+                disp(['[' datestr(now) '] - - ' 'Cursor to total_HFRnetCDF_tb table successfully closed.']);
+            catch err
+                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                TC_err = 1;
+            end
+            
+            % Retrieve the indices (related to the netCDF data array) of the timestamps to be converted for HFR-US network
+            if(numUSconverted~=0)
+                [TC_err, UStoBeConvertedIndices] = UScompareTimeStamps(cell2mat(USconverted_data),OpenDAPncData.time);
+            else
+                UStoBeConvertedIndices = 1:length(OpenDAPncData.time);
+            end
+            
+            % Convert files
+            for UtBC_idx=1:length(UStoBeConvertedIndices)
+                % v2.1.2
+                [TC_err, networkData(1,:), outputFilename,outputFilesize] = US2netCDF_v33(OpenDAPncData,UStoBeConvertedIndices(UtBC_idx),networkData(1,:),networkFields,stationData,stationFields);
+                if(TC_err==0)
+                    disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
+                end
+                
+                % Insert converted total info in total_HFRnetCDF_tb table
+                try
+                    if((TC_err==0) && (exist('outputFilename','var') ~= 0))
+                        % Define timestamp
+                        ts = datevec(OpenDAPncData.time(UStoBeConvertedIndices(UtBC_idx)));
+                        DBtimestamp = sprintf('%.4d %.2d %.2d %.2d %.2d 00',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
+                        
+                        % Evaluate datetime from, Time Stamp
+                        [t2d_err,DateTime] = timestamp2datetime(DBtimestamp);
+                        
+                        % Define a cell array containing the column names to be added
+                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'check_flag'};
+                        
+                        % Define a cell array that contains the data for insertion
+                        addData = {outputFilename,networkData{1,network_idIndex},DBtimestamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),outputFilesize,0};
+                        
+                        % Append the product data into the total_HFRnetCDF_tb table on the database.
+                        tablename = 'total_HFRnetCDF_tb';
+                        datainsert(conn,tablename,addColnames,addData);
+                        disp(['[' datestr(now) '] - - ' outputFilename ' total file information successfully inserted into total_HFRnetCDF_tb table.']);
+                    end
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    TC_err = 1;
+                end
+                
+                clear outputFilename outputFilesize;
+                
+            end
+            
+        else
+            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> Something went wrong in reading ' networkData{1,network_idIndex} ' data via OpenDAP.']);
+        end
     % Process networks having standard input files
-    if(~strcmp(networkData{1,network_idIndex},'HFR-MATROOS'))
+    else        
         % Retrieve the total files to be converted
         try
             toBeConvertedTotals_selectquery = ['SELECT * FROM total_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' networkData{1,network_idIndex} ''' AND NRT_processed_flag = 0'];
@@ -191,99 +374,6 @@ try
             
             clear outputFilename outputFilesize;
             
-        end
-        
-    else
-        % Process HFR-MATROOS network
-        % Read data via OpenDAP
-        [TC_err, OpenDAPncData] = MATROOSreadOpenDAP(startDate,networkData(1,:),networkFields);
-        if(TC_err==0)
-            disp(['[' datestr(now) '] - - ' 'HFR-MATROOS data successfully read via OpenDAP.']);
-            % Retrieve the timestamps of the files already converted
-            try
-                MATROOSconverted_selectquery = ['SELECT datetime FROM total_HFRnetCDF_tb WHERE datetime>' '''' startDate ''' AND network_id = ''HFR-MATROOS'''];
-                MATROOSconverted_curs = exec(conn,MATROOSconverted_selectquery);
-                disp(['[' datestr(now) '] - - ' 'Query to total_HFRnetCDF_tb table for retrieving the timestamps from HFR-MATROOS network already converted successfully executed.']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                TC_err = 1;
-            end
-            
-            % Fetch data
-            try
-                MATROOSconverted_curs = fetch(MATROOSconverted_curs);
-                MATROOSconverted_data = MATROOSconverted_curs.Data;
-                disp(['[' datestr(now) '] - - ' 'Data of the timestamps from HFR-MATROOS network already converted successfully fetched from total_HFRnetCDF_tb table.']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                TC_err = 1;
-            end
-            
-            % Retrieve the number of already converted timestamps for HFR-MATROOS network
-            try
-                numMATROOSconverted = rows(MATROOSconverted_curs);
-                disp(['[' datestr(now) '] - - ' 'Number of already converted timestamps for HFR-MATROOS network successfully retrieved from total_HFRnetCDF_tb table.']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                TC_err = 1;
-            end
-            
-            % Close cursor to station_tb table
-            try
-                close(MATROOSconverted_curs);
-                disp(['[' datestr(now) '] - - ' 'Cursor to total_HFRnetCDF_tb table successfully closed.']);
-            catch err
-                disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                TC_err = 1;
-            end
-            
-            % Retrieve the indices (related to the netCDF data array) of the timestamps to be converted for HFR-MATROOS network
-            if(numMATROOSconverted~=0)
-                [TC_err, MATROOStoBeConvertedIndices] = MATROOScompareTimeStamps(cell2mat(MATROOSconverted_data),OpenDAPncData.time);
-            else
-                MATROOStoBeConvertedIndices = 1:length(OpenDAPncData.time);
-            end
-            
-            % Convert files
-            for MtBC_idx=1:length(MATROOStoBeConvertedIndices)
-                % v2.1.2
-                [TC_err, networkData(1,:), outputFilename,outputFilesize] = MATROOS2netCDF_v33(OpenDAPncData,MATROOStoBeConvertedIndices(MtBC_idx),networkData(1,:),networkFields,stationData,stationFields);
-                if(TC_err==0)
-                    disp(['[' datestr(now) '] - - ' outputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
-                end
-                
-                % Insert converted total info in total_HFRnetCDF_tb table
-                try
-                    if((TC_err==0) && (exist('outputFilename','var') ~= 0))
-                        % Define timestamp
-                        ts = datevec(OpenDAPncData.time(MATROOStoBeConvertedIndices(MtBC_idx)));
-                        DBtimestamp = sprintf('%.4d %.2d %.2d %.2d %.2d 00',ts(1,1),ts(1,2),ts(1,3),ts(1,4),ts(1,5));
-                        
-                        % Evaluate datetime from, Time Stamp
-                        [t2d_err,DateTime] = timestamp2datetime(DBtimestamp);
-                        
-                        % Define a cell array containing the column names to be added
-                        addColnames = {'filename' 'network_id' 'timestamp' 'datetime' 'creation_date' 'filesize' 'check_flag'};
-                        
-                        % Define a cell array that contains the data for insertion
-                        addData = {outputFilename,networkData{1,network_idIndex},DBtimestamp,DateTime,(datestr(now,'yyyy-mm-dd HH:MM:SS')),outputFilesize,0};
-                        
-                        % Append the product data into the total_HFRnetCDF_tb table on the database.
-                        tablename = 'total_HFRnetCDF_tb';
-                        datainsert(conn,tablename,addColnames,addData);
-                        disp(['[' datestr(now) '] - - ' outputFilename ' total file information successfully inserted into total_HFRnetCDF_tb table.']);
-                    end
-                catch err
-                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                    TC_err = 1;
-                end
-                
-                clear outputFilename outputFilesize;
-                
-            end
-            
-        else
-            disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> Something went wrong in reading HFR-MATROOS data via OpenDAP.']);
         end
         
     end

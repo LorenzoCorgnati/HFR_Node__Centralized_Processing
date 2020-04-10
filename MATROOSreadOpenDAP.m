@@ -51,23 +51,25 @@ end
 
 %% Read variables
 
-try
-    % Coordinate variables
-    nc.latitude = ncread(TDS_root_url,'latitude');
-    nc.longitude = ncread(TDS_root_url,'longitude');
-    nc.depth = 0;
-    
-    % Data variables
-    nc.ewct = ncread(TDS_root_url,'ewct',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
-    nc.nsct = ncread(TDS_root_url,'nsct',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
-    nc.uacc = ncread(TDS_root_url,'ewct_error',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
-    nc.vacc = ncread(TDS_root_url,'nsct_error',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
-    nc.gdopX = ncread(TDS_root_url,'gdopx');
-    nc.gdopY = ncread(TDS_root_url,'gdopy');
-    
-catch err
-    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-    MrO_err = 1;
+if(~isempty(nc.time))
+    try
+        % Coordinate variables
+        nc.latitude = ncread(TDS_root_url,'latitude');
+        nc.longitude = ncread(TDS_root_url,'longitude');
+        nc.depth = 0;
+        
+        % Data variables
+        nc.ewct = ncread(TDS_root_url,'ewct',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
+        nc.nsct = ncread(TDS_root_url,'nsct',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
+        nc.uacc = ncread(TDS_root_url,'ewct_error',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
+        nc.vacc = ncread(TDS_root_url,'nsct_error',[1,1,min(iTime)],[length(nc.longitude),length(nc.latitude),length(iTime)]);
+        nc.gdopX = ncread(TDS_root_url,'gdopx');
+        nc.gdopY = ncread(TDS_root_url,'gdopy');
+        
+    catch err
+        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+        MrO_err = 1;
+    end
 end
 
 %%

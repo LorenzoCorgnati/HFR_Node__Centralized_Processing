@@ -102,8 +102,8 @@ try
         totU2h = ncread(Total_QC_params.TempDerThr.hour2,'EWCT');
         totV2h = ncread(Total_QC_params.TempDerThr.hour2,'NSCT');
         % Evaluate total velocities
-        totVel1h = sqrt(((totU1h').^2) + ((totV1h').^2));
-        totVel2h = sqrt(((totU2h').^2) + ((totV2h').^2));
+        totVel1h = sqrt(((totU1h).^2) + ((totV1h).^2));
+        totVel2h = sqrt(((totU2h).^2) + ((totV2h).^2));
         for tVr=1:size(totVel,1)
             for tVc=1:size(totVel,2)
                 if (~isnan(totVel1h(tVr,tVc)))
@@ -119,7 +119,7 @@ try
         end
         
         % Modify the VART_QC variable of the nc file of the previous hour
-        ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h');
+        ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h);
         disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the Temporal Derivative QC variable.']);
     end
     % Set the QC flag for the current hour to 0 (no QC performed)
@@ -157,13 +157,14 @@ try
         % Extract the QC variables from the previous hour file
         overall1h = ncread(Total_QC_params.TempDerThr.hour1,'QCflag')';
         velThr1h = ncread(Total_QC_params.TempDerThr.hour1,'CSPD_QC')';
+        varThr1h = ncread(Total_QC_params.TempDerThr.hour1,'VART_QC')';
         GDOPThr1h = ncread(Total_QC_params.TempDerThr.hour1,'GDOP_QC')';
         dataDens1h = ncread(Total_QC_params.TempDerThr.hour1,'DDNS_QC')';
         % Fill the overall QC variable
         for ii=1:size(overall1h,1)
             for jj = 1:size(overall1h,2)
                 if(~isnan(overall1h(ii,jj)))
-                    if((tempDer1h(ii,jj) == 1) && (velThr1h(ii,jj) == 1) && (GDOPThr1h(ii,jj) == 1) && (dataDens1h(ii,jj) == 1))
+                    if((tempDer1h(ii,jj) == 1) && (velThr1h(ii,jj) == 1) && (varThr1h(ii,jj) == 1) && (GDOPThr1h(ii,jj) == 1) && (dataDens1h(ii,jj) == 1))
                         overall1h(ii,jj) = 1;
                     else
                         overall1h(ii,jj) = 4;
