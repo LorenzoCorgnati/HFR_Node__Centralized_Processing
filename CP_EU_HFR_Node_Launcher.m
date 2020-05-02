@@ -180,7 +180,7 @@ if(EHNP_err==0)
                     fid = fopen(logFilename,'a');
                     fprintf(fid,'%s\n',jobs{jIndex(job_idx)}.Tasks.Diary);
                     fclose(fid);
-                    destroy(jobs{jIndex(job_idx)});
+                    delete(jobs{jIndex(job_idx)});
                     jobs(jIndex(job_idx)) = [];
                 end
             end

@@ -155,11 +155,11 @@ end
 try
     if (tD_go)
         % Extract the QC variables from the previous hour file
-        overall1h = ncread(Total_QC_params.TempDerThr.hour1,'QCflag')';
-        velThr1h = ncread(Total_QC_params.TempDerThr.hour1,'CSPD_QC')';
-        varThr1h = ncread(Total_QC_params.TempDerThr.hour1,'VART_QC')';
-        GDOPThr1h = ncread(Total_QC_params.TempDerThr.hour1,'GDOP_QC')';
-        dataDens1h = ncread(Total_QC_params.TempDerThr.hour1,'DDNS_QC')';
+        overall1h = ncread(Total_QC_params.TempDerThr.hour1,'QCflag');
+        velThr1h = ncread(Total_QC_params.TempDerThr.hour1,'CSPD_QC');
+        varThr1h = ncread(Total_QC_params.TempDerThr.hour1,'VART_QC');
+        GDOPThr1h = ncread(Total_QC_params.TempDerThr.hour1,'GDOP_QC');
+        dataDens1h = ncread(Total_QC_params.TempDerThr.hour1,'DDNS_QC');
         % Fill the overall QC variable
         for ii=1:size(overall1h,1)
             for jj = 1:size(overall1h,2)
@@ -175,7 +175,7 @@ try
             end
         end
         % Modify the overall QC variable of the nc file of the previous hour
-        ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h'));
+        ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
         ncwriteatt(Total_QC_params.TempDerThr.hour1,'/','date_update',char([datestr(now, 'yyyy-mm-dd') 'T' datestr(now, 'HH:MM:SS') 'Z']));
         disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
     end
