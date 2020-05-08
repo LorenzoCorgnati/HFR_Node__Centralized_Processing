@@ -181,7 +181,7 @@ if(isopen(conn))
     % Set datetime of the starting date of the processing period
     try
         startDate = startCombinationDate(now);
-%         startDate = '2012-01-29';
+        %         startDate = '2012-01-29';
     catch err
         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
         pN_err = 1;
@@ -204,9 +204,11 @@ if(isopen(conn))
         if(strcmp(network_data{1,network_idIndex},'HFR-Skagerrak') || strcmp(network_data{1,network_idIndex},'HFR-Finnmark'))
             iRDB_err = CP_inputMetNoRadials2DB(conn,startDate,network_data,network_columnNames,station_data,station_columnNames);
         else
-            iRDB_err = CP_inputRUV2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
-            iAscRadDB_err = CP_inputAscRad2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
-            %     CP_inputCradAscii2DB;
+            if(~strcmp(network_data{1,network_idIndex},'HFR-WesternItaly'))
+                iRDB_err = CP_inputRUV2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
+                iAscRadDB_err = CP_inputAscRad2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
+                %     CP_inputCradAscii2DB;
+            end
         end
         
         % Combine radials into totals
