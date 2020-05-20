@@ -255,7 +255,7 @@ try
                             clear ruvRad
                         end
                     elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
-                        % TO BE DONE
+                        % NOTHING TO DO
                     end
                 catch err
                     display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -272,24 +272,18 @@ try
                             if(~strcmp(networkData{1,network_idIndex},'HFR-WesternItaly'))
                                 % v2.1.2
                                 [R2C_err,networkData(1,:),stationData(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v33(RADIAL(ruv_idx),networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
-                                % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                                disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.2 file successfully created and stored.']);
                             else
                                 station_tbUpdateFlag = 0;
                             end
-                            contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                         elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
                             % v2.1.2
                             [R2C_err,networkData(1,:),stationData(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = mat2netCDF_v33(RADIAL(ruv_idx),networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
-                            % LINES BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                            disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.2 file successfully created and stored.']);
-                            contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                         elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
-                            % TO BE DONE
+                            [R2C_err,networkData(1,:),radOutputFilename,radOutputFilesize] = cradAscii2netCDF_v33(radFiles{ruv_idx},networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+                            numActiveStations = length(toBeCombinedRadialIndices); % WERA radials are not combined
                         end
-                        %                                 % LINES BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
-                        %                                 disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1 file successfully created and stored.']);
-                        %                                 contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
+                        disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.1.2 file successfully created and stored.']);
+                        contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                     catch err
                         display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
                         HFRC_err = 2;
@@ -422,47 +416,9 @@ try
                         if (strcmp(extensions, '.ruv') || strcmp(extensions, '.mat')) % Codar data
                             % v2.1.2
                             [T2C_err,networkData(1,:),stationData(contrSitesIndices,:),totOutputFilename,totOutputFilesize] = tot2netCDF_v33(TUVmask,networkData(1,:),networkFields,stationData(contrSitesIndices,:),stationFields,toBeCombinedRadials_data{radial_idx,timeStampIndex},stationData);
-                            % LINE BELOW TO BE COMMENTED WHEN THE WERA FILE CONVERTER IS RUNNING
                             disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1.2 file successfully created and stored.']);
                         elseif (strcmp(toBeCombinedRadials_data{toBeCombinedStationIndex,extensionIndex}, 'crad_ascii')) % WERA data
-                            % TO BE DONE
-                        end
-                        %                         % LINE BELOW TO BE UNCOMMENTED WHEN THE WERA FILE CONCERTER IS RUNNING
-                        %                         disp(['[' datestr(now) '] - - ' totOutputFilename ' total netCDF v2.1 file successfully created and stored.']);
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        HFRC_err = 1;
-                    end
-                    
-                    % Update NRT_processed_flag in the local radial table
-                    try
-                        if(HFRC_err==0)
-                            toBeCombinedRadials_data(toBeCombinedRadialIndices,NRT_processed_flagIndex)={1};
-                        end
-                    catch err
-                        disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
-                        HFRC_err = 1;
-                    end
-                    
-                    % Update NRT_processed_flag in radial_input_tb table
-                    try
-                        if((HFRC_err==0) && (length(toBeCombinedRadialIndices) == numActiveStations))
-                            % Define a cell array containing the column names to be updated
-                            if(strcmp(networkData{1,network_idIndex},'HFR-WesternItaly'))
-                                updateColnames = {'NRT_processed_flag_integrated_network'};
-                                whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'')'];
-                            else
-                                updateColnames = {'NRT_processed_flag'};
-                                whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND network_id = ' '''' networkData{1,network_idIndex} ''''];
-                            end
-                            
-                            % Define a cell array that contains the data for insertion
-                            updateData = {1};
-                            
-                            % Update the radial_input_tb table on the database
-                            tablename = 'radial_input_tb';
-                            update(conn,tablename,updateColnames,updateData,whereclause);
-                            disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
+                            % NOTHING TO DO
                         end
                     catch err
                         disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -496,6 +452,41 @@ try
                     end
                 end
                 
+                % Update NRT_processed_flag in the local radial table
+                try
+                    if(HFRC_err==0)
+                        toBeCombinedRadials_data(toBeCombinedRadialIndices,NRT_processed_flagIndex)={1};
+                    end
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    HFRC_err = 1;
+                end
+                
+                % Update NRT_processed_flag in radial_input_tb table
+                try
+                    if((HFRC_err==0) && (length(toBeCombinedRadialIndices) == numActiveStations))
+                        % Define a cell array containing the column names to be updated
+                        if(strcmp(networkData{1,network_idIndex},'HFR-WesternItaly'))
+                            updateColnames = {'NRT_processed_flag_integrated_network'};
+                            whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'')'];
+                        else
+                            updateColnames = {'NRT_processed_flag'};
+                            whereclause = ['WHERE timestamp = ' '''' toBeCombinedRadials_data{radial_idx,timeStampIndex} ''' AND network_id = ' '''' networkData{1,network_idIndex} ''''];
+                        end
+                        
+                        % Define a cell array that contains the data for insertion
+                        updateData = {1};
+                        
+                        % Update the radial_input_tb table on the database
+                        tablename = 'radial_input_tb';
+                        update(conn,tablename,updateColnames,updateData,whereclause);
+                        disp(['[' datestr(now) '] - - ' 'radial_input_tb table successfully updated with NRT processed flag for timestamp ' toBeCombinedRadials_data{radial_idx,timeStampIndex} '.']);
+                    end
+                catch err
+                    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+                    HFRC_err = 1;
+                end
+                
                 clear radFiles RADIAL contrSitesIndices TUV TUVgrid TUVmask radOutputFilename totOutputFilename;
                 
             end
@@ -505,7 +496,7 @@ try
         HFRC_err = 1;
     end
     
-%     clear Grid gridLon gridLat lonG latG lon lat;
+    %     clear Grid gridLon gridLat lonG latG lon lat;
     
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

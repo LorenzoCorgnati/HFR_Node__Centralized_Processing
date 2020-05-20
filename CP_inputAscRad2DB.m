@@ -15,7 +15,7 @@
 %                       information about the stations of the processed network.
 
 % OUTPUT:
-%         iRDB_err: error flag (0 = correct, 1 = error)
+%         iCradDB_err: error flag (0 = correct, 1 = error)
 
 % Author: Lorenzo Corgnati
 % Date: February 7, 2020

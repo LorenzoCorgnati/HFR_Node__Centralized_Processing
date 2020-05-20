@@ -679,16 +679,21 @@ end
 % coordinate variable and cannot be scaled by CF metadata convention.
 % head = round(head.*10);
 
-velo = round((velo-addOffset)./scaleFactor);
-head = round((head-addOffset)./scaleFactor);
-velu = round((velu-addOffset)./scaleFactor);
-velv = round((velv-addOffset)./scaleFactor);
-espc = round((espc-addOffset)./scaleFactor);
-etmp = round((etmp-addOffset)./scaleFactor);
-maxv = round((maxv-addOffset)./scaleFactor);
-minv = round((minv-addOffset)./scaleFactor);
-xdst = round((xdst-addOffset)./scaleFactor);
-ydst = round((ydst-addOffset)./scaleFactor);
+try
+    velo = round((velo-addOffset)./scaleFactor);
+    head = round((head-addOffset)./scaleFactor);
+    velu = round((velu-addOffset)./scaleFactor);
+    velv = round((velv-addOffset)./scaleFactor);
+    espc = round((espc-addOffset)./scaleFactor);
+    etmp = round((etmp-addOffset)./scaleFactor);
+    maxv = round((maxv-addOffset)./scaleFactor);
+    minv = round((minv-addOffset)./scaleFactor);
+    xdst = round((xdst-addOffset)./scaleFactor);
+    ydst = round((ydst-addOffset)./scaleFactor);
+catch err
+    disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
+    R2C_err = 1;
+end
 
 %%
 
