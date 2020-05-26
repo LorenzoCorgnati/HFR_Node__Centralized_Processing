@@ -838,7 +838,7 @@ try
     
     % Depth (arbitrary 'z' dimension)
     varid_depth = netcdf.defVar(ncid, 'DEPH', 'float', dimid_depth);
-    netcdf.putAtt(ncid, varid_depth, 'long_name', 'Depth of measurement');
+    netcdf.putAtt(ncid, varid_depth, 'long_name', 'Depth');
     netcdf.putAtt(ncid, varid_depth, 'standard_name', 'depth');
     netcdf.putAtt(ncid, varid_depth, 'units', 'm');
     netcdf.putAtt(ncid, varid_depth, 'axis', 'Z');
@@ -968,7 +968,7 @@ try
     netcdf.putAtt(ncid, varid_speed, 'standard_name', 'radial_sea_water_velocity_away_from_instrument');
     netcdf.putAtt(ncid, varid_speed, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_speed, 'standard_name', 'radial_sea_water_velocity_away_from_instrument');
-    netcdf.putAtt(ncid, varid_speed, 'long_name', 'Radial Sea Water Velocity Away From Instrument');
+    netcdf.putAtt(ncid, varid_speed, 'long_name', 'Radial sea water velocity away from instrument');
     netcdf.putAtt(ncid, varid_speed, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_speed, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_speed, 'add_offset', single(addOffset));
@@ -992,7 +992,7 @@ try
     netcdf.putAtt(ncid, varid_direction, 'valid_min', int32(0));
     netcdf.putAtt(ncid, varid_direction, 'valid_max', int32((360-addOffset)./scaleFactor));
     netcdf.putAtt(ncid, varid_direction, 'standard_name', 'direction_of_radial_vector_away_from_instrument');
-    netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction of Radial Vector Away From Instrument');
+    netcdf.putAtt(ncid, varid_direction, 'long_name', 'Direction of radial vector away from instrument');
     netcdf.putAtt(ncid, varid_direction, '_FillValue', netcdf.getConstant('NC_FILL_INT'));
     netcdf.putAtt(ncid, varid_direction, 'add_offset', single(addOffset));
     netcdf.putAtt(ncid, varid_direction, 'units', 'degree_true');
@@ -1048,7 +1048,7 @@ try
     %     netcdf.putAtt(ncid, varid_espc, 'valid_range', int16( [(-32-addOffset)./scaleFactor (32-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_espc, 'valid_min', int16( (-32-addOffset)./scaleFactor));
     netcdf.putAtt(ncid, varid_espc, 'valid_max', int16( (32-addOffset)./scaleFactor));
-    netcdf.putAtt(ncid, varid_espc, 'long_name', 'Radial Standard Deviation of Current Velocity over the Scatter Patch');
+    netcdf.putAtt(ncid, varid_espc, 'long_name', 'Radial standard deviation of current velocity over the scatter patch');
     netcdf.putAtt(ncid, varid_espc, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_espc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_espc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
@@ -1066,7 +1066,7 @@ try
     %     netcdf.putAtt(ncid, varid_etmp, 'valid_range', int16( [(-32-addOffset)./scaleFactor (32-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_etmp, 'valid_min', int16( (-32-addOffset)./scaleFactor));
     netcdf.putAtt(ncid, varid_etmp, 'valid_max', int16( (32-addOffset)./scaleFactor));
-    netcdf.putAtt(ncid, varid_etmp, 'long_name', 'Radial Standard Deviation of Current Velocity over Coverage Period');
+    netcdf.putAtt(ncid, varid_etmp, 'long_name', 'Radial standard deviation of current velocity over coverage period');
     netcdf.putAtt(ncid, varid_etmp, 'units', 'm s-1');
     netcdf.putAtt(ncid, varid_etmp, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_etmp, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
@@ -1081,7 +1081,7 @@ try
     % Velocity Maximum
     varid_maxv = netcdf.defVar(ncid, 'MAXV', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_maxv, true, true, 6);
-    netcdf.putAtt(ncid, varid_maxv, 'long_name', 'Radial Sea Water Velocity Away From Instrument Maximum');
+    netcdf.putAtt(ncid, varid_maxv, 'long_name', 'Radial sea water velocity away from instrument maximum');
     %     netcdf.putAtt(ncid, varid_maxv, 'valid_range', int16( [(-10-addOffset)./scaleFactor (10-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_maxv, 'valid_min', int16( (-10-addOffset)./scaleFactor));
     netcdf.putAtt(ncid, varid_maxv, 'valid_max', int16( (10-addOffset)./scaleFactor));
@@ -1099,7 +1099,7 @@ try
     % Velocity Minimum
     varid_minv = netcdf.defVar(ncid, 'MINV', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_minv, true, true, 6);
-    netcdf.putAtt( ncid, varid_minv, 'long_name','Radial Sea Water Velocity Away From Instrument Minimum');
+    netcdf.putAtt( ncid, varid_minv, 'long_name','Radial sea water velocity away from instrument minimum');
     %     netcdf.putAtt(ncid, varid_minv, 'valid_range', int16( [(-10-addOffset)./scaleFactor (10-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_minv, 'valid_min', int16( (-10-addOffset)./scaleFactor));
     netcdf.putAtt(ncid, varid_minv, 'valid_max', int16( (10-addOffset)./scaleFactor));
@@ -1117,7 +1117,7 @@ try
     % Spatial Count
     varid_ersc = netcdf.defVar(ncid, 'ERSC', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_ersc, true, true, 6);
-    netcdf.putAtt(ncid, varid_ersc, 'long_name', 'Radial Sea Water Velocity Spatial Quality Count' );
+    netcdf.putAtt(ncid, varid_ersc, 'long_name', 'Radial sea water velocity spatial quality count' );
     %     netcdf.putAtt(ncid, varid_ersc, 'valid_range', int16( [0 127] ));
     netcdf.putAtt(ncid, varid_ersc, 'valid_min', int16(0));
     netcdf.putAtt(ncid, varid_ersc, 'valid_max', int16(127));
@@ -1135,7 +1135,7 @@ try
     % Temporal Count
     varid_ertc = netcdf.defVar(ncid, 'ERTC', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_ertc, true, true, 6);
-    netcdf.putAtt(ncid, varid_ertc, 'long_name', 'Radial Sea Water Velocity Temporal Quality Count');
+    netcdf.putAtt(ncid, varid_ertc, 'long_name', 'Radial sea water velocity temporal quality count');
     %     netcdf.putAtt(ncid, varid_ertc, 'valid_range', int16( [0 127] ));
     netcdf.putAtt(ncid, varid_ertc, 'valid_min', int16(0));
     netcdf.putAtt(ncid, varid_ertc, 'valid_max', int16(127));
@@ -1153,7 +1153,7 @@ try
     % X-Distance
     varid_xdst = netcdf.defVar(ncid, 'XDST', 'int', [dimid_range dimid_bearing]);
     netcdf.defVarDeflate(ncid, varid_xdst, true, true, 6);
-    netcdf.putAtt(ncid, varid_xdst, 'long_name', 'Eastward Distance From Instrument');
+    netcdf.putAtt(ncid, varid_xdst, 'long_name', 'Eastward distance from instrument');
     %     netcdf.putAtt(ncid, varid_xdst, 'valid_range', int32( [0 (1e3-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_xdst, 'valid_min', int32(0));
     netcdf.putAtt(ncid, varid_xdst, 'valid_max', int32((1e3-addOffset)./scaleFactor));
@@ -1171,7 +1171,7 @@ try
     % Y-Distance
     varid_ydst = netcdf.defVar(ncid, 'YDST', 'int', [dimid_range dimid_bearing]);
     netcdf.defVarDeflate(ncid, varid_ydst, true, true, 6);
-    netcdf.putAtt(ncid, varid_ydst, 'long_name', 'Northward Distance From Instrument');
+    netcdf.putAtt(ncid, varid_ydst, 'long_name', 'Northward distance from instrument');
     %     netcdf.putAtt(ncid, varid_ydst, 'valid_range', int32( [0 (1e3-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_ydst, 'valid_min', int32(0));
     netcdf.putAtt(ncid, varid_ydst, 'valid_max', int32((1e3-addOffset)./scaleFactor));
@@ -1189,7 +1189,7 @@ try
     % Spectra Range Cell
     varid_sprc = netcdf.defVar(ncid, 'SPRC', 'short', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sprc, true, true, 6);
-    netcdf.putAtt(ncid, varid_sprc, 'long_name', 'Radial Sea Water Velocity Cross Spectra Range Cell');
+    netcdf.putAtt(ncid, varid_sprc, 'long_name', 'Radial sea water velocity cross spectra range cell');
     %     netcdf.putAtt(ncid, varid_sprc, 'valid_range', int16( [0 127] ));
     netcdf.putAtt(ncid, varid_sprc, 'valid_min', int16(0));
     netcdf.putAtt(ncid, varid_sprc, 'valid_max', int16(127));
@@ -1207,7 +1207,7 @@ try
     % Number of receive antennas
     varid_narx = netcdf.defVar(ncid, 'NARX', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_narx, true, true, 6);
-    netcdf.putAtt(ncid, varid_narx, 'long_name', 'Number of Receive Antennas');
+    netcdf.putAtt(ncid, varid_narx, 'long_name', 'Number of receive antennas');
     %     netcdf.putAtt(ncid, varid_narx, 'valid_range', int8([0 maxsite] ));
     netcdf.putAtt(ncid, varid_narx, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_narx, 'valid_max', int8(maxsite));
@@ -1224,7 +1224,7 @@ try
     % Number of transmit antennas
     varid_natx = netcdf.defVar(ncid, 'NATX', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_natx, true, true, 6);
-    netcdf.putAtt(ncid, varid_natx, 'long_name', 'Number of Transmit Antennas');
+    netcdf.putAtt(ncid, varid_natx, 'long_name', 'Number of transmit antennas');
     %     netcdf.putAtt(ncid, varid_natx, 'valid_range', int8([0 maxsite] ));
     netcdf.putAtt(ncid, varid_natx, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_natx, 'valid_max', int8(maxsite));
@@ -1241,7 +1241,7 @@ try
     % Receive antenna latitudes
     varid_sltr = netcdf.defVar(ncid, 'SLTR', 'int', [dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sltr, true, true, 6);
-    netcdf.putAtt(ncid, varid_sltr, 'long_name', 'Receive Antenna Latitudes');
+    netcdf.putAtt(ncid, varid_sltr, 'long_name', 'Receive antenna latitudes');
     netcdf.putAtt( ncid, varid_sltr, 'standard_name', 'latitude' );
     %     netcdf.putAtt(ncid, varid_sltr, 'valid_range', int32( [(-90-addOffset)./scaleFactor (90-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_sltr, 'valid_min', int32((-90-addOffset)./scaleFactor));
@@ -1259,7 +1259,7 @@ try
     % Receive antenna longitudes
     varid_slnr = netcdf.defVar(ncid, 'SLNR', 'int', [dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_slnr, true, true, 6);
-    netcdf.putAtt(ncid, varid_slnr, 'long_name', 'Receive Antenna Longitudes');
+    netcdf.putAtt(ncid, varid_slnr, 'long_name', 'Receive antenna longitudes');
     netcdf.putAtt( ncid, varid_slnr, 'standard_name', 'longitude' );
     %     netcdf.putAtt(ncid, varid_slnr, 'valid_range', int32( [(-180-addOffset)./scaleFactor (180-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_slnr, 'valid_min', int32((-180-addOffset)./scaleFactor));
@@ -1277,7 +1277,7 @@ try
     % Transmit antenna latitudes
     varid_sltt = netcdf.defVar(ncid, 'SLTT', 'int', [dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_sltt, true, true, 6);
-    netcdf.putAtt(ncid, varid_sltt, 'long_name', 'Transmit Antenna Latitudes');
+    netcdf.putAtt(ncid, varid_sltt, 'long_name', 'Transmit antenna latitudes');
     netcdf.putAtt( ncid, varid_sltt, 'standard_name', 'latitude' );
     %     netcdf.putAtt(ncid, varid_sltt, 'valid_range', int32( [(-90-addOffset)./scaleFactor (90-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_sltt, 'valid_min', int32((-90-addOffset)./scaleFactor));
@@ -1295,7 +1295,7 @@ try
     % Transmit antenna longitudes
     varid_slnt = netcdf.defVar(ncid, 'SLNT', 'int', [dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_slnt, true, true, 6);
-    netcdf.putAtt(ncid, varid_slnt, 'long_name', 'Transmit Antenna Longitudes');
+    netcdf.putAtt(ncid, varid_slnt, 'long_name', 'Transmit antenna longitudes');
     netcdf.putAtt( ncid, varid_slnt, 'standard_name', 'longitude' );
     %     netcdf.putAtt(ncid, varid_slnt, 'valid_range', int32( [(-180-addOffset)./scaleFactor (180-addOffset)./scaleFactor] ));
     netcdf.putAtt(ncid, varid_slnt, 'valid_min', int32((-180-addOffset)./scaleFactor));
@@ -1313,7 +1313,7 @@ try
     % Receive antenna codes
     varid_scdr = netcdf.defVar(ncid, 'SCDR', 'char', [dimid_string_siteCodeArr dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdr, true, true, 6);
-    netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive Antenna Codes');
+    netcdf.putAtt(ncid, varid_scdr, 'long_name', 'Receive antenna codes');
     netcdf.putAtt(ncid, varid_scdr, 'units', '1');
     netcdf.putAtt(ncid, varid_scdr, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdr, 'sdn_parameter_name', '');
@@ -1324,7 +1324,7 @@ try
     % Transmit antenna codes
     varid_scdt = netcdf.defVar(ncid, 'SCDT', 'char', [dimid_string_siteCodeArr dimid_maxsite dimid_t]);
     netcdf.defVarDeflate(ncid, varid_scdt, true, true, 6);
-    netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit Antenna Codes');
+    netcdf.putAtt(ncid, varid_scdt, 'long_name', 'Transmit antenna codes');
     netcdf.putAtt(ncid, varid_scdt, 'units', '1');
     netcdf.putAtt(ncid, varid_scdt, '_FillValue', netcdf.getConstant('NC_FILL_CHAR'));
     netcdf.putAtt(ncid, varid_scdt, 'sdn_parameter_name', '');
@@ -1339,7 +1339,7 @@ try
     % Time QC Flag
     varid_tqc = netcdf.defVar(ncid, 'TIME_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_tqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time Quality Flag');
+    netcdf.putAtt(ncid, varid_tqc, 'long_name', 'Time quality flag');
     netcdf.putAtt(ncid, varid_tqc, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_tqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_tqc, 'valid_min', int8(0));
@@ -1355,7 +1355,7 @@ try
     % Position QC Flag
     varid_posqc = netcdf.defVar(ncid, 'POSITION_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_posqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position Quality Flags');
+    netcdf.putAtt(ncid, varid_posqc, 'long_name', 'Position quality flags');
     netcdf.putAtt(ncid, varid_posqc, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_posqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_posqc, 'valid_min', int8(0));
@@ -1372,7 +1372,7 @@ try
     % Depth QC Flag
     varid_dqc = netcdf.defVar(ncid, 'DEPH_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_dqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth Quality Flag');
+    netcdf.putAtt(ncid, varid_dqc, 'long_name', 'Depth quality flag');
     netcdf.putAtt(ncid, varid_dqc, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_dqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_dqc, 'valid_min', int8(0));
@@ -1388,7 +1388,7 @@ try
     % Overall QC Flag
     varid_ovqc = netcdf.defVar(ncid, 'QCflag', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_ovqc, true, true, 6);
-    netcdf.putAtt(ncid, varid_ovqc, 'long_name', 'Overall Quality Flags');
+    netcdf.putAtt(ncid, varid_ovqc, 'long_name', 'Overall quality flags');
     netcdf.putAtt(ncid, varid_ovqc, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_ovqc, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_ovqc, 'valid_min', int8(0));
@@ -1405,7 +1405,7 @@ try
     % Over-water QC Flag
     varid_owtr = netcdf.defVar(ncid, 'OWTR_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_owtr, true, true, 6);
-    netcdf.putAtt(ncid, varid_owtr, 'long_name', 'Over-water Quality Flags');
+    netcdf.putAtt(ncid, varid_owtr, 'long_name', 'Over-water quality flags');
     netcdf.putAtt(ncid, varid_owtr, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_owtr, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_owtr, 'valid_min', int8(0));
@@ -1422,7 +1422,7 @@ try
     % Median Filter QC Flag
     varid_mdfl = netcdf.defVar(ncid, 'MDFL_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_mdfl, true, true, 6);
-    netcdf.putAtt(ncid, varid_mdfl, 'long_name', 'Median Filter Quality Flags');
+    netcdf.putAtt(ncid, varid_mdfl, 'long_name', 'Median filter quality flags');
     netcdf.putAtt(ncid, varid_mdfl, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_mdfl, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_mdfl, 'valid_min', int8(0));
@@ -1439,7 +1439,7 @@ try
     % Variance Threshold QC Flag
     varid_vart = netcdf.defVar(ncid, 'VART_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_vart, true, true, 6);
-    netcdf.putAtt(ncid, varid_vart, 'long_name', 'Variance Threshold Quality Flags');
+    netcdf.putAtt(ncid, varid_vart, 'long_name', 'Variance threshold quality flags');
     netcdf.putAtt(ncid, varid_vart, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_vart, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_vart, 'valid_min', int8(0));
@@ -1456,7 +1456,7 @@ try
     % Velocity Threshold QC Flag
     varid_cspd = netcdf.defVar(ncid, 'CSPD_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
     netcdf.defVarDeflate(ncid, varid_cspd, true, true, 6);
-    netcdf.putAtt(ncid, varid_cspd, 'long_name', 'Velocity Threshold Quality Flags');
+    netcdf.putAtt(ncid, varid_cspd, 'long_name', 'Velocity threshold quality flags');
     netcdf.putAtt(ncid, varid_cspd, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_cspd, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_cspd, 'valid_min', int8(0));
@@ -1473,7 +1473,7 @@ try
     % Average Radial Bearing QC Flag
     varid_avrb = netcdf.defVar(ncid, 'AVRB_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_avrb, true, true, 6);
-    netcdf.putAtt(ncid, varid_avrb, 'long_name', 'Average Radial Bearing Quality Flag');
+    netcdf.putAtt(ncid, varid_avrb, 'long_name', 'Average radial bearing quality flag');
     netcdf.putAtt(ncid, varid_avrb, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_avrb, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_avrb, 'valid_min', int8(0));
@@ -1489,7 +1489,7 @@ try
     % Radial Count QC Flag
     varid_rdct = netcdf.defVar(ncid, 'RDCT_QC', 'byte', dimid_t);
     netcdf.defVarDeflate(ncid, varid_rdct, true, true, 6);
-    netcdf.putAtt(ncid, varid_rdct, 'long_name', 'Radial Count Quality Flag');
+    netcdf.putAtt(ncid, varid_rdct, 'long_name', 'Radial count quality flag');
     netcdf.putAtt(ncid, varid_rdct, 'conventions', 'Copernicus Marine in situ reference table 2');
     %     netcdf.putAtt(ncid, varid_rdct, 'valid_range', int8( [0 9]));
     netcdf.putAtt(ncid, varid_rdct, 'valid_min', int8(0));

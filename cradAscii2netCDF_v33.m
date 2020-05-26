@@ -682,7 +682,7 @@ try
     
     ncwriteatt(ncfile,'SDN_XLINK','long_name',char('External resource linkages'));
     
-    ncwriteatt(ncfile,'DEPH','long_name',char('Depth of measurement'));
+    ncwriteatt(ncfile,'DEPH','long_name',char('Depth'));
     ncwriteatt(ncfile,'DEPH','standard_name',char('depth'));
     ncwriteatt(ncfile,'DEPH','units',char('m'));
     ncwriteatt(ncfile,'DEPH','axis',char('Z'));
@@ -694,7 +694,7 @@ try
     ncwriteatt(ncfile,'DEPH','sdn_uom_urn',char('SDN:P06::ULAA'));
     ncwriteatt(ncfile,'DEPH','ancillary_variables',char('DEPH_QC'));
     
-    ncwriteatt(ncfile,'RDVA','long_name',char('Radial Sea Water Velocity Away From Instrument'));
+    ncwriteatt(ncfile,'RDVA','long_name',char('Radial sea water velocity away from instrument'));
     ncwriteatt(ncfile,'RDVA','standard_name',char('radial_sea_water_velocity_away_from_instrument'));
     ncwriteatt(ncfile,'RDVA','units',char('m s-1'));
     ncwriteatt(ncfile,'RDVA','scale_factor',double(scaleFactor));
@@ -708,7 +708,7 @@ try
     ncwriteatt(ncfile,'RDVA','valid_max',int16((10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'RDVA','ancillary_variables',char('QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC, AVRB_QC, RDCT_QC'));
     
-    ncwriteatt(ncfile,'DRVA','long_name',char('Direction of Radial Vector Away From Instrument'));
+    ncwriteatt(ncfile,'DRVA','long_name',char('Direction of radial vector away from instrument'));
     ncwriteatt(ncfile,'DRVA','standard_name',char('direction_of_radial_vector_away_from_instrument'));
     ncwriteatt(ncfile,'DRVA','units',char('degrees_true'));
     ncwriteatt(ncfile,'DRVA','scale_factor',double(scaleFactor));
@@ -754,7 +754,7 @@ try
     ncwriteatt(ncfile,'NSCT','valid_max',int16((10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'NSCT','ancillary_variables',char('QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC, AVRB_QC, RDCT_QC'));
     
-    ncwriteatt(ncfile,'HCSS','long_name',char('Radial Variance of Current Velocity Over Coverage Period'));
+    ncwriteatt(ncfile,'HCSS','long_name',char('Radial variance of current velocity over coverage period'));
     ncwriteatt(ncfile,'HCSS','units',char('m2 s-2'));
     ncwriteatt(ncfile,'HCSS','valid_min',int32((-10-addOffset)./(scaleFactor^2)));
     ncwriteatt(ncfile,'HCSS','valid_max',int32((10-addOffset)./(scaleFactor^2)));
@@ -767,7 +767,7 @@ try
     ncwriteatt(ncfile,'HCSS','sdn_uom_urn',char('SDN:P06::SQM2'));
     ncwriteatt(ncfile,'HCSS','ancillary_variables',char('QCflag, VART_QC'));
     
-    ncwriteatt(ncfile,'EACC','long_name',char('Radial Accuracy of Current Velocity Over Coverage Period'));
+    ncwriteatt(ncfile,'EACC','long_name',char('Radial accuracy of current velocity over coverage period'));
     ncwriteatt(ncfile,'EACC','units',char('m s-1'));
     ncwriteatt(ncfile,'EACC','valid_min',int16((-10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'EACC','valid_max',int16((10-addOffset)./scaleFactor));
@@ -780,7 +780,7 @@ try
     ncwriteatt(ncfile,'EACC','sdn_uom_urn',char('SDN:P06::UVAA'));
     ncwriteatt(ncfile,'EACC','ancillary_variables',char('QCflag, VART_QC'));
     
-    ncwriteatt(ncfile,'TIME_QC','long_name',char('Time Quality Flag'));
+    ncwriteatt(ncfile,'TIME_QC','long_name',char('Time quality flag'));
     ncwriteatt(ncfile,'TIME_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'TIME_QC','units',char('1'));
     ncwriteatt(ncfile,'TIME_QC','valid_min',int8(0));
@@ -791,7 +791,7 @@ try
     ncwriteatt(ncfile,'TIME_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'TIME_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'POSITION_QC','long_name',char('Position Quality Flags'));
+    ncwriteatt(ncfile,'POSITION_QC','long_name',char('Position quality flags'));
     ncwriteatt(ncfile,'POSITION_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'POSITION_QC','units',char('1'));
     ncwriteatt(ncfile,'POSITION_QC','valid_min',int8(0));
@@ -802,7 +802,7 @@ try
     ncwriteatt(ncfile,'POSITION_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'POSITION_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'DEPH_QC','long_name',char('Depth Quality Flag'));
+    ncwriteatt(ncfile,'DEPH_QC','long_name',char('Depth quality flag'));
     ncwriteatt(ncfile,'DEPH_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'DEPH_QC','units',char('1'));
     ncwriteatt(ncfile,'DEPH_QC','valid_min',int8(0));
@@ -813,7 +813,7 @@ try
     ncwriteatt(ncfile,'DEPH_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'DEPH_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'QCflag','long_name',char('Overall Quality Flags'));
+    ncwriteatt(ncfile,'QCflag','long_name',char('Overall quality flags'));
     ncwriteatt(ncfile,'QCflag','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'QCflag','units',char('1'));
     ncwriteatt(ncfile,'QCflag','valid_min',int8(0));
@@ -824,7 +824,7 @@ try
     ncwriteatt(ncfile,'QCflag','scale_factor',int8(1));
     ncwriteatt(ncfile,'QCflag','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'OWTR_QC','long_name',char('Over-water Quality Flags'));
+    ncwriteatt(ncfile,'OWTR_QC','long_name',char('Over-water quality flags'));
     ncwriteatt(ncfile,'OWTR_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'OWTR_QC','units',char('1'));
     ncwriteatt(ncfile,'OWTR_QC','valid_min',int8(0));
@@ -835,7 +835,7 @@ try
     ncwriteatt(ncfile,'OWTR_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'OWTR_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'MDFL_QC','long_name',char('Median Filter Quality Flags'));
+    ncwriteatt(ncfile,'MDFL_QC','long_name',char('Median filter quality flags'));
     ncwriteatt(ncfile,'MDFL_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'MDFL_QC','units',char('1'));
     ncwriteatt(ncfile,'MDFL_QC','valid_min',int8(0));
@@ -848,7 +848,7 @@ try
     ncwriteatt(ncfile,'MDFL_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'MDFL_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'VART_QC','long_name',char('Variance Threshold Quality Flags'));
+    ncwriteatt(ncfile,'VART_QC','long_name',char('Variance threshold quality flags'));
     ncwriteatt(ncfile,'VART_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'VART_QC','units',char('1'));
     ncwriteatt(ncfile,'VART_QC','valid_min',int8(0));
@@ -860,7 +860,7 @@ try
     ncwriteatt(ncfile,'VART_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'VART_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'CSPD_QC','long_name',char('Velocity Threshold Quality Flags'));
+    ncwriteatt(ncfile,'CSPD_QC','long_name',char('Velocity threshold quality flags'));
     ncwriteatt(ncfile,'CSPD_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'CSPD_QC','units',char('1'));
     ncwriteatt(ncfile,'CSPD_QC','valid_min',int8(0));
@@ -872,7 +872,7 @@ try
     ncwriteatt(ncfile,'CSPD_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'CSPD_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'AVRB_QC','long_name',char('Average Radial Bearing Quality Flag'));
+    ncwriteatt(ncfile,'AVRB_QC','long_name',char('Average radial bearing quality flag'));
     ncwriteatt(ncfile,'AVRB_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'AVRB_QC','units',char('1'));
     ncwriteatt(ncfile,'AVRB_QC','valid_min',int8(0));
@@ -883,7 +883,7 @@ try
     ncwriteatt(ncfile,'AVRB_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'AVRB_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'RDCT_QC','long_name',char('Radial Count Quality Flag'));
+    ncwriteatt(ncfile,'RDCT_QC','long_name',char('Radial count quality flag'));
     ncwriteatt(ncfile,'RDCT_QC','conventions',char('Copernicus Marine in situ reference table 2'));
     ncwriteatt(ncfile,'RDCT_QC','units',char('1'));
     ncwriteatt(ncfile,'RDCT_QC','valid_min',int8(0));
@@ -894,7 +894,7 @@ try
     ncwriteatt(ncfile,'RDCT_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'RDCT_QC','add_offset',int8(0));
     
-    ncwriteatt(ncfile,'NARX','long_name',char('Number of Receive Antennas'));
+    ncwriteatt(ncfile,'NARX','long_name',char('Number of receive antennas'));
     ncwriteatt(ncfile,'NARX','units',char('1'));
     ncwriteatt(ncfile,'NARX','valid_range',int8([0 maxSite_dim]));
     ncwriteatt(ncfile,'NARX','scale_factor',int8(1));
@@ -904,7 +904,7 @@ try
     ncwriteatt(ncfile,'NARX','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'NARX','sdn_uom_urn',char('SDN:P06::UUUU'));
     
-    ncwriteatt(ncfile,'NATX','long_name',char('Number of Transmit Antennas'));
+    ncwriteatt(ncfile,'NATX','long_name',char('Number of transmit antennas'));
     ncwriteatt(ncfile,'NATX','units',char('1'));
     ncwriteatt(ncfile,'NATX','valid_range',int8([0 maxSite_dim]));
     ncwriteatt(ncfile,'NATX','scale_factor',int8(1));
@@ -914,7 +914,7 @@ try
     ncwriteatt(ncfile,'NATX','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'NATX','sdn_uom_urn',char('SDN:P06::UUUU'));
     
-    ncwriteatt(ncfile,'SLTR','long_name',char('Receive Antenna Latitudes'));
+    ncwriteatt(ncfile,'SLTR','long_name',char('Receive antenna latitudes'));
     ncwriteatt(ncfile,'SLTR','standard_name',char('latitude'));
     ncwriteatt(ncfile,'SLTR','units','degrees_north');
     ncwriteatt(ncfile,'SLTR','valid_range',int32( [(-90-addOffset)./scaleFactor (90-addOffset)./scaleFactor] ));
@@ -926,7 +926,7 @@ try
     ncwriteatt(ncfile,'SLTR','sdn_uom_name',char('Degrees north'));
     ncwriteatt(ncfile,'SLTR','sdn_uom_urn',char('SDN:P06::DEGN'));
     
-    ncwriteatt(ncfile,'SLNR','long_name',char('Receive Antenna Longitudes'));
+    ncwriteatt(ncfile,'SLNR','long_name',char('Receive antenna longitudes'));
     ncwriteatt(ncfile,'SLNR','standard_name',char('longitude'));
     ncwriteatt(ncfile,'SLNR','units','degrees_east');
     ncwriteatt(ncfile,'SLNR','valid_range',int32( [(-180-addOffset)./scaleFactor (180-addOffset)./scaleFactor] ));
@@ -938,7 +938,7 @@ try
     ncwriteatt(ncfile,'SLNR','sdn_uom_name',char('Degrees east'));
     ncwriteatt(ncfile,'SLNR','sdn_uom_urn',char('SDN:P06::DEGE'));
     
-    ncwriteatt(ncfile,'SLTT','long_name',char('Transmit Antenna Latitudes'));
+    ncwriteatt(ncfile,'SLTT','long_name',char('Transmit antenna latitudes'));
     ncwriteatt(ncfile,'SLTT','standard_name',char('latitude'));
     ncwriteatt(ncfile,'SLTT','units','degrees_north');
     ncwriteatt(ncfile,'SLTT','valid_range',int32( [(-90-addOffset)./scaleFactor (90-addOffset)./scaleFactor] ));
@@ -950,7 +950,7 @@ try
     ncwriteatt(ncfile,'SLTT','sdn_uom_name',char('Degrees north'));
     ncwriteatt(ncfile,'SLTT','sdn_uom_urn',char('SDN:P06::DEGN'));
     
-    ncwriteatt(ncfile,'SLNT','long_name',char('Transmit Antenna Longitudes'));
+    ncwriteatt(ncfile,'SLNT','long_name',char('Transmit antenna longitudes'));
     ncwriteatt(ncfile,'SLNT','standard_name',char('longitude'));
     ncwriteatt(ncfile,'SLNT','units','degrees_east');
     ncwriteatt(ncfile,'SLNT','valid_range',int32( [(-180-addOffset)./scaleFactor (180-addOffset)./scaleFactor] ));
@@ -962,14 +962,14 @@ try
     ncwriteatt(ncfile,'SLNT','sdn_uom_name',char('Degrees east'));
     ncwriteatt(ncfile,'SLNT','sdn_uom_urn',char('SDN:P06::DEGE'));
     
-    ncwriteatt(ncfile,'SCDR','long_name',char('Receive Antenna Codes'));
+    ncwriteatt(ncfile,'SCDR','long_name',char('Receive antenna codes'));
     ncwriteatt(ncfile,'SCDR','units',char('1'));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(''));
     ncwriteatt(ncfile,'SCDR','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'SCDR','sdn_uom_urn',char('SDN:P06::UUUU'));
     
-    ncwriteatt(ncfile,'SCDT','long_name',char('Transmit Antenna Codes'));
+    ncwriteatt(ncfile,'SCDT','long_name',char('Transmit antenna codes'));
     ncwriteatt(ncfile,'SCDT','units',char('1'));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(''));
     ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(''));
