@@ -1182,7 +1182,7 @@ try
     ncwriteatt(ncfile, '/','time_coverage_end',char(timeCoverageEnd));
     % Conventions used
     ncwriteatt(ncfile,'/','format_version',char('v2.1.2'));
-    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Jerico-Next-deliverable-D5.14 Copernicus-InSituTAC-Manual-1.0 Copernicus-InSituTAC-SRD-1.4 Copernicus-InSituTAC-ParametersList-3.1.0'));
+    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Copernicus-InSituTAC-FormatManual-1.4 Copernicus-InSituTAC-SRD-1.41 Copernicus-InSituTAC-ParametersList-3.2.0'));
     % Publication information
     ncwriteatt(ncfile,'/','update_interval',char('void'));
     ncwriteatt(ncfile,'/','citation',char(citation_str));
