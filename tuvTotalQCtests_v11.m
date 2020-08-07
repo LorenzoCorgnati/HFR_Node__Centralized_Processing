@@ -101,6 +101,15 @@ try
         totV1h = ncread(Total_QC_params.TempDerThr.hour1,'NSCT');
         totU2h = ncread(Total_QC_params.TempDerThr.hour2,'EWCT');
         totV2h = ncread(Total_QC_params.TempDerThr.hour2,'NSCT');
+        % Check if the data matrix has to be transposed
+        trs = 0;
+        if(size(mat_tot.gridLat)~=size(totU1h))
+            trs = 1;
+            totU1h = totU1h';
+            totV1h = totV1h';
+            totU2h = totU2h';
+            totV2h = totV2h';
+        end
         % Evaluate total velocities
         totVel1h = sqrt(((totU1h).^2) + ((totV1h).^2));
         totVel2h = sqrt(((totU2h).^2) + ((totV2h).^2));
@@ -119,7 +128,11 @@ try
         end
         
         % Modify the VART_QC variable of the nc file of the previous hour
-        ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h);
+        if(trs==0)
+            ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h);
+        elseif(trs==1)
+            ncwrite(Total_QC_params.TempDerThr.hour1,'VART_QC',tempDer1h');
+        end
         disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the Temporal Derivative QC variable.']);
     end
     % Set the QC flag for the current hour to 0 (no QC performed)
@@ -159,6 +172,12 @@ try
         velThr1h = ncread(Total_QC_params.TempDerThr.hour1,'CSPD_QC');
         GDOPThr1h = ncread(Total_QC_params.TempDerThr.hour1,'GDOP_QC');
         dataDens1h = ncread(Total_QC_params.TempDerThr.hour1,'DDNS_QC');
+        if(trs==1)
+            overall1h = overall1h';
+            velThr1h = velThr1h';
+            GDOPThr1h = GDOPThr1h';
+            dataDens1h = dataDens1h';
+        end
         % Fill the overall QC variable
         for ii=1:size(overall1h,1)
             for jj = 1:size(overall1h,2)
@@ -174,7 +193,11 @@ try
             end
         end
         % Modify the overall QC variable of the nc file of the previous hour
-        ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
+        if(trs==0)
+            ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h));
+        elseif(trs==1)
+            ncwrite(Total_QC_params.TempDerThr.hour1,'QCflag',int16(overall1h'));
+        end
         ncwriteatt(Total_QC_params.TempDerThr.hour1,'/','date_update',char([datestr(now, 'yyyy-mm-dd') 'T' datestr(now, 'HH:MM:SS') 'Z']));
         disp(['[' datestr(now) '] - - ' [name1h,ext1h] ' previous time step nc file successfully updated with the overall QC variable.']);
     end
