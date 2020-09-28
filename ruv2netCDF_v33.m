@@ -992,7 +992,7 @@ try
     netcdf.putAtt(ncid, varid_speed, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_speed, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_speed, 'add_offset', single(addOffset));
-    netcdf.putAtt(ncid, varid_speed, 'sdn_parameter_name', 'Current speed (Eulerian) in the water body by directional range-gated radar');
+    netcdf.putAtt(ncid, varid_speed, 'sdn_parameter_name', 'Speed of water current (Eulerian measurement) in the water body by directional range-gated radar');
     netcdf.putAtt(ncid, varid_speed, 'sdn_parameter_urn', 'SDN:P01::LCSAWVRD');
     netcdf.putAtt(ncid, varid_speed, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_speed, 'sdn_uom_urn', 'SDN:P06::UVAA');
@@ -1017,7 +1017,7 @@ try
     netcdf.putAtt(ncid, varid_direction, 'add_offset', single(addOffset));
     netcdf.putAtt(ncid, varid_direction, 'units', 'degree_true');
     netcdf.putAtt(ncid, varid_direction, 'scale_factor', single(scaleFactor));
-    netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_name', 'Current direction (Eulerian) in the water body by directional range-gated radar');
+    netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_name', 'Direction (towards) of water current (Eulerian measurement) in the water body by directional range-gated radar');
     netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_urn', 'SDN:P01::LCDAWVRD');
     netcdf.putAtt(ncid, varid_direction, 'sdn_uom_name', 'Degrees True');
     netcdf.putAtt(ncid, varid_direction, 'sdn_uom_urn', 'SDN:P06::UABB');

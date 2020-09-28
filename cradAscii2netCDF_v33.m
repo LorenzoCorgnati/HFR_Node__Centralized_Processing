@@ -699,7 +699,7 @@ try
     ncwriteatt(ncfile,'RDVA','units',char('m s-1'));
     ncwriteatt(ncfile,'RDVA','scale_factor',double(scaleFactor));
     ncwriteatt(ncfile,'RDVA','add_offset',double(addOffset));
-    ncwriteatt(ncfile,'RDVA','sdn_parameter_name',char('Current speed (Eulerian) in the water body by directional range-gated radar'));
+    ncwriteatt(ncfile,'RDVA','sdn_parameter_name',char('Speed of water current (Eulerian measurement) in the water body by directional range-gated radar'));
     ncwriteatt(ncfile,'RDVA','sdn_parameter_urn',char('SDN:P01::LCSAWVRD'));
     ncwriteatt(ncfile,'RDVA','sdn_uom_name',char('Metres per second'));
     ncwriteatt(ncfile,'RDVA','sdn_uom_urn',char('SDN:P06::UVAA'));
@@ -713,7 +713,7 @@ try
     ncwriteatt(ncfile,'DRVA','units',char('degrees_true'));
     ncwriteatt(ncfile,'DRVA','scale_factor',double(scaleFactor));
     ncwriteatt(ncfile,'DRVA','add_offset',double(addOffset));
-    ncwriteatt(ncfile,'DRVA','sdn_parameter_name',char('Current direction (Eulerian) in the water body by directional range-gated radar'));
+    ncwriteatt(ncfile,'DRVA','sdn_parameter_name',char('Direction (towards) of water current (Eulerian measurement) in the water body by directional range-gated radar'));
     ncwriteatt(ncfile,'DRVA','sdn_parameter_urn',char('SDN:P01::LCDAWVRD'));
     ncwriteatt(ncfile,'DRVA','sdn_uom_name',char('Degrees True'));
     ncwriteatt(ncfile,'DRVA','sdn_uom_urn',char('SDN:P06::UABB'));

@@ -248,12 +248,12 @@ try
                     if (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.ruv')) % Codar data
                         disp(['[' datestr(now) '] - - ' 'loadRDLfile loading ...']);
                         RADIAL = loadRDLFile(radFiles, 'false', 'warning');
-                    elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
-                        for mat_idx=1:length(radFiles)
-                            load(radFiles{mat_idx});
-                            RADIAL(mat_idx) = ruvRad;
-                            clear ruvRad
-                        end
+%                    elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
+%                        for mat_idx=1:length(radFiles)
+%                            load(radFiles{mat_idx});
+%                            RADIAL(mat_idx) = ruvRad;
+%                            clear ruvRad
+%                        end
                     elseif(strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
                         % NOTHING TO DO
                     end
@@ -275,9 +275,9 @@ try
                             else
                                 station_tbUpdateFlag = 0;
                             end
-                        elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
-                            % v2.1.2
-                            [R2C_err,networkData(1,:),stationData(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = mat2netCDF_v33(RADIAL(ruv_idx),networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+%                        elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.mat')) % MetNo data
+%                            % v2.1.2
+%                            [R2C_err,networkData(1,:),stationData(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = mat2netCDF_v33(RADIAL(ruv_idx),networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
                         elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
                             [R2C_err,networkData(1,:),radOutputFilename,radOutputFilesize] = cradAscii2netCDF_v33(radFiles{ruv_idx},networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
                             numActiveStations = length(toBeCombinedRadialIndices); % WERA radials are not combined

@@ -41,8 +41,8 @@ warning('off', 'all');
 setup_nctoolbox;
 
 % Setup JBDC driver for MySQL
-% javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
-javaaddpath('/home/radarcombine/Libraries/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+% javaaddpath('/home/radarcombine/Libraries/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
 
 % Setup map colormap
 set(0,'DefaultFigureColormap',feval('jet'));
@@ -201,15 +201,15 @@ if(isopen(conn))
     % Process
     try
         % Input radials
-        if(strcmp(network_data{1,network_idIndex},'HFR-Skagerrak') || strcmp(network_data{1,network_idIndex},'HFR-Finnmark'))
-            iRDB_err = CP_inputMetNoRadials2DB(conn,startDate,network_data,network_columnNames,station_data,station_columnNames);
-        else
+%        if(strcmp(network_data{1,network_idIndex},'HFR-Skagerrak') || strcmp(network_data{1,network_idIndex},'HFR-Finnmark'))
+%            iRDB_err = CP_inputMetNoRadials2DB(conn,startDate,network_data,network_columnNames,station_data,station_columnNames);
+%        else
             if(~strcmp(network_data{1,network_idIndex},'HFR-WesternItaly'))
                 iRDB_err = CP_inputRUV2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
                 iAscRadDB_err = CP_inputAscRad2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
                 iCradDB_err = CP_inputCradAscii2DB(conn,startDate,network_data{1,network_idIndex},station_data,station_columnNames);
             end
-        end
+%        end
         
         % Combine radials into totals
         HFRC_err = CP_HFRCombiner(conn,startDate,network_data,network_columnNames,station_data,station_columnNames);
