@@ -1,4 +1,4 @@
-%% radialFolderBuilder_v212.m
+%% radialFolderBuilder_v22.m
 % This function builds the folder structure for storing the converted nc files
 % for radial data and the full filename of the converted nc radial file,
 % according to the structure YYYY/YYYY_MM/YYYY_MM_DD/.
@@ -15,14 +15,14 @@
 
 
 % Author: Lorenzo Corgnati
-% Date: November 24, 2019
+% Date: September 28, 2020
 
 % E-mail: lorenzo.corgnati@sp.ismar.cnr.it
 %%
 
-function [rFB_err,fullPath] = radialFolderBuilder_v212(mainPath,siteCode,ts)
+function [rFB_err,fullPath] = radialFolderBuilder_v22(mainPath,siteCode,ts)
 
-disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v212.m started.']);
+disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v22.m started.']);
 
 rFB_err = 0;
 
@@ -63,7 +63,7 @@ end
 fullPath = [mainPath filesep 'v2.1.2' filesep siteCode filesep dayFolder];
 
 if(rFB_err==0)
-    disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v212.m successfully executed.']);
+    disp(['[' datestr(now) '] - - ' 'radialFolderBuilder_v22.m successfully executed.']);
 end
 
 return

@@ -21,7 +21,7 @@
 
 function [tFB_err,fullPath] = totalFolderBuilder_v212(mainPath,ts)
 
-disp(['[' datestr(now) '] - - ' 'totalFolderBuilder_v212.m started.']);
+disp(['[' datestr(now) '] - - ' 'totalFolderBuilder_v22.m started.']);
 
 tFB_err = 0;
 
