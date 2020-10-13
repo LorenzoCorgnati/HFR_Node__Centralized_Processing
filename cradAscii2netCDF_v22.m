@@ -839,6 +839,7 @@ try
     ncwriteatt(ncfile,'QCflag','units',char('1'));
     ncwriteatt(ncfile,'QCflag','valid_min',int8(0));
     ncwriteatt(ncfile,'QCflag','valid_max',int8(9));
+    ncwriteatt(ncfile,'QCflag','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'QCflag','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
     ncwriteatt(ncfile,'QCflag','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'QCflag','comment',char('OceanSITES quality flagging for all QC tests.'));
@@ -850,6 +851,7 @@ try
     ncwriteatt(ncfile,'OWTR_QC','units',char('1'));
     ncwriteatt(ncfile,'OWTR_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'OWTR_QC','valid_max',int8(9));
+    ncwriteatt(ncfile,'OWTR_QC','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'OWTR_QC','flag_values',int8([0 1 2 3 4 7 8 9]));
     ncwriteatt(ncfile,'OWTR_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'OWTR_QC','comment',char('OceanSITES quality flagging for Over-water QC test.'));
@@ -861,6 +863,7 @@ try
     ncwriteatt(ncfile,'MDFL_QC','units',char('1'));
     ncwriteatt(ncfile,'MDFL_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'MDFL_QC','valid_max',int8(9));
+    ncwriteatt(ncfile,'MDFL_QC','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'MDFL_QC','flag_values',int8([0 1 2 3 4 7 8 9]));
     ncwriteatt(ncfile,'MDFL_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'MDFL_QC','comment',char(['OceanSITES quality flagging for Median Filter QC test. ' ...
@@ -874,6 +877,7 @@ try
     ncwriteatt(ncfile,'VART_QC','units',char('1'));
     ncwriteatt(ncfile,'VART_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'VART_QC','valid_max',int8(9));
+    ncwriteatt(ncfile,'VART_QC','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'VART_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
     ncwriteatt(ncfile,'VART_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'VART_QC','comment',char(['OceanSITES quality flagging for variance threshold QC test. ' ...
@@ -886,6 +890,7 @@ try
     ncwriteatt(ncfile,'CSPD_QC','units',char('1'));
     ncwriteatt(ncfile,'CSPD_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'CSPD_QC','valid_max',int8(9));
+    ncwriteatt(ncfile,'CSPD_QC','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'CSPD_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
     ncwriteatt(ncfile,'CSPD_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'CSPD_QC','comment',char(['OceanSITES quality flagging for Velocity threshold QC test. ' ...
@@ -1156,9 +1161,8 @@ try
     ncwriteatt(ncfile,'/','cdm_data_type',char('grid'));
     % Conventions used
 %     ncwriteatt(ncfile,'/','netcdf_version',char(netcdf.inqLibVers));
-%     ncwriteatt(ncfile,'/','netcdf_format',char(ncfmt));
+    ncwriteatt(ncfile,'/','netcdf_format',char(ncfmt));
     ncwriteatt(ncfile,'/','netcdf_version',char('netCDF-4 classic model'));
-    ncwriteatt(ncfile,'/','netcdf_format',[char(netcdf.inqLibVers) ' ' char(ncfmt)]);
     
     % OTHER ATTRIBUTES
     ncwriteatt(ncfile,'/','metadata_contact',char('lorenzo.corgnati@sp.ismar.cnr.it'));

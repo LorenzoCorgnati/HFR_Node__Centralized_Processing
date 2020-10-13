@@ -94,7 +94,7 @@ if(cA2C_err == 0)
         % Build the cumulative institution website list
         websiteList = [NT_institution_website; ST_institution_website];
         institution_websites = websiteList(ia);
-        institution_websiteStr = strjoin(institution_websites,'; ');
+        institution_websiteStr = strjoin(institution_websites,' ');
         
         % Find the manufacturer field from station data
         ST_manufacturerIndex = find(not(cellfun('isempty', strfind(stationFields, 'manufacturer'))));
@@ -1160,9 +1160,8 @@ if(cA2C_err == 0)
         ncwriteatt(ncfile,'/','cdm_data_type',char('grid'));
         % Conventions used
 %         ncwriteatt(ncfile,'/','netcdf_version',char(netcdf.inqLibVers));
-%         ncwriteatt(ncfile,'/','netcdf_format',char(ncfmt));
+        ncwriteatt(ncfile,'/','netcdf_format',char(ncfmt));
         ncwriteatt(ncfile,'/','netcdf_version',char('netCDF-4 classic model'));
-        ncwriteatt(ncfile,'/','netcdf_format',[char(netcdf.inqLibVers) ' ' char(ncfmt)]);
         
         % OTHER ATTRIBUTES
         ncwriteatt(ncfile,'/','metadata_contact',char('lorenzo.corgnati@sp.ismar.cnr.it'));
