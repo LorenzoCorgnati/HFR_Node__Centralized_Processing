@@ -775,7 +775,7 @@ try
     ncwriteatt(ncfile,'EWCT','sdn_parameter_urn',char('SDN:P01::LCEWZZ01'));
     ncwriteatt(ncfile,'EWCT','sdn_uom_name',char('Metres per second'));
     ncwriteatt(ncfile,'EWCT','sdn_uom_urn',char('SDN:P06::UVAA'));
-    ncwriteatt(ncfile,'EWCT','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'EWCT','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     %        ncwriteatt(ncfile,'EWCT','cell_methods',char('time: mean over hours time'));
     %     ncwriteatt(ncfile,'EWCT','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
     ncwriteatt(ncfile,'EWCT','valid_min',int16((-10-addOffset)./scaleFactor));
@@ -794,7 +794,7 @@ try
     ncwriteatt(ncfile,'NSCT','sdn_parameter_urn',char('SDN:P01::LCNSZZ01'));
     ncwriteatt(ncfile,'NSCT','sdn_uom_name',char('Metres per second'));
     ncwriteatt(ncfile,'NSCT','sdn_uom_urn',char('SDN:P06::UVAA'));
-    ncwriteatt(ncfile,'NSCT','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'NSCT','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     %        ncwriteatt(ncfile,'NSCT','cell_methods',char('time: mean over hours time'));
     %     ncwriteatt(ncfile,'NSCT','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
     ncwriteatt(ncfile,'NSCT','valid_min',int16((-10-addOffset)./scaleFactor));
@@ -806,7 +806,7 @@ try
     ncwriteatt(ncfile,'EWCS','standard_name',char(''));
     ncwriteatt(ncfile,'EWCS','units',char('m s-1'));
     %     ncwriteatt(ncfile,'EWCS','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
-    ncwriteatt(ncfile,'EWCS','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'EWCS','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'EWCS','valid_min',int16((-10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'EWCS','valid_max',int16((10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'EWCS','scale_factor',double(scaleFactor));
@@ -822,7 +822,7 @@ try
     ncwriteatt(ncfile,'NSCS','standard_name',char(''));
     ncwriteatt(ncfile,'NSCS','units',char('m s-1'));
     %     ncwriteatt(ncfile,'NSCS','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
-    ncwriteatt(ncfile,'NSCS','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'NSCS','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'NSCS','valid_min',int16((-10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'NSCS','valid_max',int16((10-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'NSCS','scale_factor',double(scaleFactor));
@@ -838,7 +838,7 @@ try
     ncwriteatt(ncfile,'CCOV','standard_name',char(''));
     ncwriteatt(ncfile,'CCOV','units',char('m2 s-2'));
     %     ncwriteatt(ncfile,'CCOV','valid_range',int32([(-10-addOffset)./(scaleFactor^2), (10-addOffset)./(scaleFactor^2)]));
-    ncwriteatt(ncfile,'CCOV','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'CCOV','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'CCOV','valid_min',int32((-10-addOffset)./(scaleFactor^2)));
     ncwriteatt(ncfile,'CCOV','valid_max',int32((10-addOffset)./(scaleFactor^2)));
     ncwriteatt(ncfile,'CCOV','scale_factor',double(scaleFactor^2));
@@ -854,7 +854,7 @@ try
     ncwriteatt(ncfile,'GDOP','standard_name',char(''));
     ncwriteatt(ncfile,'GDOP','units',char('1'));
     %     ncwriteatt(ncfile,'GDOP','valid_range',int16([(-20-addOffset)./scaleFactor, (20-addOffset)./scaleFactor]));
-    ncwriteatt(ncfile,'GDOP','coordinates',char('TIME DEPTH LATITUDE LONGITUDE'));
+    ncwriteatt(ncfile,'GDOP','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'GDOP','valid_min',int16((-20-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'GDOP','valid_max',int16((20-addOffset)./scaleFactor));
     ncwriteatt(ncfile,'GDOP','scale_factor',double(scaleFactor));

@@ -1012,7 +1012,7 @@ try
     netcdf.putAtt(ncid, varid_speed, 'sdn_parameter_urn', 'SDN:P01::LCSAWVRD');
     netcdf.putAtt(ncid, varid_speed, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_speed, 'sdn_uom_urn', 'SDN:P06::UVAA');
-    netcdf.putAtt( ncid, varid_speed, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt( ncid, varid_speed, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_speed, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC, RDCT_QC');
     netcdf.putAtt(ncid, varid_speed, 'data_mode', 'R');
     
@@ -1038,7 +1038,7 @@ try
     netcdf.putAtt(ncid, varid_direction, 'sdn_parameter_urn', 'SDN:P01::LCDAWVRD');
     netcdf.putAtt(ncid, varid_direction, 'sdn_uom_name', 'Degrees True');
     netcdf.putAtt(ncid, varid_direction, 'sdn_uom_urn', 'SDN:P06::UABB');
-    netcdf.putAtt( ncid, varid_direction, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt( ncid, varid_direction, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_direction, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, AVRB_QC, RDCT_QC');
     netcdf.putAtt(ncid, varid_direction, 'data_mode', 'R');
     
@@ -1058,7 +1058,7 @@ try
     netcdf.putAtt(ncid, varid_u, 'sdn_parameter_urn', 'SDN:P01::LCEWZZ01');
     netcdf.putAtt(ncid, varid_u, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_u, 'sdn_uom_urn', 'SDN:P06::UVAA');
-    netcdf.putAtt(ncid, varid_u, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_u, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_u, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC, AVRB_QC, RDCT_QC');
     netcdf.putAtt(ncid, varid_u, 'data_mode', 'R');
     
@@ -1078,7 +1078,7 @@ try
     netcdf.putAtt(ncid, varid_v, 'sdn_parameter_urn', 'SDN:P01::LCNSZZ01');
     netcdf.putAtt(ncid, varid_v, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_v, 'sdn_uom_urn', 'SDN:P06::UVAA');
-    netcdf.putAtt(ncid, varid_v, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_v, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_v, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC, AVRB_QC, RDCT_QC');
     netcdf.putAtt(ncid, varid_v, 'data_mode', 'R');
     
@@ -1091,7 +1091,7 @@ try
     netcdf.putAtt(ncid, varid_espc, 'long_name', 'Radial standard deviation of current velocity over the scatter patch');
     netcdf.putAtt(ncid, varid_espc, 'standard_name', '');
     netcdf.putAtt(ncid, varid_espc, 'units', 'm s-1');
-    netcdf.putAtt(ncid, varid_espc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_espc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_espc, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_espc, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_espc, 'add_offset', single(addOffset));
@@ -1111,7 +1111,7 @@ try
     netcdf.putAtt(ncid, varid_etmp, 'long_name', 'Radial standard deviation of current velocity over coverage period');
     netcdf.putAtt(ncid, varid_etmp, 'standard_name', '');
     netcdf.putAtt(ncid, varid_etmp, 'units', 'm s-1');
-    netcdf.putAtt(ncid, varid_etmp, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_etmp, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_etmp, '_FillValue', netcdf.getConstant('NC_FILL_SHORT'));
     netcdf.putAtt(ncid, varid_etmp, 'scale_factor', single(scaleFactor));
     netcdf.putAtt(ncid, varid_etmp, 'add_offset', single(addOffset));
@@ -1138,7 +1138,7 @@ try
     netcdf.putAtt(ncid, varid_maxv, 'sdn_parameter_urn', 'SDN:P01::LCSAWVRD');
     netcdf.putAtt(ncid, varid_maxv, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_maxv, 'sdn_uom_urn', 'SDN:P06::UVAA');
-    netcdf.putAtt(ncid, varid_maxv, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_maxv, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_maxv, 'ancillary_variables', 'QCflag, MDFL_QC, CSPD_QC, VART_QC');
     netcdf.putAtt(ncid, varid_maxv, 'data_mode', 'R');
     
@@ -1158,7 +1158,7 @@ try
     netcdf.putAtt(ncid, varid_minv, 'sdn_parameter_urn', 'SDN:P01::LCSAWVRD');
     netcdf.putAtt(ncid, varid_minv, 'sdn_uom_name', 'Metres per second');
     netcdf.putAtt(ncid, varid_minv, 'sdn_uom_urn', 'SDN:P06::UVAA');
-    netcdf.putAtt(ncid, varid_minv, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_minv, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_minv, 'ancillary_variables', 'QCflag, MDFL_QC, CSPD_QC, VART_QC');
     netcdf.putAtt(ncid, varid_minv, 'data_mode', 'R');
     
@@ -1178,7 +1178,7 @@ try
     netcdf.putAtt(ncid, varid_ersc, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_ersc, 'sdn_uom_name', 'Dimensionless');
     netcdf.putAtt(ncid, varid_ersc, 'sdn_uom_urn', 'SDN:P06::UUUU');
-    netcdf.putAtt(ncid, varid_ersc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_ersc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_ersc, 'ancillary_variables', 'QCflag');
     netcdf.putAtt(ncid, varid_ersc, 'data_mode', 'R');
     
@@ -1198,7 +1198,7 @@ try
     netcdf.putAtt(ncid, varid_ertc, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_ertc, 'sdn_uom_name', 'Dimensionless');
     netcdf.putAtt(ncid, varid_ertc, 'sdn_uom_urn', 'SDN:P06::UUUU');
-    netcdf.putAtt(ncid, varid_ertc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_ertc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_ertc, 'ancillary_variables', 'QCflag');
     netcdf.putAtt(ncid, varid_ertc, 'data_mode', 'R');
     
@@ -1218,7 +1218,7 @@ try
     netcdf.putAtt(ncid, varid_xdst, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_xdst, 'sdn_uom_name', 'Kilometres');
     netcdf.putAtt(ncid, varid_xdst, 'sdn_uom_urn', 'SDN:P06::ULKM');
-    netcdf.putAtt(ncid, varid_xdst, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_xdst, 'coordinates', 'LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_xdst, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC');
     netcdf.putAtt(ncid, varid_xdst, 'data_mode', 'R');
     
@@ -1238,7 +1238,7 @@ try
     netcdf.putAtt(ncid, varid_ydst, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_ydst, 'sdn_uom_name', 'Kilometres');
     netcdf.putAtt(ncid, varid_ydst, 'sdn_uom_urn', 'SDN:P06::ULKM');
-    netcdf.putAtt(ncid, varid_ydst, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_ydst, 'coordinates', 'LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_ydst, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC');
     netcdf.putAtt(ncid, varid_ydst, 'data_mode', 'R');
     
@@ -1258,7 +1258,7 @@ try
     netcdf.putAtt(ncid, varid_sprc, 'sdn_parameter_urn', '');
     netcdf.putAtt(ncid, varid_sprc, 'sdn_uom_name', 'Dimensionless');
     netcdf.putAtt(ncid, varid_sprc, 'sdn_uom_urn', 'SDN:P06::UUUU');
-    netcdf.putAtt(ncid, varid_sprc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_sprc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     netcdf.putAtt(ncid, varid_sprc, 'ancillary_variables', 'QCflag, OWTR_QC, MDFL_QC, CSPD_QC, VART_QC');
     netcdf.putAtt(ncid, varid_sprc, 'data_mode', 'R');
     
@@ -1435,7 +1435,7 @@ try
     netcdf.putAtt(ncid, varid_posqc, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_posqc, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_posqc, 'units', '1');
-    netcdf.putAtt(ncid, varid_posqc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_posqc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Depth QC Flag
     varid_dqc = netcdf.defVar(ncid, 'DEPH_QC', 'byte', dimid_t);
@@ -1468,7 +1468,7 @@ try
     netcdf.putAtt(ncid, varid_ovqc, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_ovqc, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_ovqc, 'units', '1');
-    netcdf.putAtt(ncid, varid_ovqc, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_ovqc, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Over-water QC Flag
     varid_owtr = netcdf.defVar(ncid, 'OWTR_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
@@ -1485,7 +1485,7 @@ try
     netcdf.putAtt(ncid, varid_owtr, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_owtr, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_owtr, 'units', '1');
-    netcdf.putAtt(ncid, varid_owtr, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_owtr, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Median Filter QC Flag
     varid_mdfl = netcdf.defVar(ncid, 'MDFL_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
@@ -1502,7 +1502,7 @@ try
     netcdf.putAtt(ncid, varid_mdfl, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_mdfl, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_mdfl, 'units', '1');
-    netcdf.putAtt(ncid, varid_mdfl, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_mdfl, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Variance Threshold QC Flag
     varid_vart = netcdf.defVar(ncid, 'VART_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
@@ -1519,7 +1519,7 @@ try
     netcdf.putAtt(ncid, varid_vart, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_vart, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_vart, 'units', '1');
-    netcdf.putAtt(ncid, varid_vart, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_vart, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Velocity Threshold QC Flag
     varid_cspd = netcdf.defVar(ncid, 'CSPD_QC', 'byte', [dimid_range dimid_bearing dimid_depth dimid_t]);
@@ -1536,7 +1536,7 @@ try
     netcdf.putAtt(ncid, varid_cspd, 'scale_factor', int8(1));
     netcdf.putAtt(ncid, varid_cspd, 'add_offset', int8(0));
     netcdf.putAtt(ncid, varid_cspd, 'units', '1');
-    netcdf.putAtt(ncid, varid_cspd, 'coordinates', 'TIME DEPTH LATITUDE LONGITUDE' );
+    netcdf.putAtt(ncid, varid_cspd, 'coordinates', 'TIME DEPH LATITUDE LONGITUDE' );
     
     % Average Radial Bearing QC Flag
     varid_avrb = netcdf.defVar(ncid, 'AVRB_QC', 'byte', dimid_t);
