@@ -1621,7 +1621,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'bottom_depth', '');
     % Conventions used
     netcdf.putAtt(ncid, varid_global, 'format_version', '1.4');
-    netcdf.putAtt(ncid, varid_global, 'Conventions', 'CF-1.6 Copernicus-InSituTAC-FormatManual-1.4 Copernicus-InSituTAC-SRD-1.41 Copernicus-InSituTAC-ParametersList-3.2.0');
+    netcdf.putAtt(ncid, varid_global, 'Conventions', 'CF-1.6 Copernicus-InSituTAC-FormatManual-1.41 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.0');
     % Publication information
     netcdf.putAtt(ncid, varid_global, 'update_interval', 'void');
     netcdf.putAtt(ncid, varid_global, 'citation', citation_str);

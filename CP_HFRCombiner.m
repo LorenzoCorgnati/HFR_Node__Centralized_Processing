@@ -272,6 +272,7 @@ try
                             if(~strcmp(networkData{1,network_idIndex},'HFR-WesternItaly'))
                                 % v2.2
                                 [R2C_err,networkData(1,:),stationData(toBeCombinedStationIndex,:),radOutputFilename,radOutputFilesize,station_tbUpdateFlag] = ruv2netCDF_v22(RADIAL(ruv_idx),networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
+                                disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.2 file successfully created and stored.']);
                             else
                                 station_tbUpdateFlag = 0;
                             end
@@ -281,8 +282,8 @@ try
                         elseif (strcmp(toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),extensionIndex}, '.crad_ascii')) % WERA data
                             [R2C_err,networkData(1,:),radOutputFilename,radOutputFilesize] = cradAscii2netCDF_v22(radFiles{ruv_idx},networkData(1,:),networkFields,stationData(toBeCombinedStationIndex,:),stationFields,toBeCombinedRadials_data{toBeCombinedRadialIndices(indices_idx),timeStampIndex});
                             numActiveStations = length(toBeCombinedRadialIndices); % WERA radials are not combined
+                            disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.2 file successfully created and stored.']);
                         end
-                        disp(['[' datestr(now) '] - - ' radOutputFilename ' radial netCDF v2.2 file successfully created and stored.']);
                         contrSitesIndices(ruv_idx) = toBeCombinedStationIndex;
                     catch err
                         display(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);

@@ -1158,7 +1158,7 @@ try
     ncwriteatt(ncfile,'/','bottom_depth', char(''));
     % Conventions used
     ncwriteatt(ncfile,'/','format_version',char('1.4'));
-    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Copernicus-InSituTAC-FormatManual-1.4 Copernicus-InSituTAC-SRD-1.41 Copernicus-InSituTAC-ParametersList-3.2.0'));
+    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Copernicus-InSituTAC-FormatManual-1.41 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.0'));
     % Publication information
     ncwriteatt(ncfile,'/','update_interval',char('void'));
     ncwriteatt(ncfile,'/','citation',char(citation_str));
