@@ -679,13 +679,13 @@ try
     nccreate(ncfile,'SCDR',...
         'Dimensions',{'STRING15',string15_dim,'MAXSITE',maxSite_dim,'TIME',time_dim},...
         'Datatype','char',...
-        'FillValue',netcdf.getConstant('NC_FILL_CHAR'),...
+        'FillValue',char(' '),...
         'Format',ncfmt);
     
     nccreate(ncfile,'SCDT',...
         'Dimensions',{'STRING15',string15_dim,'MAXSITE',maxSite_dim,'TIME',time_dim},...
         'Datatype','char',...
-        'FillValue',netcdf.getConstant('NC_FILL_CHAR'),...
+        'FillValue',char(' '),...
         'Format',ncfmt);
     
     %% Creates attributes for the variables
@@ -696,7 +696,7 @@ try
     ncwriteatt(ncfile,'TIME','axis',char('T'));
     ncwriteatt(ncfile,'TIME','valid_min',double(-90000));
     ncwriteatt(ncfile,'TIME','valid_max',double(90000));
-    ncwriteatt(ncfile,'TIME','uncertainty',char(''));
+    ncwriteatt(ncfile,'TIME','uncertainty',char(' '));
     ncwriteatt(ncfile,'TIME','sdn_parameter_name',char('Elapsed time (since 1950-01-01T00:00:00Z)'));
     ncwriteatt(ncfile,'TIME','sdn_parameter_urn',char('SDN:P01::ELTJLD01'));
     ncwriteatt(ncfile,'TIME','sdn_uom_name',char('Days'));
@@ -709,7 +709,7 @@ try
     ncwriteatt(ncfile,'LATITUDE','axis',char('Y'));
     ncwriteatt(ncfile,'LATITUDE','valid_min',single(-90));
     ncwriteatt(ncfile,'LATITUDE','valid_max',single(90));
-    ncwriteatt(ncfile,'LATITUDE','uncertainty',char(''));
+    ncwriteatt(ncfile,'LATITUDE','uncertainty',char(' '));
     ncwriteatt(ncfile,'LATITUDE','sdn_parameter_name',char('Latitude north'));
     ncwriteatt(ncfile,'LATITUDE','sdn_parameter_urn',char('SDN:P01::ALATZZ01'));
     ncwriteatt(ncfile,'LATITUDE','sdn_uom_name',char('Degrees north'));
@@ -723,7 +723,7 @@ try
     ncwriteatt(ncfile,'LONGITUDE','axis',char('X'));
     ncwriteatt(ncfile,'LONGITUDE','valid_min',single(-180));
     ncwriteatt(ncfile,'LONGITUDE','valid_max',single(180));
-    ncwriteatt(ncfile,'LONGITUDE','uncertainty',char(''));
+    ncwriteatt(ncfile,'LONGITUDE','uncertainty',char(' '));
     ncwriteatt(ncfile,'LONGITUDE','sdn_parameter_name',char('Longitude east'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_parameter_urn',char('SDN:P01::ALONZZ01'));
     ncwriteatt(ncfile,'LONGITUDE','sdn_uom_name',char('Degrees east'));
@@ -756,7 +756,7 @@ try
     ncwriteatt(ncfile,'DEPH','axis',char('Z'));
     ncwriteatt(ncfile,'DEPH','valid_min',single(-12000));
     ncwriteatt(ncfile,'DEPH','valid_max',single(12000));
-    ncwriteatt(ncfile,'DEPH','uncertainty',char(''));
+    ncwriteatt(ncfile,'DEPH','uncertainty',char(' '));
     ncwriteatt(ncfile,'DEPH','positive',char('down'));
     ncwriteatt(ncfile,'DEPH','reference',char('sea_level'));
     ncwriteatt(ncfile,'DEPH','sdn_parameter_name',char('Depth below surface of the water body'));
@@ -805,7 +805,7 @@ try
     ncwriteatt(ncfile,'NSCT','data_mode',char('R'));
     
     ncwriteatt(ncfile,'EWCS','long_name',char('Standard deviation of surface eastward sea water velocity'));
-    ncwriteatt(ncfile,'EWCS','standard_name',char(''));
+    ncwriteatt(ncfile,'EWCS','standard_name',char(' '));
     ncwriteatt(ncfile,'EWCS','units',char('m s-1'));
 %     ncwriteatt(ncfile,'EWCS','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
     ncwriteatt(ncfile,'EWCS','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
@@ -821,7 +821,7 @@ try
     ncwriteatt(ncfile,'EWCS','data_mode',char('R'));
     
     ncwriteatt(ncfile,'NSCS','long_name',char('Standard deviation of surface northward sea water velocity'));
-    ncwriteatt(ncfile,'NSCS','standard_name',char(''));
+    ncwriteatt(ncfile,'NSCS','standard_name',char(' '));
     ncwriteatt(ncfile,'NSCS','units',char('m s-1'));
 %     ncwriteatt(ncfile,'NSCS','valid_range',int16([(-10-addOffset)./scaleFactor, (10-addOffset)./scaleFactor]));
     ncwriteatt(ncfile,'NSCS','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
@@ -837,7 +837,7 @@ try
     ncwriteatt(ncfile,'NSCS','data_mode',char('R'));
     
     ncwriteatt(ncfile,'CCOV','long_name',char('Covariance of surface sea water velocity'));
-    ncwriteatt(ncfile,'CCOV','standard_name',char(''));
+    ncwriteatt(ncfile,'CCOV','standard_name',char(' '));
     ncwriteatt(ncfile,'CCOV','units',char('m2 s-2'));
 %     ncwriteatt(ncfile,'CCOV','valid_range',int32([(-10-addOffset)./(scaleFactor^2), (10-addOffset)./(scaleFactor^2)]));
     ncwriteatt(ncfile,'CCOV','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
@@ -845,15 +845,15 @@ try
     ncwriteatt(ncfile,'CCOV','valid_max',int32((10-addOffset)./(scaleFactor^2)));
     ncwriteatt(ncfile,'CCOV','scale_factor',double(scaleFactor^2));
     ncwriteatt(ncfile,'CCOV','add_offset',double(addOffset));
-    ncwriteatt(ncfile,'CCOV','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'CCOV','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'CCOV','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'CCOV','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'CCOV','sdn_uom_name',char('Square metres per second squared'));
     ncwriteatt(ncfile,'CCOV','sdn_uom_urn',char('SDN:P06::SQM2'));
     ncwriteatt(ncfile,'CCOV','ancillary_variables',char('QCflag'));
     ncwriteatt(ncfile,'CCOV','data_mode',char('R'));
     
     ncwriteatt(ncfile,'GDOP','long_name',char('Geometrical dilution of precision'));
-    ncwriteatt(ncfile,'GDOP','standard_name',char(''));
+    ncwriteatt(ncfile,'GDOP','standard_name',char(' '));
     ncwriteatt(ncfile,'GDOP','units',char('1'));
 %     ncwriteatt(ncfile,'GDOP','valid_range',int16([(-20-addOffset)./scaleFactor, (20-addOffset)./scaleFactor]));
     ncwriteatt(ncfile,'GDOP','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
@@ -866,8 +866,8 @@ try
         ' A low GDOP corresponds to an optimal geometric configuration of radar stations, and results in accurate surface current data. Essentially, GDOP is a quantitative way to relate the radial and velocity vector uncertainties.'...
         ' Setting a threshold on GDOP for total combination avoids the combination of radials with an intersection angle below a certain value.' ...
         ' GDOP is a useful metric for filtering errant velocities due to poor geometry.']));
-    ncwriteatt(ncfile,'GDOP','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'GDOP','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'GDOP','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'GDOP','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'GDOP','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'GDOP','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'GDOP','ancillary_variables',char('QCflag, GDOP_QC'));
@@ -975,29 +975,29 @@ try
     ncwriteatt(ncfile,'CSPD_QC','add_offset',int8(0));
     
     ncwriteatt(ncfile,'NARX','long_name',char('Number of receive antennas'));
-    ncwriteatt(ncfile,'NARX','standard_name',char(''));
+    ncwriteatt(ncfile,'NARX','standard_name',char(' '));
     ncwriteatt(ncfile,'NARX','units',char('1'));
 %     ncwriteatt(ncfile,'NARX','valid_range',int8([0 maxSite_dim]));
     ncwriteatt(ncfile,'NARX','valid_min',int8(0));
     ncwriteatt(ncfile,'NARX','valid_max',int8(127));
     ncwriteatt(ncfile,'NARX','scale_factor',int8(1));
     ncwriteatt(ncfile,'NARX','add_offset',int8(0));
-    ncwriteatt(ncfile,'NARX','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'NARX','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'NARX','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'NARX','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'NARX','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'NARX','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'NARX','data_mode',char('R'));
     
     ncwriteatt(ncfile,'NATX','long_name',char('Number of transmit antennas'));
-    ncwriteatt(ncfile,'NATX','standard_name',char(''));
+    ncwriteatt(ncfile,'NATX','standard_name',char(' '));
     ncwriteatt(ncfile,'NATX','units',char('1'));
 %     ncwriteatt(ncfile,'NATX','valid_range',int8([0 maxSite_dim]));
     ncwriteatt(ncfile,'NATX','valid_min',int8(0));
     ncwriteatt(ncfile,'NATX','valid_max',int8(127));
     ncwriteatt(ncfile,'NATX','scale_factor',int8(1));
     ncwriteatt(ncfile,'NATX','add_offset',int8(0));
-    ncwriteatt(ncfile,'NATX','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'NATX','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'NATX','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'NATX','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'NATX','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'NATX','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'NATX','data_mode',char('R'));
@@ -1063,19 +1063,19 @@ try
     ncwriteatt(ncfile,'SLNT','data_mode',char('R'));
     
     ncwriteatt(ncfile,'SCDR','long_name',char('Receive antenna codes'));
-    ncwriteatt(ncfile,'SCDR','standard_name',char(''));
+    ncwriteatt(ncfile,'SCDR','standard_name',char(' '));
     ncwriteatt(ncfile,'SCDR','units',char('1'));
-    ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'SCDR','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'SCDR','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'SCDR','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'SCDR','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'SCDR','data_mode',char('R'));
     
     ncwriteatt(ncfile,'SCDT','long_name',char('Transmit antenna codes'));
-    ncwriteatt(ncfile,'SCDT','standard_name',char(''));
+    ncwriteatt(ncfile,'SCDT','standard_name',char(' '));
     ncwriteatt(ncfile,'SCDT','units',char('1'));
-    ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(''));
-    ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(''));
+    ncwriteatt(ncfile,'SCDT','sdn_parameter_name',char(' '));
+    ncwriteatt(ncfile,'SCDT','sdn_parameter_urn',char(' '));
     ncwriteatt(ncfile,'SCDT','sdn_uom_name',char('Dimensionless'));
     ncwriteatt(ncfile,'SCDT','sdn_uom_urn',char('SDN:P06::UUUU'));
     ncwriteatt(ncfile,'SCDT','data_mode',char('R'));
