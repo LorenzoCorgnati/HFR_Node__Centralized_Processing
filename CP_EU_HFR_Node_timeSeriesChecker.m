@@ -21,14 +21,15 @@ disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_timeSeriesChecker started.']);
 % Setup netCDF toolbox
 setup_nctoolbox;
 % Setup JBDC driver for MySQL
-javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+% javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+javaaddpath('/home/radarcombine/Libraries/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
 
 %%
 
 %% Select time series to check
 
 % Set the network name
-networkID = 'HFR-Ibiza';
+networkID = 'HFR-TirLig';
 % Set the format version
 format_version = 'v2.2';
 
@@ -131,9 +132,9 @@ try
     ToutputPathIndexC = strfind(network_columnNames, 'total_HFRnetCDF_folder_path');
     ToutputPathIndex = find(not(cellfun('isempty', ToutputPathIndexC)));
     
-    %% DEBUG - TO BE REMOVED
+    %% DEBUG
     
-    network_data{ToutputPathIndex} = ['../' networkID '/Totals_nc'];
+%     network_data{ToutputPathIndex} = ['../' networkID '/Totals_nc'];
     
     %%
     
@@ -212,9 +213,9 @@ try
     
     % Scan the radial stations and check time series for each one
     for st_idx=1:numStations
-        %% DEBUG - TO BE REMOVED
+        %% DEBUG
         
-        station_data{st_idx,RoutputPathIndex} = ['../' networkID '/Radials_nc'];
+%         station_data{st_idx,RoutputPathIndex} = ['../' networkID '/Radials_nc'];
         
         %%
         
