@@ -116,16 +116,6 @@ try
     
     %%
     
-    %% Prepare plots
-    
-    % Set number of subfigure
-    numSubPlot = numNetworks + numStations;
-    % Create plot
-    figure('units','normalized','outerposition',[0 0 1 1]);
-    subplot(numSubPlot,1,1);
-    
-    %%
-    
     %% Check time series for total data
     
     % Find the index of the output file path field
@@ -164,6 +154,8 @@ try
         TendTime = datetime(datevec(max(TdataTS)));
         TtempResMinutes = minutes(network_data{TtemporalResolutionIndex});
         TtimeFrame = datenum(TstartTime:TtempResMinutes:TendTime);
+        minTS = TtimeFrame(1);
+        maxTS = TtimeFrame(end);        
         
         % Find missing dates in the time series
         TdataDates = round(datevec(TdataTS));
@@ -171,14 +163,6 @@ try
         [~, Tindex] = ismember(TdataDates, TfullDates, 'rows');
         Tfull = zeros(size(TtimeFrame));
         Tfull(Tindex) = 1;
-        
-        % Plot the timeseries temporal evolution
-        plot(TtimeFrame,Tfull,'-b','linewidth',2);
-        hold on;
-        title(['NRT total data time series for ' networkID ' network'], 'FontSize', 16);
-        xlabel('Dates');
-        ylabel('Time series');
-        datetick('x','dd-mmm-yyyy HH','keepticks');
         
         % Save the list of missing dates in the time series
         TmissingDates = TtimeFrame(Tfull==0);
@@ -249,21 +233,20 @@ try
             RtempResMinutes = minutes(station_data{st_idx,RtemporalResolutionIndex});
             RtimeFrame = datenum(RstartTime:RtempResMinutes:RendTime);
             
+            % Check minimum and maximum time stamps for plots
+            if(RtimeFrame(1)<minTS)
+                minTS = RtimeFrame(1);
+            end
+            if(RtimeFrame(end)>maxTS)
+                maxTS = RtimeFrame(end);
+            end
+            
             % Find missing dates in the time series
             RdataDates = round(datevec(RdataTS));
             RfullDates = round(datevec(RtimeFrame));
             [~, Rindex] = ismember(RdataDates, RfullDates, 'rows');
             Rfull = zeros(size(RtimeFrame));
             Rfull(Rindex) = 1;
-            
-            % Plot the timeseries temporal evolution
-            subplot(numSubPlot,1,st_idx+1);
-            plot(RtimeFrame,Rfull,'-r','linewidth',2);
-            hold on;
-            title(['NRT radial data time series for ' stationID ' station'], 'FontSize', 16);
-            xlabel('Dates');
-            ylabel('Time series');
-            datetick('x','dd-mmm-yyyy HH','keepticks');
             
             % Save the list of missing dates in the time series
             RmissingDates = RtimeFrame(Rfull==0);
@@ -283,6 +266,10 @@ try
             
             disp(['[' datestr(now) '] - - ' 'Radial data time series for station ' stationID ' successfully checked.']);
             
+            % Record data for plots
+            radialTimeSeries(st_idx).RtimeFrame = RtimeFrame;
+            radialTimeSeries(st_idx).Rfull = Rfull;
+            
             clear RdataTS RstartTime RendTime RtempResMinutes RtimeFrame RdataDates RfullDates Rfull Rindex RmissingDates;
             
         else
@@ -290,11 +277,42 @@ try
         end
     end
     
+    %%
+    
+    %% Create and save plot
+    
+    % Set number of subfigure
+    numSubPlot = numNetworks + numStations;
+    % Create plot
+    figure('units','normalized','outerposition',[0 0 1 1]);
+    subplot(numSubPlot,1,1);
+        
+    % Plot the timeseries temporal evolution for total data
+    plot(TtimeFrame,Tfull,'-b','linewidth',2);
+    hold on;
+    title(['NRT total data time series for ' networkID ' network'], 'FontSize', 16);
+    xlabel('Dates');
+    ylabel('Time series');
+    xlim([minTS maxTS]);
+    datetick('x','dd-mmm-yyyy HH','keepticks');
+    
+    % Plot the timeseries temporal evolution for radial data
+    for st_idx=1:length(radialTimeSeries)
+        subplot(numSubPlot,1,st_idx+1);
+        plot(radialTimeSeries(st_idx).RtimeFrame,radialTimeSeries(st_idx).Rfull,'-r','linewidth',2);
+        hold on;
+        title(['NRT radial data time series for ' station_data{st_idx,station_idIndex} ' station'], 'FontSize', 16);
+        xlabel('Dates');
+        ylabel('Time series');
+        xlim([minTS maxTS]);
+        datetick('x','dd-mmm-yyyy HH','keepticks');
+    end
+    
     % Save the time series plot
     saveas(gcf,plotResFile);
     close;
     
-    %%
+    %%   
     
     %% Close connection to database
     
