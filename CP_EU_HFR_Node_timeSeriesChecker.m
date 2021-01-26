@@ -154,7 +154,8 @@ try
         TstartTime = datetime(datevec(min(TdataTS)));
         TendTime = datetime(datevec(max(TdataTS)));
         TtempResMinutes = minutes(network_data{TtemporalResolutionIndex});
-        TtimeFrame = datenum(TstartTime:TtempResMinutes:TendTime);
+%         TtimeFrame = datenum(TstartTime:TtempResMinutes:TendTime);
+        TtimeFrame = TstartTime:TtempResMinutes:TendTime;
         minTS = TtimeFrame(1);
         maxTS = TtimeFrame(end);        
         
@@ -232,7 +233,8 @@ try
             RstartTime = datetime(datevec(min(RdataTS)));
             RendTime = datetime(datevec(max(RdataTS)));
             RtempResMinutes = minutes(station_data{st_idx,RtemporalResolutionIndex});
-            RtimeFrame = datenum(RstartTime:RtempResMinutes:RendTime);
+%             RtimeFrame = datenum(RstartTime:RtempResMinutes:RendTime);
+            RtimeFrame = RstartTime:RtempResMinutes:RendTime;
             
             % Check minimum and maximum time stamps for plots
             if(RtimeFrame(1)<minTS)
@@ -295,7 +297,7 @@ try
     xlabel('Dates');
     ylabel('Time series');
     xlim([minTS maxTS]);
-    datetick('x','dd-mmm-yyyy HH','keepticks');
+%     datetick('x','mmm-yyyy','keepticks');
     
     % Plot the timeseries temporal evolution for radial data
     for st_idx=1:length(radialTimeSeries)
@@ -306,7 +308,7 @@ try
         xlabel('Dates');
         ylabel('Time series');
         xlim([minTS maxTS]);
-        datetick('x','dd-mmm-yyyy HH','keepticks');
+%         datetick('x','mmm-yyyy','keepticks');
     end
     
     % Save the time series plot
