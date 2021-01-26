@@ -297,7 +297,7 @@ try
     xlabel('Dates');
     ylabel('Time series');
     xlim([minTS maxTS]);
-%     datetick('x','mmm-yyyy','keepticks');
+    datetick('x','mmm-yyyy','keeplimits');
     
     % Plot the timeseries temporal evolution for radial data
     for st_idx=1:length(radialTimeSeries)
@@ -308,7 +308,7 @@ try
         xlabel('Dates');
         ylabel('Time series');
         xlim([minTS maxTS]);
-%         datetick('x','mmm-yyyy','keepticks');
+        datetick('x','mmm-yyyy','keeplimits');
     end
     
     % Save the time series plot
