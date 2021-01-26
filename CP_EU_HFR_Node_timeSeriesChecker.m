@@ -59,6 +59,7 @@ try
     TresFile = [checkFolder filesep 'totalTimeSeries.txt'];
     RresFile = [checkFolder filesep 'radialTimeSeries.txt'];
     plotResFile = [checkFolder filesep 'timeSeriesPlot.png'];
+    figResFile = [checkFolder filesep 'timeSeriesPlot.fig'];
     
     %%
     
@@ -310,6 +311,7 @@ try
     
     % Save the time series plot
     saveas(gcf,plotResFile);
+    savefig(gcf,figResFile);
     close;
     
     %%   
