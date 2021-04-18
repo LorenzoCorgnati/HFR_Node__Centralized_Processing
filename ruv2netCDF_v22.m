@@ -473,9 +473,9 @@ try
     % THREDDS time aggregation.
     number_of_range_cellsIndex = find(not(cellfun('isempty', strfind(stationFields, 'number_of_range_cells'))));
     if(exist('RangeResolutionKMeters','var') ~= 0)
-        range_dim = 0:RangeResolutionKMeters:stationData{number_of_range_cellsIndex};
+        range_dim = 0:RangeResolutionKMeters:RangeResolutionKMeters*(stationData{number_of_range_cellsIndex}-1);
     elseif(exist('RangeResolutionMeters','var') ~= 0)
-        range_dim = 0:RangeResolutionMeters*0.001:stationData{number_of_range_cellsIndex};
+        range_dim = 0:RangeResolutionMeters*0.001:(RangeResolutionMeters*0.001)*(stationData{number_of_range_cellsIndex}-1);
     end
     
     if(~exist('AngularResolution','var') ~= 0)
@@ -486,6 +486,10 @@ try
     bearing_dim_2 = min(R.bear):AngularResolution:max(R.bear);
     bearing_dim_3 = max(R.bear):AngularResolution:360;    
     bearing_dim = unique([bearing_dim_1 bearing_dim_2 bearing_dim_3]);
+    
+    if(bearing_dim(end)==360)
+        bearing_dim = bearing_dim(1:end-1);
+    end
     
     [bearing, range] = meshgrid(bearing_dim, range_dim);
     
