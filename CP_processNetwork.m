@@ -41,8 +41,8 @@ warning('off', 'all');
 setup_nctoolbox;
 
 % Setup JBDC driver for MySQL
-javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
-% javaaddpath('/home/radarcombine/Libraries/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+% javaaddpath('/home/lorenz/Toolboxes/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
+javaaddpath('/home/radarcombine/Libraries/Matlab_HFR_AddOn/mysql-connector-java-5.1.17.jar');
 
 % Setup map colormap
 set(0,'DefaultFigureColormap',feval('jet'));
