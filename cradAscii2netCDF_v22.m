@@ -852,7 +852,7 @@ try
     ncwriteatt(ncfile,'OWTR_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'OWTR_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'OWTR_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
-    ncwriteatt(ncfile,'OWTR_QC','flag_values',int8([0 1 2 3 4 7 8 9]));
+    ncwriteatt(ncfile,'OWTR_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
     ncwriteatt(ncfile,'OWTR_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'OWTR_QC','comment',char('OceanSITES quality flagging for Over-water QC test.'));
     ncwriteatt(ncfile,'OWTR_QC','scale_factor',int8(1));
@@ -864,7 +864,7 @@ try
     ncwriteatt(ncfile,'MDFL_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'MDFL_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'MDFL_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
-    ncwriteatt(ncfile,'MDFL_QC','flag_values',int8([0 1 2 3 4 7 8 9]));
+    ncwriteatt(ncfile,'MDFL_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
     ncwriteatt(ncfile,'MDFL_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'MDFL_QC','comment',char(['OceanSITES quality flagging for Median Filter QC test. ' ...
         'Threshold set to ' num2str(Radial_QC_params.MedFilt(1)) ' km, ' num2str(Radial_QC_params.MedFilt(2)) ' deg, ' ...
