@@ -104,13 +104,30 @@ end
 %% Create the regular grid
 
 try
-    % Retrieve the lower left and upper right coordinates
-    [LLlon, LLlat] = km2lonlat(topLeftLon,topLeftLat,0,-(cellSize*latCells+1));
-    [URlon, URlat] = km2lonlat(topLeftLon,topLeftLat,(cellSize*lonCells+1),0);
+    % Generate latitude coordinates
+    [lat2,lon2,a21]=vreckon(topLeftLat,topLeftLon,cellSize*1000,180);
+    dLat=lat2-topLeftLat;
     
-    % Create the lon/lat regular grid
-    [gridLon, gridLat] = LonLat_grid([LLlon, LLlat], [URlon, URlat], cellSize, 'km');
-    gridLat = flipud(gridLat);
+    latVec = zeros(latCells,1);
+    for lat_idx=1:latCells
+        latVec(lat_idx)=topLeftLat+(lat_idx-1)*dLat;       
+    end
+    gridLat = repmat(latVec,1,lonCells);
+    
+    % Find latitude value at the middle of latitude range
+    latM=latVec(round(latCells/2));
+    % lat1=lat(round(.4*ny));
+
+    % Generate longitude coordinates
+    [latM2,lon2,a21]=vreckon(latM,topLeftLon,cellSize*1000,90);
+    dLon=lon2-topLeftLon;
+    
+    lonVec = zeros(1,lonCells);
+    for lon_idx=1:lonCells
+        lonVec(lon_idx)=topLeftLon+(lon_idx-1)*dLon;        
+    end
+    gridLon = repmat(lonVec,latCells,1);
+
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     cA2C_err = 1;
@@ -122,7 +139,7 @@ end
 
 try
     % Fill the TUV structure with the total data
-    [cA2C_err,mat_tot] = curAscTable2TUV(ascTable,tableFields,timestamp,gridLon,gridLat,sitesLon,sitesLat);
+    [cA2C_err,mat_tot] = curAscTable2TUV(ascTable,tableFields,timestamp,lonVec,latVec,sitesLon,sitesLat);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     cA2C_err = 1;

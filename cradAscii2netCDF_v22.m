@@ -55,7 +55,7 @@ try
     assert(topLeftLat>=-90.0 & topLeftLat<=90.0,'Grid top-left latitude out of range');
     assert(topLeftLon>=-180.0 & topLeftLon<=180.0,'Grid top-left latitude out of range');
     
-    [grb,grb,grb,latCells,lonCells]=textread(radFilename,'%f %f %f %u %u',1,'headerlines', 8);
+    [grb,grb,grb,lonCells,latCells]=textread(radFilename,'%f %f %f %u %u',1,'headerlines', 8);
     
     % Read the data table
     [latC,lonC,kur,snV,snV2,sn,pwr] = textread(radFilename,'%f %f %u %f %f %f %f','headerlines', 9);
@@ -101,14 +101,18 @@ try
     % Extend the sequence to create the grid
     % Start of the sequence
     seqLon = topLeftLon:stepLon:unqLon(1);
-    if((abs(seqLon(end)-unqLon(1)))<(abs(stepLon)/2))
-        seqLon = seqLon(1:end-1);
+    if(~isempty(seqLon))
+        if((abs(seqLon(end)-unqLon(1)))<(abs(stepLon)/2))
+            seqLon = seqLon(1:end-1);
+        end
     end
     seqLon = [seqLon unqLon'];
     
     seqLat = topLeftLat:stepLat:unqLat(1);
-    if((abs(seqLat(end)-unqLat(1)))<(abs(stepLat)/2))
-        seqLat = seqLat(1:end-1);
+    if(~isempty(seqLat))
+        if((abs(seqLat(end)-unqLat(1)))<(abs(stepLat)/2))
+            seqLat = seqLat(1:end-1);
+        end
     end
     seqLat = [seqLat unqLat'];
     
@@ -121,12 +125,17 @@ try
         seqLat = [seqLat seqLat(end)+stepLat];
     end
     
-    % Shift coordinates from top-left corner to center of the grid cells
-    for lat_idx=1:latCells
-        for lon_idx=1:lonCells
-            [gridLon(lon_idx) gridLat(lat_idx)] = km2lonlat(seqLon(lon_idx),seqLat(lat_idx),cellSize/2,-(cellSize/2));
-        end
-    end
+%     % Shift coordinates from top-left corner to center of the grid cells
+%     for lat_idx=1:latCells
+%         for lon_idx=1:lonCells
+%             [gridLon(lon_idx) gridLat(lat_idx)] = km2lonlat(seqLon(lon_idx),seqLat(lat_idx),cellSize/2,-(cellSize/2));
+%         end
+%     end
+
+    % Change seqLon and seqLat variable names to gridLon and gridLat
+    % because they are the center of the grid cells and not the corners
+    gridLon = seqLon;
+    gridLat = seqLat;
     
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
@@ -1033,12 +1042,12 @@ try
     ncwrite(ncfile,'SDN_REFERENCES',TDS_catalog');
     ncwrite(ncfile,'SDN_XLINK',xlink');
     ncwrite(ncfile,'DEPH',mat_rad.depth);
-    ncwrite(ncfile,'RDVA',mat_rad.rdva);
-    ncwrite(ncfile,'DRVA',mat_rad.drva);
-    ncwrite(ncfile,'EWCT',mat_rad.ewct);
-    ncwrite(ncfile,'NSCT',mat_rad.nsct);    
-    ncwrite(ncfile,'EACC',mat_rad.eacc);
-    ncwrite(ncfile,'HCSS',mat_rad.hcss);
+    ncwrite(ncfile,'RDVA',mat_rad.rdva');
+    ncwrite(ncfile,'DRVA',mat_rad.drva');
+    ncwrite(ncfile,'EWCT',mat_rad.ewct');
+    ncwrite(ncfile,'NSCT',mat_rad.nsct');    
+    ncwrite(ncfile,'EACC',mat_rad.eacc');
+    ncwrite(ncfile,'HCSS',mat_rad.hcss');
     ncwrite(ncfile,'NARX',length(siteLat));
     ncwrite(ncfile,'NATX',length(siteLat));
     ncwrite(ncfile,'SLTR',siteLat');
@@ -1048,13 +1057,13 @@ try
     ncwrite(ncfile,'SCDR',siteCode');
     ncwrite(ncfile,'SCDT',siteCode');
     ncwrite(ncfile,'TIME_QC',sdnTime_QCflag);
-    ncwrite(ncfile,'POSITION_QC',sdnPosition_QCflag);
+    ncwrite(ncfile,'POSITION_QC',sdnPosition_QCflag');
     ncwrite(ncfile,'DEPH_QC',sdnDepth_QCflag);
-    ncwrite(ncfile,'QCflag',overall_QCflag);
-    ncwrite(ncfile,'OWTR_QC',overWater_QCflag);
-    ncwrite(ncfile,'VART_QC',varianceThreshold_QCflag);
-    ncwrite(ncfile,'CSPD_QC',velocityThreshold_QCflag);
-    ncwrite(ncfile,'MDFL_QC',medianFilter_QCflag);
+    ncwrite(ncfile,'QCflag',overall_QCflag');
+    ncwrite(ncfile,'OWTR_QC',overWater_QCflag');
+    ncwrite(ncfile,'VART_QC',varianceThreshold_QCflag');
+    ncwrite(ncfile,'CSPD_QC',velocityThreshold_QCflag');
+    ncwrite(ncfile,'MDFL_QC',medianFilter_QCflag');
     ncwrite(ncfile,'AVRB_QC',averageRadialBearing_QC_flag);
     ncwrite(ncfile,'RDCT_QC',radialCount_QC_flag);
         

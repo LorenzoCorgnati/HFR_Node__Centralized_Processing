@@ -84,29 +84,30 @@ try
     pwrIndex = find(not(cellfun('isempty', pwrIndexC)));
     
     % Scan the grid and fill the radial structure with table data
-    for grd_y=1:size(rad.rdva,1)
-        for grd_x=1:size(rad.rdva,2)
+    for grd_y=1:length(gridLat)
+        for grd_x=1:length(gridLon)
             % Retrieve table line number from Jan's formula: [x,y] -> (x-1)*100 + (y-1) + 1
-            lineNumber = (grd_x-1)*100 + (grd_y-1) + 1;
+%             lineNumber = (grd_x-1)*100 + (grd_y-1) + 1;
+            lineNumber = (grd_x-1)*length(gridLat) + (grd_y-1) + 1;
             
 %             if((table(lineNumber,latcIndex)~=-999) && (table(lineNumber,loncIndex)~=-999))
             if(table(lineNumber,kurIndex)~=0)
                 
                 % Insert velocity magnitude data
-                rad.rdva(grd_x,grd_y) = table(lineNumber,snvIndex) / table(lineNumber,snrIndex);
+                rad.rdva(grd_y,grd_x) = table(lineNumber,snvIndex) / table(lineNumber,snrIndex);
                 
                 % Evaluate velocity bearing
-                [s,rad.drva(grd_x,grd_y),a21] = m_idist(siteLon, siteLat, rad.Lon(grd_x), rad.Lat(grd_y), 'wgs84');
+                [s,rad.drva(grd_y,grd_x),a21] = m_idist(siteLon, siteLat, rad.Lon(grd_x), rad.Lat(grd_y), 'wgs84');
                 
                 % Evaluate U and V components of the velocity
-                rad.ewct(grd_x,grd_y) = rad.rdva(grd_x,grd_y) * sin(rad.drva(grd_x,grd_y) * (pi/180));
-                rad.nsct(grd_x,grd_y) = rad.rdva(grd_x,grd_y) * cos(rad.drva(grd_x,grd_y) * (pi/180));
+                rad.ewct(grd_y,grd_x) = rad.rdva(grd_y,grd_x) * sin(rad.drva(grd_y,grd_x) * (pi/180));
+                rad.nsct(grd_y,grd_x) = rad.rdva(grd_y,grd_x) * cos(rad.drva(grd_y,grd_x) * (pi/180));
                 
                 % Insert variance data
-                rad.hcss(grd_x,grd_y) = table(lineNumber,snsIndex) / table(lineNumber,snrIndex);
+                rad.hcss(grd_y,grd_x) = table(lineNumber,snsIndex) / table(lineNumber,snrIndex);
                 
                 % Insert accuracy data
-                rad.eacc(grd_x,grd_y) = rad.hcss(grd_x,grd_y) / sqrt(table(lineNumber,kurIndex));
+                rad.eacc(grd_y,grd_x) = rad.hcss(grd_y,grd_x) / sqrt(table(lineNumber,kurIndex));
             end
         end
     end
