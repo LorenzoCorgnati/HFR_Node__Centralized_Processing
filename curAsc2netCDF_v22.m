@@ -104,28 +104,41 @@ end
 %% Create the regular grid
 
 try
-    % Generate latitude coordinates
-    [lat2,lon2,a21]=vreckon(topLeftLat,topLeftLon,cellSize*1000,180);
-    dLat=lat2-topLeftLat;
-    
-    latVec = zeros(latCells,1);
-    for lat_idx=1:latCells
-        latVec(lat_idx)=topLeftLat+(lat_idx-1)*dLat;       
-    end
-    gridLat = repmat(latVec,1,lonCells);
-    
-    % Find latitude value at the middle of latitude range
-    latM=latVec(round(latCells/2));
-    % lat1=lat(round(.4*ny));
+%     % Generate latitude coordinates
+%     [lat2,lon2,a21]=vreckon(topLeftLat,topLeftLon,cellSize*1000,180);
+%     dLat=lat2-topLeftLat;
+%     
+%     % Generate the grid with evaluated distances from top-left corner
+%     latVec = zeros(latCells,1);
+%     for lat_idx=1:latCells
+%         latVec(lat_idx)=topLeftLat+(lat_idx-1)*dLat;       
+%     end
+%     gridLat = repmat(latVec,1,lonCells);
+%     
+%     % Find latitude value at the middle of latitude range
+%     latM=latVec(round(latCells/2));
+%     % lat1=lat(round(.4*ny));
+% 
+%     % Generate longitude coordinates
+%     [latM2,lon2,a21]=vreckon(latM,topLeftLon,cellSize*1000,90);
+%     dLon=lon2-topLeftLon;
+%     
+%     lonVec = zeros(1,lonCells);
+%     for lon_idx=1:lonCells
+%         lonVec(lon_idx)=topLeftLon+(lon_idx-1)*dLon;        
+%     end
+%     gridLon = repmat(lonVec,latCells,1);
 
-    % Generate longitude coordinates
-    [latM2,lon2,a21]=vreckon(latM,topLeftLon,cellSize*1000,90);
-    dLon=lon2-topLeftLon;
+    % Generate grid coordinates
+    kmDegree = 1.852 * 60;           % kilometers per Degree (derived from Nautical Mile)
+    dLat = cellSize / kmDegree;      % Distance of one lat-grid cell in Degrees
+    sphCorr = cos( (topLeftLat - (0.5 *(latCells-1)*dLat)) * pi/180);       % Spherical correction
+    dLon = cellSize / (kmDegree * sphCorr);  % Distance of one lon- grid cell in Degrees
+
+    latVec = (topLeftLat:-dLat:topLeftLat-(latCells-1)*dLat)';     % Generate latitude list
+    lonVec = topLeftLon:dLon:topLeftLon+(lonCells-1)*dLon;      % Generate longitude list
     
-    lonVec = zeros(1,lonCells);
-    for lon_idx=1:lonCells
-        lonVec(lon_idx)=topLeftLon+(lon_idx-1)*dLon;        
-    end
+    gridLat = repmat(latVec,1,lonCells);
     gridLon = repmat(lonVec,latCells,1);
 
 catch err
@@ -139,7 +152,7 @@ end
 
 try
     % Fill the TUV structure with the total data
-    [cA2C_err,mat_tot] = curAscTable2TUV(ascTable,tableFields,timestamp,lonVec,latVec,sitesLon,sitesLat);
+    [cA2C_err,mat_tot] = curAscTable2TUV(ascTable,tableFields,timestamp,gridLon,gridLat,sitesLon,sitesLat);
 catch err
     disp(['[' datestr(now) '] - - ERROR in ' mfilename ' -> ' err.message]);
     cA2C_err = 1;
