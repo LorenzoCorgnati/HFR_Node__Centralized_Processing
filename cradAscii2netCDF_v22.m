@@ -816,7 +816,7 @@ try
     ncwriteatt(ncfile,'TIME_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'TIME_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'TIME_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'TIME_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'TIME_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'TIME_QC','comment',char('OceanSITES quality flagging for temporal coordinate.'));
     ncwriteatt(ncfile,'TIME_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'TIME_QC','add_offset',int8(0));
@@ -827,7 +827,7 @@ try
     ncwriteatt(ncfile,'POSITION_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'POSITION_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'POSITION_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'POSITION_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'POSITION_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'POSITION_QC','comment',char('OceanSITES quality flagging for position coordinates.'));
     ncwriteatt(ncfile,'POSITION_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'POSITION_QC','add_offset',int8(0));
@@ -838,7 +838,7 @@ try
     ncwriteatt(ncfile,'DEPH_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'DEPH_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'DEPH_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'DEPH_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'DEPH_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'DEPH_QC','comment',char('OceanSITES quality flagging for depth coordinate.'));
     ncwriteatt(ncfile,'DEPH_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'DEPH_QC','add_offset',int8(0));
@@ -850,7 +850,7 @@ try
     ncwriteatt(ncfile,'QCflag','valid_max',int8(9));
     ncwriteatt(ncfile,'QCflag','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'QCflag','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'QCflag','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'QCflag','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'QCflag','comment',char('OceanSITES quality flagging for all QC tests.'));
     ncwriteatt(ncfile,'QCflag','scale_factor',int8(1));
     ncwriteatt(ncfile,'QCflag','add_offset',int8(0));
@@ -862,7 +862,7 @@ try
     ncwriteatt(ncfile,'OWTR_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'OWTR_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'OWTR_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'OWTR_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'OWTR_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'OWTR_QC','comment',char('OceanSITES quality flagging for Over-water QC test.'));
     ncwriteatt(ncfile,'OWTR_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'OWTR_QC','add_offset',int8(0));
@@ -874,7 +874,7 @@ try
     ncwriteatt(ncfile,'MDFL_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'MDFL_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'MDFL_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'MDFL_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'MDFL_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'MDFL_QC','comment',char(['OceanSITES quality flagging for Median Filter QC test. ' ...
         'Threshold set to ' num2str(Radial_QC_params.MedFilt(1)) ' km, ' num2str(Radial_QC_params.MedFilt(2)) ' deg, ' ...
         num2str(Radial_QC_params.MedFilt(3)) ' m/s, ']));
@@ -888,7 +888,7 @@ try
     ncwriteatt(ncfile,'VART_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'VART_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'VART_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'VART_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'VART_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'VART_QC','comment',char(['OceanSITES quality flagging for variance threshold QC test. ' ...
         'Threshold set to ' num2str(Radial_QC_params.VarThr) ' m2/s2. ']));
     ncwriteatt(ncfile,'VART_QC','scale_factor',int8(1));
@@ -901,7 +901,7 @@ try
     ncwriteatt(ncfile,'CSPD_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'CSPD_QC','coordinates',char('TIME DEPH LATITUDE LONGITUDE'));
     ncwriteatt(ncfile,'CSPD_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'CSPD_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'CSPD_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'CSPD_QC','comment',char(['OceanSITES quality flagging for Velocity threshold QC test. ' ...
         'Threshold set to ' num2str(Radial_QC_params.VelThr) ' m/s.']));
     ncwriteatt(ncfile,'CSPD_QC','scale_factor',int8(1));
@@ -913,7 +913,7 @@ try
     ncwriteatt(ncfile,'AVRB_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'AVRB_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'AVRB_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'AVRB_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'AVRB_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'AVRB_QC','comment',char(['OceanSITES quality flagging for Average Radial Bearing QC test. Thresholds set to [' num2str(Radial_QC_params.AvgRadBear(1)) '-' num2str(Radial_QC_params.AvgRadBear(2)) '] deg.']));
     ncwriteatt(ncfile,'AVRB_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'AVRB_QC','add_offset',int8(0));
@@ -924,7 +924,7 @@ try
     ncwriteatt(ncfile,'RDCT_QC','valid_min',int8(0));
     ncwriteatt(ncfile,'RDCT_QC','valid_max',int8(9));
     ncwriteatt(ncfile,'RDCT_QC','flag_values',int8([0 1 2 3 4 5 6 7 8 9]));
-    ncwriteatt(ncfile,'RDCT_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value'));
+    ncwriteatt(ncfile,'RDCT_QC','flag_meanings',char('no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value'));
     ncwriteatt(ncfile,'RDCT_QC','comment',char(['OceanSITES quality flagging for Radial Count QC test. Thresholds set to ' num2str(Radial_QC_params.RadCnt) ' vectors.']));
     ncwriteatt(ncfile,'RDCT_QC','scale_factor',int8(1));
     ncwriteatt(ncfile,'RDCT_QC','add_offset',int8(0));
@@ -1110,7 +1110,7 @@ try
     ncwriteatt(ncfile,'/','bottom_depth', char(''));
     % Conventions used
     ncwriteatt(ncfile,'/','format_version',char('1.4'));
-    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Copernicus-InSituTAC-FormatManual-1.41 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.0'));
+    ncwriteatt(ncfile,'/','Conventions',char('CF-1.6 Copernicus-InSituTAC-FormatManual-1.42 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.1'));
     % Publication information
     ncwriteatt(ncfile,'/','update_interval',char('void'));
     ncwriteatt(ncfile,'/','citation',char(citation_str));
@@ -1185,7 +1185,7 @@ try
     ncwriteatt(ncfile,'/','references',char('http://marine.copernicus.eu http://www.marineinsitu.eu http://www.marineinsitu.eu/wp-content/uploads/2018/02/HFR_Data_Model_Reference_Card_v1.pdf'));
     ncwriteatt(ncfile,'/','doi',char(''));
     ncwriteatt(ncfile,'/','pi_name',char(''));
-    ncwriteatt(ncfile,'/','qc_manual',char(''));
+    ncwriteatt(ncfile,'/','qc_manual',char('Recommendation Report 2 on improved common procedures for HFR QC analysis http://dx.doi.org/10.25607/OBP-944'));
     ncwriteatt(ncfile,'/','wmo_inst_type',char(''));
     
 catch err

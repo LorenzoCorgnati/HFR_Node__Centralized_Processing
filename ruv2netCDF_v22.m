@@ -1417,7 +1417,7 @@ try
     netcdf.putAtt(ncid, varid_tqc, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_tqc, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_tqc, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_tqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_tqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_tqc, 'comment', 'OceanSITES quality flagging for temporal coordinate.');
     netcdf.putAtt(ncid, varid_tqc, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_tqc, 'scale_factor', int8(1));
@@ -1433,7 +1433,7 @@ try
     netcdf.putAtt(ncid, varid_posqc, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_posqc, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_posqc, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_posqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_posqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_posqc, 'comment', 'OceanSITES quality flagging for position coordinates');
     netcdf.putAtt(ncid, varid_posqc, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_posqc, 'scale_factor', int8(1));
@@ -1450,7 +1450,7 @@ try
     netcdf.putAtt(ncid, varid_dqc, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_dqc, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_dqc, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_dqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_dqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_dqc, 'comment', 'OceanSITES quality flagging for depth coordinate.');
     netcdf.putAtt(ncid, varid_dqc, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_dqc, 'scale_factor', int8(1));
@@ -1466,7 +1466,7 @@ try
     netcdf.putAtt(ncid, varid_ovqc, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_ovqc, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_ovqc, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_ovqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_ovqc, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_ovqc, 'comment', 'OceanSITES quality flagging for all QC tests.');
     netcdf.putAtt(ncid, varid_ovqc, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_ovqc, 'scale_factor', int8(1));
@@ -1483,7 +1483,7 @@ try
     netcdf.putAtt(ncid, varid_owtr, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_owtr, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_owtr, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_owtr, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_owtr, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_owtr, 'comment', 'OceanSITES quality flagging for Over-water QC test.');
     netcdf.putAtt(ncid, varid_owtr, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_owtr, 'scale_factor', int8(1));
@@ -1500,7 +1500,7 @@ try
     netcdf.putAtt(ncid, varid_mdfl, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_mdfl, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_mdfl, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_mdfl, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_mdfl, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_mdfl, 'comment', ['OceanSITES quality flagging for Median Filter QC test. Threshold set to ' num2str(Radial_QC_params.MedFilt(1)) ' km, ' num2str(Radial_QC_params.MedFilt(2)) ' deg, ' num2str(Radial_QC_params.MedFilt(3)) ' m/s, ']);
     netcdf.putAtt(ncid, varid_mdfl, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_mdfl, 'scale_factor', int8(1));
@@ -1517,7 +1517,7 @@ try
     netcdf.putAtt(ncid, varid_vart, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_vart, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_vart, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_vart, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_vart, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_vart, 'comment', ['OceanSITES quality flagging for Variance Threshold QC test. Test not applicable to Direction Finding systems. The Temporal Derivative test is applied. Threshold set to ' num2str(Radial_QC_params.TempDerThr.threshold) ' m/s.']);
     netcdf.putAtt(ncid, varid_vart, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_vart, 'scale_factor', int8(1));
@@ -1534,7 +1534,7 @@ try
     netcdf.putAtt(ncid, varid_cspd, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_cspd, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_cspd, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_cspd, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_cspd, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_cspd, 'comment', ['OceanSITES quality flagging for Velocity Threshold QC test. Threshold set to ' num2str(Radial_QC_params.VelThr) ' m/s.']);
     netcdf.putAtt(ncid, varid_cspd, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_cspd, 'scale_factor', int8(1));
@@ -1551,7 +1551,7 @@ try
     netcdf.putAtt(ncid, varid_avrb, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_avrb, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_avrb, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_avrb, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_avrb, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_avrb, 'comment', ['OceanSITES quality flagging for Average Radial Bearing QC test. Thresholds set to [' num2str(Radial_QC_params.AvgRadBear(1)) '-' num2str(Radial_QC_params.AvgRadBear(2)) '] deg.']);
     netcdf.putAtt(ncid, varid_avrb, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_avrb, 'scale_factor', int8(1));
@@ -1567,7 +1567,7 @@ try
     netcdf.putAtt(ncid, varid_rdct, 'valid_min', int8(0));
     netcdf.putAtt(ncid, varid_rdct, 'valid_max', int8(9));
     netcdf.putAtt(ncid, varid_rdct, 'flag_values', int8( [0 1 2 3 4 5 6 7 8 9]));
-    netcdf.putAtt(ncid, varid_rdct, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value');
+    netcdf.putAtt(ncid, varid_rdct, 'flag_meanings', 'no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value');
     netcdf.putAtt(ncid, varid_rdct, 'comment', ['OceanSITES quality flagging for Radial Count QC test. Thresholds set to ' num2str(Radial_QC_params.RadCnt) ' vectors.']);
     netcdf.putAtt(ncid, varid_rdct, '_FillValue', netcdf.getConstant('NC_FILL_BYTE'));
     netcdf.putAtt(ncid, varid_rdct, 'scale_factor', int8(1));
@@ -1625,7 +1625,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'bottom_depth', '');
     % Conventions used
     netcdf.putAtt(ncid, varid_global, 'format_version', '1.4');
-    netcdf.putAtt(ncid, varid_global, 'Conventions', 'CF-1.6 Copernicus-InSituTAC-FormatManual-1.41 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.0');
+    netcdf.putAtt(ncid, varid_global, 'Conventions', 'CF-1.6 Copernicus-InSituTAC-FormatManual-1.42 Copernicus-InSituTAC-SRD-1.5 Copernicus-InSituTAC-ParametersList-3.2.1');
     % Publication information
     netcdf.putAtt(ncid, varid_global, 'update_interval', 'void');
     netcdf.putAtt(ncid, varid_global, 'citation', citation_str);
@@ -1699,7 +1699,7 @@ try
     netcdf.putAtt(ncid, varid_global, 'date_issued', dateCreated);    
     netcdf.putAtt(ncid, varid_global, 'doi','');
     netcdf.putAtt(ncid, varid_global, 'pi_name', '');
-    netcdf.putAtt(ncid, varid_global, 'qc_manual', '');
+    netcdf.putAtt(ncid, varid_global, 'qc_manual', 'Recommendation Report 2 on improved common procedures for HFR QC analysis http://dx.doi.org/10.25607/OBP-944');
     netcdf.putAtt(ncid, varid_global, 'wmo_inst_type', '');
     
     % Globals sourced from radial file metadata
