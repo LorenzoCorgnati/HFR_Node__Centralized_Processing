@@ -1,0 +1,43 @@
+{
+    "_class": "Software",
+    "alias": "https://github.com/LorenzoCorgnati/HFR_Node__Centralized_Processing",
+    "abstract": "Matlab scripts for the operational workflow of the European HFR Node. Tools for the centralized processing.",
+    "author": {
+        "_class": "Organization",
+        "alias": "https://edmo.seadatanet.org/report/134"
+    },
+    "created": "2018-11-20",
+    "contributor": [
+        {
+            "_class": "Person",
+            "name": "Lorenzo Corgnati <lorenzo.corgnati@sp.ismar.cnr.it>"
+        }
+    ],
+    "description": "These applications are written in Matlab language and they are based on HFR_Progs_2_1_2 and M_Map toolboxes, and the architecture of the workflow is based on a MySQL database containing information about data and metadata. The applications are designed for High Frequency Radar (HFR) data management according to the European HFR node processing workflow, thus generating radial and total velocity files in netCDF format according to the European standard data and metadata model for near real time HFR current data.",
+    "distribution": {
+        "_class": "Distribution",
+        "accessURL": "https://github.com/LorenzoCorgnati/HFR_Node__Centralized_Processing"
+    },
+    "downloadURL": "https://github.com/LorenzoCorgnati/HFR_Node__Centralized_Processing/archive/refs/heads/master.zip",
+    "keywords": ["matlab","netcdf","physical-oceanography","ocean-sciences","hf-radar","data-preservation","jerico-ri"],
+    "language": ["English"],
+    "license": "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.",
+    "modified": "2021-12-15",
+    "name": "HFR_Node_Centralized_Processing",
+    "organization": {
+        "_class": "Organization",
+        "alias": "https://edmo.seadatanet.org/report/134"
+    },
+    "owner": {
+        "_class": "Organization",
+        "alias": "https://edmo.seadatanet.org/report/134"
+    },
+    "publisher": {
+        "_class": "Organization",
+        "alias": "https://edmo.seadatanet.org/report/134"
+    },
+    "published": "2018-11-20",
+    "programming_language": ["MATLAB"],
+    "url": "https://github.com/LorenzoCorgnati/HFR_Node__Centralized_Processing",
+    "version": "v2.2"
+}
