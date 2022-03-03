@@ -50,6 +50,9 @@ Guidelines on how to sync your High Frequency (HF) radar data with the European 
 Radar node (Version 1.1). Balearic Islands Coastal Observing and Forecasting System,
 SOCIB . https://doi.org/10.25704/9XPF-76G7
 
+Cite as:
+Lorenzo Corgnati. (2019). EU_HFR_NODE_Centralized_Processing. Zenodo. https://doi.org/10.5281/zenodo.2639558
+
 
 Author: Lorenzo Corgnati
 
