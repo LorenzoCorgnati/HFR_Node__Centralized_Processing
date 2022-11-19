@@ -133,9 +133,9 @@ end
 if(isopen(conn))
     % Set and exectute the query
     try
-        % Manage the case of the ISMAR-LaMMA integrated network (HFR-WesternItaly)
+        % Manage the case of the ISMAR-LaMMA-ARPAS integrated network (HFR-WesternItaly)
         if(strcmp(network_data{1,network_idIndex},'HFR-WesternItaly'))
-            station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'''];
+            station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'' OR network_id = ' '''HFR-ARPAS'''];
         else
             station_selectquery = ['SELECT * FROM station_tb WHERE network_id = ' '''' network_data{1,network_idIndex} ''''];
         end

@@ -139,9 +139,9 @@ try
     
     % Retrieve the radial files related to the current station to be combined
     try
-        % Manage the case of the ISMAR-LaMMA integrated network (HFR-WesternItaly)
+        % Manage the case of the ISMAR-LaMMA-ARPAS integrated network (HFR-WesternItaly)
         if(strcmp(networkData{1,network_idIndex},'HFR-WesternItaly'))
-            toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'') AND NRT_processed_flag_integrated_network = 0 ORDER BY timestamp'];
+            toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND (network_id = ' '''HFR-TirLig'' OR network_id = ' '''HFR-LaMMA'' OR network_id = ' '''HFR-ARPAS'') AND NRT_processed_flag_integrated_network = 0 ORDER BY timestamp'];
         else
             toBeCombinedRadials_selectquery = ['SELECT * FROM radial_input_tb WHERE datetime>' '''' startDate ''' AND network_id = ' '''' networkData{1,network_idIndex} ''' AND NRT_processed_flag = 0 ORDER BY timestamp'];
         end

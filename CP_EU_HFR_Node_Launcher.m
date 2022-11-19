@@ -36,11 +36,11 @@ disp(['[' datestr(now) '] - - ' 'CP_EU_HFR_Node_Launcher started.']);
 
 %%
 
-%% Set database parameters
+%% Set database parameters -- INSERT DATABASE user AND password
 
-sqlConfig.user = 'HFR_lorenzo';
-sqlConfig.password = 'xWeLXHFQfvpBmDYO';
-sqlConfig.host = '150.145.136.8';
+sqlConfig.user = 'XXXXXXX';
+sqlConfig.password = 'XXXXXXXX';
+sqlConfig.host = '150.145.136.104';
 sqlConfig.database = 'HFR_node_db';
 
 %%
