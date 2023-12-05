@@ -59,3 +59,6 @@ Author: Lorenzo Corgnati
 Date: November 20, 2018
 
 E-mail: lorenzo.corgnati@sp.ismar.cnr.it
+
+
+This project has received funding from the European Commission’s Horizon 2020 Research and Innovation programme under grant agreements No 871153 and 951799. Project coordinator: IFREMER, France. The information and views of this website lie entirely with the authors. The  European Commission is not responsible for any use that may be made of the information it contains.
